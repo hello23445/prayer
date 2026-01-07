@@ -1,0 +1,531 @@
+/* styles.css */
+:root {
+    --bg-color: #f4f7f9;
+    --text-color: #333;
+    --container-bg: white;
+    --accent-color: #4CAF50;
+    --error-color: #f44336;
+    --input-bg: #fafafa;
+    --font-size-base: 16px;
+    --font-size-prayer: 18px;
+    --icon-size: 1.333em; /* По умолчанию нормальный */
+    --toggle-color-on: #74C0FC;
+    --toggle-size: 3em;
+}
+
+body.dark {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --container-bg: #1e1e1e;
+    --accent-color: #66BB6A;
+    --error-color: #EF5350;
+    --input-bg: #333;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: var(--font-size-base);
+}
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    background: var(--container-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    transition: background 0.3s;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container.full-screen {
+    max-width: none;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    padding-right: 48px; /* space for absolute buttons on the right */
+}
+
+.header h1, .header h2 {
+    margin: 0;
+}
+
+.header .settings-btn, .header .close-settings, .header .back-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: auto; /* don't inherit global full-width */
+    padding: 6px; 
+}
+
+/* ensure buttons inside header don't become full-width from global rule */
+.header button { width: auto; }
+
+select, button {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: var(--font-size-base);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+select {
+    height: 50px;
+}
+
+select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+#prayer-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.prayer-btn {
+    padding: 15px 30px;
+    background: linear-gradient(135deg, var(--accent-color), #2E7D32);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    margin: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.prayer-btn:hover {
+    background: linear-gradient(135deg, #43A047, #1B5E20);
+    transform: translateY(-2px);
+}
+
+#prayer-window {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 80%;
+}
+
+#user-text {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px 0 0 8px;
+    font-size: var(--font-size-base);
+    background: var(--input-bg);
+    color: var(--text-color);
+    direction: rtl;
+    text-align: right;
+    box-sizing: border-box;
+}
+
+#audio-btn {
+    padding: 10px 15px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    transition: background 0.3s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#audio-btn.recording {
+    background: var(--error-color);
+}
+
+#feedback {
+    margin-top: 15px;
+    padding: 12px;
+    background: #fff3e0;
+    border-radius: 8px;
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    display: none;
+    transition: background 0.3s;
+    width: 80%;
+}
+
+body.dark #feedback {
+    background: #ffcc80;
+    color: #000;
+}
+
+.error {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+#settings {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#settings-content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--container-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.close-settings {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+#save-settings {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.settings-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.play-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    color: var(--accent-color);
+}
+
+.select-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: var(--font-size-base);
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.toggle-label i {
+    font-size: var(--toggle-size);
+    margin-right: 10px;
+}
+
+#transcription, #translation {
+    margin-top: 10px;
+    font-size: var(--font-size-prayer);
+    display: none;
+    overflow-wrap: break-word;
+    width: 80%;
+    text-align: center;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: var(--container-bg);
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+#continue-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#continue-btn .icon {
+    margin-left: 5px;
+}
+
+/* Оптимизация для мобильных */
+@media (max-width: 600px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    :root {
+        --font-size-base: 14px;
+        --font-size-prayer: 16px;
+        --icon-size: 1em;
+    }
+
+    #settings-content {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    #user-text {
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    #audio-btn {
+        border-radius: 8px;
+        width: 100%;
+    }
+
+    .prayer-btn {
+        width: calc(100% - 20px);
+    }
+}
+
+/* Для больших экранов */
+@media (min-width: 1200px) {
+    .container {
+        padding: 30px;
+    }
+
+    :root {
+        --icon-size: 1.5em;
+    }
+}
+
+/* Размеры иконок не влияют на кнопки */
+button {
+    font-size: var(--font-size-base) !important; /* Фиксированный размер текста кнопок */
+}
+
+.icon {
+    font-size: var(--icon-size);
+}
+/* styles.css (добавления) */
+.header .settings-btn, 
+.header .close-settings {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+}
+
+.select-group.wide {
+    width: 100%;
+}
+
+.select-group.wide select {
+    width: 100%;
+    height: 60px;
+    font-size: 1.1em;
+}
+
+/* Главное меню красивее */
+#prayer-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.prayer-btn {
+    padding: 20px;
+    background: linear-gradient(135deg, var(--accent-color), #2E7D32);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.4em;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.prayer-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+/* styles.css (только добавленные/изменённые части, остальное как раньше) */
+.header .settings-btn, 
+.header .close-settings {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8em;
+}
+
+.select-group.wide {
+    width: 100%;
+}
+
+.select-group.wide select {
+    width: 100%;
+    height: 60px;
+    font-size: 1.2em;
+}
+/* styles.css (добавления для header) */
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.location-info {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: var(--text-color);
+    opacity: 0.8;
+    max-width: 200px;
+    text-align: left;
+}
+
+.header h1 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.header .settings-btn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8em;
+}
+
+/* Для мобильных */
+@media (max-width: 600px) {
+    .location-info {
+        position: static;
+        transform: none;
+        text-align: center;
+        margin-bottom: 10px;
+        max-width: none;
+    }
+
+    .header {
+        flex-direction: column;
+    }
+
+    .header .settings-btn {
+        position: static;
+        transform: none;
+        margin-top: 10px;
+    }
+}
