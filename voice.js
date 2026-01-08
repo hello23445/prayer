@@ -28,36 +28,3 @@ function loadVoices(lang) {
 }
 
 speechSynthesis.onvoiceschanged = () => loadVoices(currentLang);
-
-// Функция check() — будет вызвана, если геолокация получена
-function check(position) {
-    const latitude = position.coords.latitude;   // широта
-    const longitude = position.coords.longitude; // долгота
-    const accuracy = position.coords.accuracy;   // точность в метрах
-
-    console.log("Широта:", latitude);
-    console.log("Долгота:", longitude);
-    console.log("Точность:", accuracy, "м");
-
-    // Тут можно делать что угодно с координатами
-}
-
-document.getElementById('geo-yes2').addEventListener('click', () => {
-    alert('1')
-    // Запрос геолокации
-    navigator.geolocation.getCurrentPosition(
-        (pos) => {
-            alert('2')
-            // Если координаты получены — вызываем check()
-            check(pos);
-        },
-        (err) => {
-            alert('3')
-            console.error("Ошибка геолокации:", err.message);
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 1000,
-        }
-    );
-})

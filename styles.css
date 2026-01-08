@@ -1,4 +1,4 @@
-/* styles.css */
+/*styles.css (обновленный с улучшениями для мобильных устройств: увеличен z-index модалок, добавлены медиа-запросы для лучшей видимости)*/
 :root {
     --bg-color: #f4f7f9;
     --text-color: #333;
@@ -70,7 +70,7 @@ body {
     width: 100%;
     margin-bottom: 20px;
     position: relative;
-    padding-right: 48px; /* space for absolute buttons on the right */
+    flex-wrap: wrap;
 }
 
 .header h1, .header h2 {
@@ -125,74 +125,44 @@ select:focus {
     border: none;
     border-radius: 20px;
     margin: 10px;
-    font-size: 1.2em;
+    font-size: var(--font-size-prayer);
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
 }
 
 .prayer-btn:hover {
-    background: linear-gradient(135deg, #43A047, #1B5E20);
-    transform: translateY(-2px);
-}
-
-#prayer-window {
-    display: none;
-    animation: fadeIn 0.5s ease-in-out;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.back-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--text-color);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .input-group {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
-    width: 80%;
+    width: 100%;
+    margin-bottom: 10px;
 }
 
 #user-text {
     flex: 1;
     padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 8px 0 0 8px;
-    font-size: var(--font-size-base);
+    border-radius: 8px;
     background: var(--input-bg);
     color: var(--text-color);
-    direction: rtl;
-    text-align: right;
-    box-sizing: border-box;
+    font-size: var(--font-size-base);
 }
 
-#audio-btn {
-    padding: 10px 15px;
+#audio-btn, #stop-btn {
+    padding: 10px;
+    margin-left: 10px;
     background: var(--accent-color);
     color: white;
     border: none;
-    border-radius: 0 8px 8px 0;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: var(--font-size-base);
     transition: background 0.3s;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 #audio-btn.recording {
@@ -200,192 +170,90 @@ select:focus {
 }
 
 #feedback {
-    margin-top: 15px;
-    padding: 12px;
-    background: #fff3e0;
-    border-radius: 8px;
-    font-size: var(--font-size-base);
-    line-height: 1.6;
-    display: none;
-    transition: background 0.3s;
-    width: 80%;
-}
-
-body.dark #feedback {
-    background: #ffcc80;
-    color: #000;
-}
-
-.error {
     color: var(--error-color);
-    font-weight: bold;
-}
-
-#settings {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg-color);
-    overflow-y: auto;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-#settings-content {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background: var(--container-bg);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.close-settings {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-    color: var(--text-color);
-    margin-bottom: 10px;
-}
-
-#save-settings {
-    width: 100%;
-    padding: 10px;
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
     margin-top: 10px;
-}
-
-.settings-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--text-color);
-}
-
-.play-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-left: 5px;
-    color: var(--accent-color);
-}
-
-.select-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: var(--font-size-base);
+    display: none;
 }
 
 .toggle-label {
     display: flex;
     align-items: center;
-    cursor: pointer;
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .toggle-label i {
     font-size: var(--toggle-size);
     margin-right: 10px;
-}
-
-#transcription, #translation {
-    margin-top: 10px;
-    font-size: var(--font-size-prayer);
-    display: none;
-    overflow-wrap: break-word;
-    width: 80%;
-    text-align: center;
+    color: var(--toggle-color-on);
 }
 
 .modal {
-    display: none;
     position: fixed;
-    z-index: 1;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
     justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
-    background-color: var(--container-bg);
-    margin: 15% auto;
+    background: var(--container-bg);
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+#remaining-time {
+    margin-bottom: 15px;
+    font-size: 1.2em;
 }
 
 #continue-btn {
     background: var(--accent-color);
     color: white;
     border: none;
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10px;
+    font-size: 1.1em;
+    transition: background 0.3s;
 }
 
-#continue-btn .icon {
-    margin-left: 5px;
+#continue-btn:hover {
+    background: #388E3C;
 }
 
-/* Оптимизация для мобильных */
+#transcription, #translation {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    text-align: center;
+    display: none;
+}
+
+/* Для мобильных устройств */
 @media (max-width: 600px) {
     .container {
+        padding: 10px;
         margin: 10px;
-        padding: 15px;
+        max-width: none;
     }
 
-    :root {
-        --font-size-base: 14px;
-        --font-size-prayer: 16px;
-        --icon-size: 1em;
-    }
-
-    #settings-content {
-        width: 100%;
-        padding: 15px;
-    }
-
-    .input-group {
+    .header {
         flex-direction: column;
     }
 
-    #user-text {
-        border-radius: 8px;
-        margin-bottom: 10px;
-    }
-
-    #audio-btn {
-        border-radius: 8px;
-        width: 100%;
-    }
-
-    .prayer-btn {
-        width: calc(100% - 20px);
+    .header .settings-btn {
+        position: static;
+        transform: none;
+        margin-top: 10px;
     }
 }
 
@@ -415,7 +283,7 @@ button {
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 1.5em;
+    font-size: 1.8em;
 }
 
 .select-group.wide {
@@ -528,4 +396,10 @@ button {
         transform: none;
         margin-top: 10px;
     }
+}
+
+.segment {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
 }

@@ -64,6 +64,7 @@ function saveSettings() {
         transcriptionEnabled,
         translationEnabled
     };
+    // Напоминания (reminders) сохраняются отдельно в main.js — не здесь
     localStorage.setItem('namazSettings', JSON.stringify(settings));
 }
 

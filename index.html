@@ -1,4 +1,3 @@
-<!-- index.html (исправленный полный файл) -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -11,11 +10,11 @@
 </head>
 <body class="system">
     <div class="container" id="main-container">
-<div class="header">
-        <div class="location-info" id="location-info">Определение местоположения...</div>
-        <h1 id="title">Главное меню</h1>
-        <button id="open-settings" class="settings-btn"><i class="fa-solid fa-gear icon"></i></button>
-    </div>
+        <div class="header">
+            <div class="location-info" id="location-info">Определение местоположения...</div>
+            <h1 id="title">Главное меню</h1>
+            <button id="open-settings" class="settings-btn"><i class="fa-solid fa-gear icon"></i></button>
+        </div>
 
         <div id="prayer-menu">
             <button class="prayer-btn" data-value="fajr">Фаджр</button>
@@ -30,11 +29,13 @@
                 <button id="back-btn" class="back-btn"><i class="fa-solid fa-arrow-left icon"></i></button>
                 <h2 id="prayer-name"></h2>
             </div>
+            <div id="history"></div>
             <div id="transcription"></div>
             <div id="translation"></div>
             <div class="input-group">
                 <input type="text" id="user-text" placeholder="Ваш произнесенный текст появится здесь" readonly>
                 <button id="audio-btn"><i class="fa-solid fa-microphone icon"></i></button>
+                <button id="stop-btn" style="display: none;"><i class="fa-solid fa-circle-stop icon"></i></button>
             </div>
             <div id="feedback"></div>
         </div>
@@ -72,11 +73,11 @@
             </div>
 
             <div class="toggle-label" id="transcription-toggle">
-                <i class="fa-solid fa-toggle-on" style="color: var(--toggle-color-on);"></i>
+                <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="transcription-toggle-label">Показывать транскрипцию</span>
             </div>
             <div class="toggle-label" id="translation-toggle">
-                <i class="fa-solid fa-toggle-on" style="color: var(--toggle-color-on);"></i>
+                <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="translation-toggle-label">Показывать перевод</span>
             </div>
 
@@ -135,18 +136,19 @@
         <source src="https://freesound.org/data/previews/419/419023_7626075-lq.mp3" type="audio/mp3">
     </audio>
 
-    <!-- Talkify TTS -->
-    <script src="https://talkify.net/api/speech/v2/talkify.min.js"></script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js"></script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js"></script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js"></script>
+
     <script>
-        // Ждём загрузки Talkify, но если внешний скрипт заблокирован — используем fallback на speechSynthesis
         window.addEventListener('load', function() {
             if (typeof talkify === 'undefined') {
-                console.warn('Talkify не загрузился — используем speechSynthesis как запасной TTS');
+                console.error('Talkify не загрузился. Используем fallback на speechSynthesis.');
                 window.talkifyPlayer = {
                     playText: function(text) {
-                        if (!text) return;
                         const u = new SpeechSynthesisUtterance(text);
-                        window.speechSynthesis.speak(u);
+                        u.lang = 'ar-SA';
+                        speechSynthesis.speak(u);
                     },
                     forceVoice: function() { return this; },
                     enableTextHighlighting: function() { return this; }
@@ -168,7 +170,7 @@
             };
 
             window.talkifyPlayer = new talkify.TtsPlayer()
-                .forceVoice({ name: "Zayd" }) // Арабский голос Zayd (можно заменить на другой доступный)
+                .forceVoice({ name: "Amir" }) // Арабский голос Amir (из доступных арабских голосов Talkify)
                 .enableTextHighlighting();
         });
     </script>
@@ -181,40 +183,7 @@
     <script src="transcription.js"></script>
     <script src="settings.js"></script>
     <script src="main.js"></script>
-
-    <!-- index.html (обновлённый фрагмент с инициализацией Talkify и fallback) -->
-<script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js"></script>
-<script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js"></script>
-<script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js"></script>
-
-<script>
-    window.addEventListener('load', function() {
-        if (typeof talkify === 'undefined') {
-            console.error('Talkify не загрузился. Используем fallback на speechSynthesis.');
-            window.talkifyPlayer = null; // Флаг для fallback
-            return;
-        }
-
-        talkify.config = {
-            remoteService: {
-                host: 'https://talkify.net',
-                apiKey: '16f5f310-26f3-4c81-8644-a945be68a3a0',
-                active: true
-            },
-            ui: {
-                audioControls: {
-                    enabled: false
-                }
-            },
-            debug: true // Для отладки
-        };
-
-        window.talkifyPlayer = new talkify.TtsPlayer()
-            .forceVoice({ name: "Zayd" }) // Арабский голос, замените если нужно другой
-            .enableTextHighlighting();
-
-        console.log('Talkify успешно инициализирован');
-    });
-</script>
+    <script src="permissions.js"></script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bab08e818fad835',t:'MTc2Nzg2ODM4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

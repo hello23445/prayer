@@ -1,3 +1,4 @@
+// language.js
 // language.js (обновлённый — убраны вызовы loadVoices)
 // Use existing global if present to avoid redeclaration errors
 window.currentLang = window.currentLang || 'ru';
@@ -49,4 +50,10 @@ function applyLang(lang) {
     });
 
     updateTranscriptionAndTranslation();
+}
+
+function updatePrayerButtons() {
+    document.querySelectorAll('.prayer-btn').forEach(btn => {
+        btn.textContent = translations[currentLang][btn.dataset.value];
+    });
 }
