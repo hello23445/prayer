@@ -20,6 +20,8 @@ if (closeSettingsBtn && mainContainer && settingsDiv) {
         mainContainer.style.display = 'flex';
         settingsDiv.style.display = 'none';
         saveSettings();
+        stopMicTest();
+        document.getElementById('test-mic').textContent = translations[currentLang].testMic;
     });
 }
 if (playErrorSoundBtn) {
@@ -66,7 +68,6 @@ if (transToggle) {
     transToggle.addEventListener('click', () => {
         transcriptionEnabled = !transcriptionEnabled;
         updateToggleIcons();
-        updateTranscriptionAndTranslation();
         saveSettings();
     });
 }
@@ -74,7 +75,6 @@ if (translToggle) {
     translToggle.addEventListener('click', () => {
         translationEnabled = !translationEnabled;
         updateToggleIcons();
-        updateTranscriptionAndTranslation();
         saveSettings();
     });
 }
@@ -119,3 +119,67 @@ function loadSettings() {
         updateToggleIcons();
     }
 }
+let audioStream = null;
+let analyser = null;
+let gainNode = null;
+let rafId = null;
+
+async function startMicTest() {
+    if (audioStream) return;
+    try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const context = new AudioContext();
+        const source = context.createMediaStreamSource(audioStream);
+        gainNode = context.createGain();
+        gainNode.gain.value = document.getElementById('mic-volume').value / 100;
+        source.connect(gainNode);
+
+        analyser = context.createAnalyser();
+        analyser.fftSize = 256;
+        gainNode.connect(analyser);
+
+        drawLevel();
+    } catch (err) {
+        console.error('Ошибка доступа к микрофону', err);
+    }
+}
+
+function drawLevel() {
+    if (!analyser) return;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    analyser.getByteFrequencyData(dataArray);
+
+    let sum = 0;
+    for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
+    const avg = sum / bufferLength;
+    const percent = Math.min(100, (avg / 255) * 300); // усиление для видимости
+
+    document.getElementById('level-bar').style.width = percent + '%';
+    rafId = requestAnimationFrame(drawLevel);
+}
+
+function stopMicTest() {
+    if (audioStream) {
+        audioStream.getTracks().forEach(track => track.stop());
+        audioStream = null;
+    }
+    if (rafId) cancelAnimationFrame(rafId);
+    document.getElementById('level-bar').style.width = '0%';
+}
+
+// События
+document.getElementById('test-mic').addEventListener('click', () => {
+    const btn = document.getElementById('test-mic');
+    if (audioStream) {
+        stopMicTest();
+        btn.textContent = translations[currentLang].testMic;
+    } else {
+        startMicTest();
+        btn.textContent = translations[currentLang].testMicStop;
+    }
+});
+
+document.getElementById('mic-volume').addEventListener('input', e => {
+    if (gainNode) gainNode.gain.value = e.target.value / 100;
+});

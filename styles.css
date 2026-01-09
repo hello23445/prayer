@@ -58,6 +58,39 @@ body {
     box-shadow: none;
     padding: 0;
 }
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--container-bg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 10;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.chat-area {
+    margin-top: 60px; /* Space for header */
+    margin-bottom: 60px; /* Space for input */
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    width: 100%;
+    max-width: 600px;
+    align-self: center;
+}
+.fixed-input {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--container-bg);
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
 .header {
     display: flex;
     justify-content: center;
@@ -123,13 +156,11 @@ select:focus {
     width: 100%;
     margin-bottom: 10px;
     flex-direction: row-reverse;
-    position: absolute;
-    bottom: 0;
     padding: 10px;
     box-sizing: border-box;
 }
 #user-text {
-    flex: 1;
+    flex: 3;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -147,6 +178,7 @@ select:focus {
     cursor: pointer;
     transition: background 0.3s;
     font-size: 0.8em; /* Smaller size */
+    width: 40px;
 }
 #audio-btn.recording {
     background: var(--error-color);
@@ -202,6 +234,20 @@ select:focus {
     font-size: 1em;
     transition: background 0.3s;
 }
+#save-reminder {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+#save-reminder:disabled {
+    background: grey;
+}
 #transcription, #translation {
     margin-bottom: 10px;
     font-size: 1em;
@@ -224,9 +270,29 @@ select:focus {
         flex-direction: column;
     }
     .header .settings-btn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        transform: none;
+        margin-top: 0;
+    }
+    .back-btn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+    .location-info {
         position: static;
         transform: none;
-        margin-top: 5px;
+        text-align: center;
+        margin-bottom: 5px;
+        max-width: none;
+    }
+    #date-info {
+        position: static;
+        top: auto;
+        text-align: center;
+        margin-bottom: 10px;
     }
 }
 @media (min-width: 1200px) {
@@ -313,6 +379,32 @@ button {
     max-width: 150px;
     text-align: left;
 }
+#date-info {
+    position: absolute;
+    left: 15px;
+    top: calc(50% + 20px);
+    font-size: 0.8em;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+#reminders-main {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9em;
+}
+.reminder-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.delete-reminder, .delete-all {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--error-color);
+}
 .header h1 {
     margin: 0;
     flex: 1;
@@ -362,4 +454,30 @@ button {
 }
 .preloader .icon {
     color: blue;
+    font-size: 4em; /* Increased size */
+}
+.reminder-summary {
+    padding: 8px;
+    background: #e8f5e9;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#reminders-section {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9em;
+    max-width: 200px;
+    text-align: right;
+}
+.full-screen #date-info {
+    display: none;
+}
+#reminders-list-main {
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

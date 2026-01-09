@@ -1,6 +1,6 @@
 // permissions.js
 async function getLocationName(lat, lng) {
-    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=${getLangCode(currentLang)}`);
     const data = await response.json();
     if (!data.address) return 'Неизвестно';
     const fields = ['city', 'town', 'village', 'municipality', 'county', 'state'];

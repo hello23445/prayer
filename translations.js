@@ -37,7 +37,11 @@ const translations = {
         standardMethod: 'Шафи, Малики, Ханбали',
         nextPrayer: 'Время до следующего намаза',
         nextSamePrayer: 'Время до следующего',
-        speakArabic: 'Пожалуйста, говорите на арабском'
+        speakArabic: 'Пожалуйста, говорите на арабском',
+        micVolumeLabel: 'Громкость микрофона:',
+        testMic: 'Тест микрофона',
+        testMicStop: 'Остановить тест',
+        saveReminder: 'Сохранить'
     },
     az: {
         title: 'Əsas Menyu',
@@ -76,7 +80,11 @@ const translations = {
         standardMethod: 'Şafi, Maliki, Hənbəli',
         nextPrayer: 'Növbəti namaza qalan vaxt',
         nextSamePrayer: 'Növbəti',
-        speakArabic: 'Zəhmət olmasa ərəbcə danışın'
+        speakArabic: 'Zəhmət olmasa ərəbcə danışın',
+        micVolumeLabel: 'Mikrofon səsi:',
+        testMic: 'Mikrofon testi',
+        testMicStop: 'Testi dayandır',
+        saveReminder: 'Saxla'
     },
     en: {
         title: 'Main Menu',
@@ -115,6 +123,10 @@ const translations = {
         standardMethod: 'Shafi, Maliki, Hanbali',
         nextPrayer: 'Time until next prayer',
         nextSamePrayer: 'Time until next',
-        speakArabic: 'Please speak in Arabic'
+        speakArabic: 'Please speak in Arabic',
+        micVolumeLabel: 'Microphone volume:',
+        testMic: 'Test microphone',
+        testMicStop: 'Stop test',
+        saveReminder: 'Save'
     }
 };

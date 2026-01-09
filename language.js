@@ -5,6 +5,11 @@ const langNames = {
     'az': { 'ru': 'Азербайджанский', 'en': 'Azerbaijani', 'az': 'Azərbaycan dili' },
     'en': { 'ru': 'Английский', 'en': 'English', 'az': 'Ingilis dili' }
 };
+const months = {
+    ru: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+    az: ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avqust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr'],
+    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+};
 function getLangCode(lang) {
     const codes = { ru: 'ru', az: 'az', en: 'en' };
     return codes[lang];
@@ -43,7 +48,6 @@ function applyLang(lang) {
     if (errorSoundSelect) {
         errorSoundSelect.options[0].textContent = t.noneSound;
         errorSoundSelect.options[1].textContent = t.beepSound;
-        errorSoundSelect.options[2].textContent = t.buzzSound;
     }
     const transcriptionToggleLabelEl = document.getElementById('transcription-toggle-label');
     if (transcriptionToggleLabelEl) transcriptionToggleLabelEl.textContent = t.transcriptionToggle;
@@ -88,7 +92,13 @@ function applyLang(lang) {
             }
         });
     }
+    if (document.getElementById('mic-volume-label')) document.getElementById('mic-volume-label').textContent = t.micVolumeLabel;
+    if (document.getElementById('test-mic')) document.getElementById('test-mic').textContent = t.testMic;
+    if (document.getElementById('save-reminder')) document.getElementById('save-reminder').textContent = t.saveReminder || 'Сохранить';
     updateTranscriptionAndTranslation();
+    updateDateDisplay();
+    updateLocationDisplay();
+    updateMainReminders();
 }
 function updatePrayerButtons() {
     document.querySelectorAll('.prayer-btn').forEach(btn => {
@@ -101,4 +111,20 @@ function updatePrayerButtons() {
         }
         btn.textContent = text;
     });
+}
+async function updateLocationDisplay() {
+    if (coordinates) {
+        userLocationName = await getLocationName(coordinates.lat, coordinates.lng);
+        const t = translations[currentLang];
+        document.getElementById('location-info').innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
+    }
+}
+function updateDateDisplay() {
+    const date = new Date();
+    const day = date.getDate();
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+    const monthName = months[currentLang][monthIndex];
+    const dateStr = `${day} ${monthName} ${year}`;
+    document.getElementById('date-info').textContent = dateStr;
 }

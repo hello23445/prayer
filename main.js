@@ -197,6 +197,43 @@ async function calculatePrayerTimes(lat, lng) {
         document.getElementById('location-info').textContent = 'Нет сети';
     }
 }
+function getNextReminder() {
+    if (!prayerTimes || Object.keys(reminders).length === 0) return null;
+
+    const now = new Date().getTime();
+    let minRemindTime = Infinity;
+    let next = null;
+
+    const prayerOrder = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+    prayerOrder.forEach(key => {
+        if (reminders[key]) {
+            let prayerTime = prayerTimes[key].getTime();
+            // Если время намаза прошло — рассматриваем следующий день
+            if (prayerTime < now) prayerTime += 24 * 60 * 60 * 1000;
+
+            let remindTime;
+            if (reminders[key] === 'next') {
+                const idx = prayerOrder.indexOf(key);
+                const nextKey = prayerOrder[(idx + 1) % prayerOrder.length];
+                remindTime = prayerTimes[nextKey].getTime();
+                if (nextKey === 'fajr' || remindTime < now) remindTime += 24 * 60 * 60 * 1000;
+            } else {
+                remindTime = prayerTime - parseInt(reminders[key]) * 60000;
+            }
+
+            if (remindTime > now && remindTime < minRemindTime) {
+                minRemindTime = remindTime;
+                const text = reminders[key] === 'next' 
+                    ? translations[currentLang].nextPrayer 
+                    : `${reminders[key]} минут раньше`;
+                next = { prayer: key, text };
+            }
+        }
+    });
+
+    return next;
+}
 function showPrayerModal(value) {
     const t = translations[currentLang];
     const name = t[value];
@@ -206,55 +243,45 @@ function showPrayerModal(value) {
     document.getElementById('prayer-time').textContent = ` (${hhmm})`;
     updateRemainingTime(value);
     prayerModalInterval = setInterval(() => updateRemainingTime(value), 1000);
-    const remainingMin = (time - new Date()) / 60000;
-    document.getElementById('reminder-select').disabled = remainingMin < 10;
+    document.getElementById('reminder-select').value = reminders[value] || '';
+    document.getElementById('save-reminder').disabled = !document.getElementById('reminder-select').value;
+    document.getElementById('reminder-select').addEventListener('change', () => {
+        document.getElementById('save-reminder').disabled = !document.getElementById('reminder-select').value;
+    });
     if (value === 'asr') {
         document.getElementById('asr-method-container').style.display = 'block';
         document.getElementById('asr-method-select-modal').value = asrMethod;
-        document.getElementById('asr-method-select-modal').addEventListener('change', (e) => {
+        const select = document.getElementById('asr-method-select-modal');
+        select.removeEventListener('change', window.asrChangeHandler);
+        window.asrChangeHandler = async (e) => {
             asrMethod = e.target.value;
-            calculatePrayerTimes(coordinates.lat, coordinates.lng);
-        });
+            await calculatePrayerTimes(coordinates.lat, coordinates.lng);
+            const time = prayerTimes['asr'];
+            const hhmm = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
+            document.getElementById('modal-prayer-name').textContent = `${t.asr} (${hhmm})`;
+            updatePrayerButtons(); // обновить кнопки в главном меню
+        };
+        select.addEventListener('change', window.asrChangeHandler);
     } else {
         document.getElementById('asr-method-container').style.display = 'none';
     }
     document.getElementById('prayer-modal').style.display = 'flex';
-    updateRemindersList(value);
+    document.getElementById('reminders-list').style.display = 'none';
     document.getElementById('modal-back').onclick = () => {
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
     };
-    document.getElementById('continue-btn').onclick = () => {
+    document.getElementById('save-reminder').onclick = () => {
         const reminder = document.getElementById('reminder-select').value;
         if (reminder) {
             reminders[value] = reminder;
             localStorage.setItem('reminders', JSON.stringify(reminders));
+            updateMainReminders();
         }
+    };
+    document.getElementById('continue-btn').onclick = () => {
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
-        if (reminder && Notification.permission === 'granted') {
-            let remindTime;
-            if (reminder === 'next') {
-                // Calculate next prayer time
-                const prayerOrder = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-                const currentIndex = prayerOrder.indexOf(value);
-                const nextValue = prayerOrder[(currentIndex + 1) % prayerOrder.length];
-                remindTime = prayerTimes[nextValue];
-                if (nextValue === 'fajr') {
-                    remindTime.setDate(remindTime.getDate() + 1);
-                }
-            } else {
-                remindTime = new Date(time.getTime() - reminder * 60000);
-            }
-            const delay = remindTime - new Date();
-            if (delay > 0) {
-                setTimeout(() => {
-                    new Notification(`Время для намаза ${name} скоро!`, {
-                        body: `Осталось ${reminder === 'next' ? 'до следующего' : reminder} минут`
-                    });
-                }, delay);
-            }
-        }
         document.getElementById('prayer-name').textContent = name;
         document.getElementById('prayer-window').style.display = 'block';
         document.getElementById('main-container').classList.add('full-screen');
@@ -262,7 +289,6 @@ function showPrayerModal(value) {
         document.getElementById('feedback').style.display = 'none';
         // Hide all unnecessary elements
         document.getElementById('location-info').style.display = 'none';
-        document.getElementById('title').style.display = 'none';
         document.getElementById('open-settings').style.display = 'none';
         document.getElementById('prayer-menu').style.display = 'none';
     };
@@ -300,10 +326,60 @@ function updateRemindersList(value) {
         list.appendChild(p);
     });
 }
+function updateMainReminders() {
+    const section = document.getElementById('reminders-section');
+    const summary = document.getElementById('reminders-summary');
+    const listMain = document.getElementById('reminders-list-main');
+
+    if (Object.keys(reminders).length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    section.style.display = 'block';
+
+    const next = getNextReminder();
+    if (next) {
+        summary.innerHTML = `${translations[currentLang][next.prayer]} ${next.text} <i class="fa-solid fa-angle-down icon"></i>`;
+        summary.style.cursor = 'pointer';
+        summary.onclick = () => {
+            listMain.style.display = listMain.style.display === 'none' ? 'block' : 'none';
+        };
+    }
+
+    listMain.innerHTML = '<h4>Все напоминания</h4>';
+    Object.keys(reminders).forEach(key => {
+        const div = document.createElement('div');
+        div.style.marginBottom = '8px';
+        div.innerHTML = `${translations[currentLang][key]}: ${reminders[key] === 'next' ? 'до следующего' : reminders[key] + ' минут раньше'} 
+            <button class="delete-reminder" data-key="${key}"><i class="fa-solid fa-trash-can icon"></i></button>`;
+        listMain.appendChild(div);
+    });
+
+    const deleteAll = document.createElement('button');
+    deleteAll.textContent = 'Удалить все';
+    deleteAll.className = 'delete-all';
+    deleteAll.onclick = () => {
+        reminders = {};
+        localStorage.setItem('reminders', JSON.stringify(reminders));
+        updateMainReminders();
+    };
+    listMain.appendChild(deleteAll);
+
+    document.querySelectorAll('.delete-reminder').forEach(btn => {
+        btn.onclick = e => {
+            const key = e.target.closest('button').dataset.key;
+            delete reminders[key];
+            localStorage.setItem('reminders', JSON.stringify(reminders));
+            updateMainReminders();
+        };
+    });
+}
 window.addEventListener('load', () => {
     document.getElementById('location-info').textContent = userLocationName;
     loadSettings();
     document.getElementById('preloader').style.display = 'none';
     document.getElementById('main-container').style.display = 'flex';
     initPermissions();
+    updateMainReminders();
 });

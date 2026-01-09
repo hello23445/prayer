@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -15,7 +16,11 @@
     <div class="container" id="main-container" style="display: none;">
         <div class="header">
             <div class="location-info" id="location-info"><i class="fa-solid fa-location-arrow fa-2xs icon"></i> Определение местоположения...</div>
-            <h1 id="title">Главное меню</h1>
+            <div id="date-info"></div>
+            <div id="reminders-section" style="display:none;">
+                <div id="reminders-summary" class="reminder-summary"></div>
+                <div id="reminders-list-main" style="display:none; padding:10px; background:#000; color:#fff; border-radius:8px;"></div>
+            </div>
             <button id="open-settings" class="settings-btn"><i class="fa-solid fa-gear icon"></i></button>
         </div>
         <div id="prayer-menu">
@@ -26,13 +31,13 @@
             <button class="prayer-btn" data-value="isha">Иша</button>
         </div>
         <div id="prayer-window" style="display: none;">
-            <div class="header">
+            <div class="header fixed-header">
                 <button id="back-btn" class="back-btn"><i class="fa-solid fa-arrow-left icon"></i></button>
                 <h2 id="prayer-name"></h2>
                 <span id="prayer-time"></span>
             </div>
-            <div id="history" class="history-center"></div>
-            <div class="input-group">
+            <div id="history" class="history-center chat-area"></div>
+            <div class="input-group fixed-input">
                 <button id="audio-btn"><i class="fa-solid fa-microphone icon"></i></button>
                 <button id="stop-btn" style="display: none;"><i class="fa-solid fa-circle-stop icon"></i></button>
                 <input type="text" id="user-text" placeholder="Ваш произнесенный текст появится здесь" readonly>
@@ -75,11 +80,15 @@
                 <select id="error-sound-select" style="flex: 1;">
                     <option value="none">Выключить</option>
                     <option value="beep">Бип</option>
-                    <option value="error1">Ошибка 1</option>
-                    <option value="error2">Ошибка 2</option>
                 </select>
                 <button id="play-error-sound" class="play-btn"><i class="fa-solid fa-circle-play icon"></i></button>
             </div>
+            <label id="mic-volume-label">Громкость микрофона:</label>
+            <input type="range" id="mic-volume" min="0" max="200" value="100" step="10">
+            <div id="mic-level" style="width:100%; height:20px; background:#ddd; margin:10px 0; border-radius:4px; overflow:hidden;">
+                <div id="level-bar" style="width:0%; height:100%; background:#4caf50; transition:width 0.1s;"></div>
+            </div>
+            <button id="test-mic">Тест микрофона</button>
             <div class="toggle-label" id="transcription-toggle">
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="transcription-toggle-label">Показывать транскрипцию</span>
@@ -135,7 +144,8 @@
                 <option value="120">2 часа раньше</option>
                 <option value="next">До следующего намаза</option>
             </select>
-            <div id="reminders-list">
+            <button id="save-reminder" disabled>Сохранить</button>
+            <div id="reminders-list" style="display: none;">
                 <h3 id="reminders-title">Список напоминаний</h3>
                 <!-- Reminders will be populated here -->
             </div>
@@ -144,12 +154,6 @@
     </div>
     <audio id="error-sound-beep" preload="auto">
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
-    </audio>
-    <audio id="error-sound-error1" preload="auto">
-        <source src="https://mixkit.co/free-sound-effects/error/1.mp3" type="audio/mp3"> // Example, replace with actual
-    </audio>
-    <audio id="error-sound-error2" preload="auto">
-        <source src="https://pixabay.com/sound-effects/error-126627/" type="audio/mp3"> // Example
     </audio>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js"></script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js"></script>
