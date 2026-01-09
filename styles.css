@@ -1,29 +1,27 @@
-/*styles.css (обновленный с улучшениями для мобильных устройств: увеличен z-index модалок, добавлены медиа-запросы для лучшей видимости)*/
+/* styles.css */
 :root {
-    --bg-color: #f4f7f9;
-    --text-color: #333;
-    --container-bg: white;
-    --accent-color: #4CAF50;
-    --error-color: #f44336;
-    --input-bg: #fafafa;
-    --font-size-base: 16px;
-    --font-size-prayer: 18px;
-    --icon-size: 1.333em; /* По умолчанию нормальный */
-    --toggle-color-on: #74C0FC;
-    --toggle-size: 3em;
+    --bg-color: #f0f4f8;
+    --text-color: #2c3e50;
+    --container-bg: #ffffff;
+    --accent-color: #008000; /* Green for Islamic theme */
+    --error-color: #e74c3c;
+    --input-bg: #ecf0f1;
+    --font-size-base: 14px;
+    --font-size-prayer: 16px;
+    --icon-size: 1.2em;
+    --toggle-color-on: #3498db;
+    --toggle-size: 2.5em;
 }
-
 body.dark {
-    --bg-color: #121212;
-    --text-color: #e0e0e0;
-    --container-bg: #1e1e1e;
-    --accent-color: #66BB6A;
-    --error-color: #EF5350;
-    --input-bg: #333;
+    --bg-color: #1a1a1a;
+    --text-color: #ecf0f1;
+    --container-bg: #2c3e50;
+    --accent-color: #2ecc71;
+    --error-color: #e74c3c;
+    --input-bg: #34495e;
 }
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
@@ -36,15 +34,14 @@ body {
     transition: background-color 0.3s, color 0.3s;
     font-size: var(--font-size-base);
 }
-
 .container {
-    max-width: 1200px;
+    max-width: 100%;
     width: 100%;
-    padding: 20px;
+    padding: 10px;
     background: var(--container-bg);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    margin: 20px;
+    margin: 10px;
     transition: background 0.3s;
     position: relative;
     box-sizing: border-box;
@@ -52,7 +49,6 @@ body {
     flex-direction: column;
     align-items: center;
 }
-
 .container.full-screen {
     max-width: none;
     width: 100vw;
@@ -62,37 +58,31 @@ body {
     box-shadow: none;
     padding: 0;
 }
-
 .header {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     position: relative;
     flex-wrap: wrap;
 }
-
 .header h1, .header h2 {
     margin: 0;
 }
-
 .header .settings-btn, .header .close-settings, .header .back-btn {
     position: absolute;
-    right: 10px;
-    top: 10px;
-    width: auto; /* don't inherit global full-width */
-    padding: 6px; 
+    right: 5px;
+    top: 5px;
+    width: auto;
+    padding: 4px;
 }
-
-/* ensure buttons inside header don't become full-width from global rule */
 .header button { width: auto; }
-
 select, button {
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 8px;
+    margin-bottom: 8px;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: var(--font-size-base);
     background-color: var(--input-bg);
     color: var(--text-color);
@@ -101,93 +91,82 @@ select, button {
     width: 100%;
     box-sizing: border-box;
 }
-
 select {
-    height: 50px;
+    height: 40px;
 }
-
 select:focus {
     border-color: var(--accent-color);
     outline: none;
 }
-
 #prayer-menu {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
-
 .prayer-btn {
-    padding: 15px 30px;
-    background: linear-gradient(135deg, var(--accent-color), #2E7D32);
+    padding: 10px 20px;
+    background: linear-gradient(135deg, var(--accent-color), #219653);
     color: white;
     border: none;
-    border-radius: 20px;
-    margin: 10px;
+    border-radius: 15px;
+    margin: 5px;
     font-size: var(--font-size-prayer);
     cursor: pointer;
     transition: all 0.3s;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     text-align: center;
 }
-
-.prayer-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
 .input-group {
     display: flex;
     align-items: center;
     width: 100%;
     margin-bottom: 10px;
+    flex-direction: row-reverse;
+    position: absolute;
+    bottom: 0;
+    padding: 10px;
+    box-sizing: border-box;
 }
-
 #user-text {
     flex: 1;
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 6px;
     background: var(--input-bg);
     color: var(--text-color);
     font-size: var(--font-size-base);
 }
-
 #audio-btn, #stop-btn {
-    padding: 10px;
-    margin-left: 10px;
+    padding: 5px;
+    margin-left: 5px;
     background: var(--accent-color);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background 0.3s;
+    font-size: 0.8em; /* Smaller size */
 }
-
 #audio-btn.recording {
     background: var(--error-color);
 }
-
 #feedback {
     color: var(--error-color);
     margin-top: 10px;
     display: none;
 }
-
 .toggle-label {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     cursor: pointer;
 }
-
 .toggle-label i {
     font-size: var(--toggle-size);
-    margin-right: 10px;
+    margin-right: 8px;
     color: var(--toggle-color-on);
 }
-
 .modal {
     position: fixed;
     top: 0;
@@ -200,206 +179,187 @@ select:focus {
     align-items: center;
     z-index: 1000;
 }
-
 .modal-content {
     background: var(--container-bg);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
-    max-width: 400px;
-    width: 90%;
+    max-width: 350px;
+    width: 85%;
 }
-
 #remaining-time {
-    margin-bottom: 15px;
-    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-size: 1em;
 }
-
 #continue-btn {
     background: var(--accent-color);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 8px 15px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1.1em;
+    font-size: 1em;
     transition: background 0.3s;
 }
-
-#continue-btn:hover {
-    background: #388E3C;
-}
-
 #transcription, #translation {
     margin-bottom: 10px;
-    font-size: 1.1em;
+    font-size: 1em;
     text-align: center;
     display: none;
 }
-
-/* Для мобильных устройств */
+.history-center {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    text-align: right;
+}
 @media (max-width: 600px) {
     .container {
-        padding: 10px;
-        margin: 10px;
+        padding: 5px;
+        margin: 5px;
         max-width: none;
     }
-
     .header {
         flex-direction: column;
     }
-
     .header .settings-btn {
         position: static;
         transform: none;
-        margin-top: 10px;
+        margin-top: 5px;
     }
 }
-
-/* Для больших экранов */
 @media (min-width: 1200px) {
     .container {
-        padding: 30px;
+        padding: 20px;
     }
-
     :root {
-        --icon-size: 1.5em;
+        --icon-size: 1.3em;
     }
 }
-
-/* Размеры иконок не влияют на кнопки */
 button {
-    font-size: var(--font-size-base) !important; /* Фиксированный размер текста кнопок */
+    font-size: var(--font-size-base) !important;
 }
-
 .icon {
     font-size: var(--icon-size);
 }
-/* styles.css (добавления) */
-.header .settings-btn, 
+.header .settings-btn,
 .header .close-settings {
     position: absolute;
-    right: 20px;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 1.8em;
+    font-size: 1.5em;
 }
-
 .select-group.wide {
     width: 100%;
 }
-
 .select-group.wide select {
     width: 100%;
-    height: 60px;
-    font-size: 1.1em;
+    height: 50px;
+    font-size: 1em;
 }
-
-/* Главное меню красивее */
 #prayer-menu {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
 }
-
 .prayer-btn {
-    padding: 20px;
-    background: linear-gradient(135deg, var(--accent-color), #2E7D32);
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent-color), #219653);
     color: white;
     border: none;
-    border-radius: 20px;
-    font-size: 1.4em;
+    border-radius: 15px;
+    font-size: 1.2em;
     cursor: pointer;
     transition: all 0.3s;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     text-align: center;
 }
-
-.prayer-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-/* styles.css (только добавленные/изменённые части, остальное как раньше) */
-.header .settings-btn, 
+.header .settings-btn,
 .header .close-settings {
     position: absolute;
-    right: 20px;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 1.8em;
+    font-size: 1.5em;
 }
-
 .select-group.wide {
     width: 100%;
 }
-
 .select-group.wide select {
     width: 100%;
-    height: 60px;
-    font-size: 1.2em;
+    height: 50px;
+    font-size: 1em;
 }
-/* styles.css (добавления для header) */
 .header {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     position: relative;
     flex-wrap: wrap;
 }
-
 .location-info {
     position: absolute;
-    left: 20px;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 1em;
+    font-size: 0.9em;
     color: var(--text-color);
     opacity: 0.8;
-    max-width: 200px;
+    max-width: 150px;
     text-align: left;
 }
-
 .header h1 {
     margin: 0;
     flex: 1;
     text-align: center;
 }
-
 .header .settings-btn {
     position: absolute;
-    right: 20px;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 1.8em;
+    font-size: 1.5em;
 }
-
-/* Для мобильных */
 @media (max-width: 600px) {
     .location-info {
         position: static;
         transform: none;
         text-align: center;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         max-width: none;
     }
-
     .header {
         flex-direction: column;
     }
-
     .header .settings-btn {
         position: static;
         transform: none;
-        margin-top: 10px;
+        margin-top: 5px;
     }
 }
-
 .segment {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
+    text-align: right;
+}
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #006400, #90EE90); /* Dark green to light green */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.preloader .icon {
+    color: blue;
 }

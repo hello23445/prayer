@@ -1,40 +1,74 @@
 // permissions.js
 async function getLocationName(lat, lng) {
-    try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`);
-        const data = await res.json();
-        return data.address.city || data.address.town || data.address.village || 'Неизвестно';
-    } catch (e) {
-        console.error('Ошибка получения названия местоположения:', e);
-        return 'Неизвестно';
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+    const data = await response.json();
+    if (!data.address) return 'Неизвестно';
+    const fields = ['city', 'town', 'village', 'municipality', 'county', 'state'];
+    for (const field of fields) {
+        if (data.address[field]) {
+            return data.address[field];
+        }
     }
+    return 'Неизвестно';
 }
-
 async function requestGeolocation() {
-    return new Promise((resolve, reject) => {
-        document.getElementById('geo-modal').style.display = 'flex';
-        document.getElementById('geo-yes').onclick = async () => {
-            document.getElementById('geo-modal').style.display = 'none';
-            document.getElementById('location-info').textContent = 'Определение...';
+    const perm = await navigator.permissions.query({ name: 'geolocation' });
+    if (perm.state === 'granted') {
+        return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(async pos => {
                 const lat = pos.coords.latitude;
                 const lng = pos.coords.longitude;
                 coordinates = { lat, lng };
                 userLocationName = await getLocationName(lat, lng);
                 calculatePrayerTimes(lat, lng);
-                document.getElementById('location-info').textContent = userLocationName;
+                document.getElementById('location-info').innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
+                resolve();
+            }, err => {
+                reject(err);
+            });
+        });
+    }
+    return new Promise((resolve, reject) => {
+        const modal = document.getElementById('geo-modal');
+        const locationInfo = document.getElementById('location-info');
+        const yesBtn = document.getElementById('geo-yes');
+        modal.style.display = 'flex';
+        yesBtn.onclick = null; // убираем старые обработчики
+        yesBtn.onclick = async () => {
+            modal.style.display = 'none';
+            locationInfo.textContent = 'Определение...';
+            if (!navigator.geolocation) {
+                alert('Геолокация не поддерживается вашим браузером.');
+                locationInfo.textContent = 'Геолокация не поддерживается';
+                reject(new Error('Geolocation not supported'));
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(async pos => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                coordinates = { lat, lng };
+               
+                // Получаем название города через Nominatim
+                userLocationName = await getLocationName(lat, lng);
+                // Здесь можно вызвать вашу функцию расчета намазов
+                calculatePrayerTimes(lat, lng);
+                locationInfo.innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
                 resolve();
             }, err => {
                 console.error(err);
                 alert('Ошибка геолокации: ' + err.message);
-                document.getElementById('location-info').textContent = 'Геолокация не разрешена';
+                locationInfo.textContent = 'Геолокация не разрешена';
+                // Рекурсивно пробуем снова
                 requestGeolocation().then(resolve, reject);
             });
         };
     });
 }
-
 async function requestMicrophonePermission() {
+    const perm = await navigator.permissions.query({ name: 'microphone' });
+    if (perm.state === 'granted') {
+        return Promise.resolve();
+    }
     return new Promise((resolve, reject) => {
         document.getElementById('mic-modal').style.display = 'flex';
         document.getElementById('mic-yes').onclick = () => {
@@ -52,8 +86,10 @@ async function requestMicrophonePermission() {
         };
     });
 }
-
 async function requestNotificationPermission() {
+    if (Notification.permission === 'granted') {
+        return Promise.resolve();
+    }
     if (Notification.permission !== 'default') return;
     return new Promise((resolve) => {
         document.getElementById('notify-modal').style.display = 'flex';
@@ -68,7 +104,6 @@ async function requestNotificationPermission() {
         };
     });
 }
-
 async function initPermissions() {
     await requestGeolocation();
     await requestMicrophonePermission();

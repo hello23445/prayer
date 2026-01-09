@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Намаз Тренажер</title>
+    <title>Намаз</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/transliteration@2.3.5/dist/browser/bundle.umd.min.js"></script>
 </head>
 <body class="system">
-    <div class="container" id="main-container">
+    <div id="preloader" class="preloader">
+        <i class="fa-solid fa-spinner fa-spin icon"></i>
+    </div>
+    <div class="container" id="main-container" style="display: none;">
         <div class="header">
-            <div class="location-info" id="location-info">Определение местоположения...</div>
+            <div class="location-info" id="location-info"><i class="fa-solid fa-location-arrow fa-2xs icon"></i> Определение местоположения...</div>
             <h1 id="title">Главное меню</h1>
             <button id="open-settings" class="settings-btn"><i class="fa-solid fa-gear icon"></i></button>
         </div>
-
         <div id="prayer-menu">
             <button class="prayer-btn" data-value="fajr">Фаджр</button>
             <button class="prayer-btn" data-value="dhuhr">Зухр</button>
@@ -23,24 +25,21 @@
             <button class="prayer-btn" data-value="maghrib">Магриб</button>
             <button class="prayer-btn" data-value="isha">Иша</button>
         </div>
-
         <div id="prayer-window" style="display: none;">
             <div class="header">
                 <button id="back-btn" class="back-btn"><i class="fa-solid fa-arrow-left icon"></i></button>
                 <h2 id="prayer-name"></h2>
+                <span id="prayer-time"></span>
             </div>
-            <div id="history"></div>
-            <div id="transcription"></div>
-            <div id="translation"></div>
+            <div id="history" class="history-center"></div>
             <div class="input-group">
-                <input type="text" id="user-text" placeholder="Ваш произнесенный текст появится здесь" readonly>
                 <button id="audio-btn"><i class="fa-solid fa-microphone icon"></i></button>
                 <button id="stop-btn" style="display: none;"><i class="fa-solid fa-circle-stop icon"></i></button>
+                <input type="text" id="user-text" placeholder="Ваш произнесенный текст появится здесь" readonly>
             </div>
             <div id="feedback"></div>
         </div>
     </div>
-
     <!-- Полноэкранные настройки -->
     <div id="settings" style="display: none;">
         <div id="settings-content">
@@ -54,24 +53,33 @@
                 <option value="light">Светлый</option>
                 <option value="dark">Темный</option>
             </select>
-
             <label id="lang-label">Язык:</label>
             <select id="lang-select">
                 <option value="ru">Русский</option>
                 <option value="az">Азербайджанский</option>
                 <option value="en">Английский</option>
             </select>
-
+            <label id="transcription-lang-label">Язык транскрипции:</label>
+            <select id="transcription-lang-select">
+                <option value="latin">Латиница</option>
+                <option value="cyrillic-ru">Кириллица (Русский)</option>
+                <option value="cyrillic-kz">Кириллица (Казахский)</option>
+            </select>
+            <label id="asr-method-label">Метод расчета Аср:</label>
+            <select id="asr-method-select">
+                <option value="hanafi">Ханафитский</option>
+                <option value="standard">Шафи, Малики, Ханбали</option>
+            </select>
             <label id="error-sound-label">Звук ошибки:</label>
             <div class="select-group wide">
                 <select id="error-sound-select" style="flex: 1;">
                     <option value="none">Выключить</option>
                     <option value="beep">Бип</option>
-                    <option value="buzz">Базз</option>
+                    <option value="error1">Ошибка 1</option>
+                    <option value="error2">Ошибка 2</option>
                 </select>
                 <button id="play-error-sound" class="play-btn"><i class="fa-solid fa-circle-play icon"></i></button>
             </div>
-
             <div class="toggle-label" id="transcription-toggle">
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="transcription-toggle-label">Показывать транскрипцию</span>
@@ -80,33 +88,27 @@
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="translation-toggle-label">Показывать перевод</span>
             </div>
-
-            <button id="save-settings">Сохранить настройки</button>
         </div>
     </div>
-
     <!-- Modals -->
     <div id="geo-modal" class="modal" style="display: none;">
         <div class="modal-content">
-            <p>Разрешить использование геолокации для определения времени намаза?</p>
+            <p id="geo-prompt">Разрешить использование геолокации для определения времени намаза?</p>
             <button id="geo-yes">Разрешить</button>
         </div>
     </div>
-
     <div id="notify-modal" class="modal" style="display: none;">
         <div class="modal-content">
-            <p>Разрешить отправку уведомлений для напоминаний о намазе?</p>
+            <p id="notify-prompt">Разрешить отправку уведомлений для напоминаний о намазе?</p>
             <button id="notify-yes">Разрешить</button>
         </div>
     </div>
-
     <div id="mic-modal" class="modal" style="display: none;">
         <div class="modal-content">
-            <p>Разрешить использование микрофона для записи?</p>
+            <p id="mic-prompt">Разрешить использование микрофона для записи?</p>
             <button id="mic-yes">Разрешить</button>
         </div>
     </div>
-
     <div id="prayer-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="header">
@@ -114,7 +116,14 @@
                 <button id="modal-back" class="back-btn"><i class="fa-solid fa-arrow-left icon"></i></button>
             </div>
             <p id="remaining-time"></p>
-            <label>Напомнить:</label>
+            <div id="asr-method-container" style="display: none;">
+                <label id="asr-method-label-modal">Метод расчета Аср:</label>
+                <select id="asr-method-select-modal">
+                    <option value="hanafi">Ханафитский</option>
+                    <option value="standard">Шафи, Малики, Ханбали</option>
+                </select>
+            </div>
+            <label id="reminder-label">Напомнить:</label>
             <select id="reminder-select">
                 <option value="">Не напоминать</option>
                 <option value="10">10 минут раньше</option>
@@ -124,22 +133,27 @@
                 <option value="50">50 минут раньше</option>
                 <option value="60">1 час раньше</option>
                 <option value="120">2 часа раньше</option>
+                <option value="next">До следующего намаза</option>
             </select>
+            <div id="reminders-list">
+                <h3 id="reminders-title">Список напоминаний</h3>
+                <!-- Reminders will be populated here -->
+            </div>
             <button id="continue-btn">Продолжить <i class="fa-solid fa-right-long icon"></i></button>
         </div>
     </div>
-
     <audio id="error-sound-beep" preload="auto">
-        <source src="https://www.soundjay.com/buttons/beep-07a.mp3" type="audio/mp3">
+        <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
-    <audio id="error-sound-buzz" preload="auto">
-        <source src="https://freesound.org/data/previews/419/419023_7626075-lq.mp3" type="audio/mp3">
+    <audio id="error-sound-error1" preload="auto">
+        <source src="https://mixkit.co/free-sound-effects/error/1.mp3" type="audio/mp3"> // Example, replace with actual
     </audio>
-
+    <audio id="error-sound-error2" preload="auto">
+        <source src="https://pixabay.com/sound-effects/error-126627/" type="audio/mp3"> // Example
+    </audio>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js"></script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js"></script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js"></script>
-
     <script>
         window.addEventListener('load', function() {
             if (typeof talkify === 'undefined') {
@@ -155,7 +169,6 @@
                 };
                 return;
             }
-
             talkify.config = {
                 remoteService: {
                     host: 'https://talkify.net',
@@ -168,13 +181,11 @@
                     }
                 }
             };
-
             window.talkifyPlayer = new talkify.TtsPlayer()
                 .forceVoice({ name: "Amir" }) // Арабский голос Amir (из доступных арабских голосов Talkify)
                 .enableTextHighlighting();
         });
     </script>
-
     <script src="translations.js"></script>
     <script src="prayers.js"></script>
     <script src="language.js"></script>
