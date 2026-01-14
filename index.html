@@ -1,0 +1,203 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Намаз</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/transliteration@2.3.5/dist/browser/bundle.umd.min.js"></script>
+</head>
+<body class="system">
+    <div id="preloader" class="preloader">
+        <i class="fa-solid fa-spinner fa-spin icon"></i>
+    </div>
+    <div class="container" id="main-container" style="display: none;">
+        <div class="header">
+            <div class="location-info" id="location-info"><i class="fa-solid fa-location-arrow fa-2xs icon"></i> Определение местоположения...</div>
+            <div id="date-info"></div>
+            <div id="reminders-section" style="display:none;">
+                <div id="reminders-summary" class="reminder-summary"></div>
+                <div id="reminders-list-main" style="display:none; padding:10px; background:#000; color:#fff; border-radius:8px; overflow-y: auto; max-height: 200px;"></div>
+            </div>
+            <button id="open-settings" class="settings-btn"><i class="fa-solid fa-gear icon"></i></button>
+        </div>
+        <div id="prayer-menu">
+            <button class="prayer-btn" data-value="fajr">Фаджр</button>
+            <button class="prayer-btn" data-value="dhuhr">Зухр</button>
+            <button class="prayer-btn" data-value="asr">Аср</button>
+            <button class="prayer-btn" data-value="maghrib">Магриб</button>
+            <button class="prayer-btn" data-value="isha">Иша</button>
+        </div>
+        <div id="prayer-window" style="display: none;">
+            <div class="header fixed-header">
+                <button id="back-btn" class="back-btn"><i class="fa-solid fa-arrow-left icon"></i></button>
+                <h2 id="prayer-name"></h2>
+                <span id="prayer-time"></span>
+            </div>
+            <div id="history" class="history-center chat-area"></div>
+            <div class="input-group fixed-input">
+                <button id="audio-btn"><i class="fa-solid fa-microphone icon"></i></button>
+                <button id="stop-btn" style="display: none;"><i class="fa-solid fa-circle-stop icon"></i></button>
+                <input type="text" id="user-text" placeholder="Ваш произнесенный текст появится здесь" readonly>
+            </div>
+            <div id="feedback"></div>
+        </div>
+    </div>
+    <!-- Полноэкранные настройки -->
+    <div id="settings" style="display: none;">
+        <div id="settings-content">
+            <div class="header">
+                <h2 id="settings-title">Настройки</h2>
+                <button id="close-settings" class="close-settings"><i class="fa-solid fa-xmark icon"></i></button>
+            </div>
+            <label id="theme-label">Тема:</label>
+            <select id="theme-select">
+                <option value="system">Как на устройстве</option>
+                <option value="light">Светлый</option>
+                <option value="dark">Темный</option>
+            </select>
+            <label id="lang-label">Язык:</label>
+            <select id="lang-select">
+                <option value="ru">Русский</option>
+                <option value="az">Азербайджанский</option>
+                <option value="en">Английский</option>
+            </select>
+            <label id="transcription-lang-label">Язык транскрипции:</label>
+            <select id="transcription-lang-select">
+                <option value="latin">Латиница</option>
+                <option value="cyrillic-ru">Кириллица (Русский)</option>
+                <option value="cyrillic-kz">Кириллица (Казахский)</option>
+            </select>
+            <label id="asr-method-label">Метод расчета Аср:</label>
+            <select id="asr-method-select">
+                <option value="hanafi">Ханафитский</option>
+                <option value="standard">Шафи, Малики, Ханбали</option>
+            </select>
+            <label id="error-sound-label">Звук ошибки:</label>
+            <div class="select-group wide">
+                <select id="error-sound-select" style="flex: 1;">
+                    <option value="none">Выключить</option>
+                    <option value="beep">Бип</option>
+                </select>
+                <button id="play-error-sound" class="play-btn"><i class="fa-solid fa-circle-play icon"></i></button>
+            </div>
+            <label id="mic-volume-label">Громкость микрофона:</label>
+            <input type="range" id="mic-volume" min="0" max="200" value="100" step="10"><p id="mic-volume-shower" style="display: inline-block; margin-left: 1%;">1</p>
+            <div id="mic-level" style="width:100%; height:20px; background:#ddd; margin:10px 0; border-radius:4px; overflow:hidden;">
+                <div id="level-bar" style="width:0%; height:100%; background:#4caf50; transition:width 0.1s;"></div>
+            </div>
+            <button id="test-mic">Тест микрофона</button>
+            <div class="toggle-label" id="transcription-toggle">
+                <i class="fa-solid fa-toggle-on icon"></i>
+                <span id="transcription-toggle-label">Показывать транскрипцию</span>
+            </div>
+            <div class="toggle-label" id="translation-toggle">
+                <i class="fa-solid fa-toggle-on icon"></i>
+                <span id="translation-toggle-label">Показывать перевод</span>
+            </div>
+        </div>
+    </div>
+    <!-- Modals -->
+    <div id="geo-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p id="geo-prompt">Разрешить использование геолокации для определения времени намаза?</p>
+            <button id="geo-yes">Разрешить</button>
+        </div>
+    </div>
+    <div id="notify-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p id="notify-prompt">Разрешить отправку уведомлений для напоминаний о намазе?</p>
+            <button id="notify-yes">Разрешить</button>
+        </div>
+    </div>
+    <div id="mic-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p id="mic-prompt">Разрешить использование микрофона для записи?</p>
+            <button id="mic-yes">Разрешить</button>
+        </div>
+    </div>
+    <div id="prayer-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="header">
+                <h2 id="modal-prayer-name"></h2>
+                <button id="modal-back" class="back-btn"><i class="fa-solid fa-arrow-left icon"></i></button>
+            </div>
+            <p id="remaining-time"></p>
+            <div id="asr-method-container" style="display: none;">
+                <label id="asr-method-label-modal">Метод расчета Аср:</label>
+                <select id="asr-method-select-modal">
+                    <option value="hanafi">Ханафитский</option>
+                    <option value="standard">Шафи, Малики, Ханбали</option>
+                </select>
+            </div>
+            <label id="reminder-label">Напомнить:</label>
+            <select id="reminder-select">
+                <option value="">Не напоминать</option>
+                <option value="10">10 минут раньше</option>
+                <option value="20">20 минут раньше</option>
+                <option value="30">30 минут раньше</option>
+                <option value="40">40 минут раньше</option>
+                <option value="50">50 минут раньше</option>
+                <option value="60">1 час раньше</option>
+                <option value="120">2 часа раньше</option>
+            </select>
+            <button id="save-reminder" disabled>Сохранить</button>
+            <div id="reminders-list" style="display: none;">
+                <h3 id="reminders-title">Список напоминаний</h3>
+                <!-- Reminders will be populated here -->
+            </div>
+            <button id="continue-btn">Продолжить <i class="fa-solid fa-right-long icon"></i></button>
+        </div>
+    </div>
+    <audio id="error-sound-beep" preload="auto">
+        <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
+    </audio>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js"></script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js"></script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            if (typeof talkify === 'undefined') {
+                console.error('Talkify не загрузился. Используем fallback на speechSynthesis.');
+                window.talkifyPlayer = {
+                    playText: function(text) {
+                        const u = new SpeechSynthesisUtterance(text);
+                        u.lang = 'ar-SA';
+                        speechSynthesis.speak(u);
+                    },
+                    forceVoice: function() { return this; },
+                    enableTextHighlighting: function() { return this; }
+                };
+                return;
+            }
+            talkify.config = {
+                remoteService: {
+                    host: 'https://talkify.net',
+                    apiKey: '16f5f310-26f3-4c81-8644-a945be68a3a0',
+                    active: true
+                },
+                ui: {
+                    audioControls: {
+                        enabled: false
+                    }
+                }
+            };
+            window.talkifyPlayer = new talkify.TtsPlayer()
+                .forceVoice({ name: "Amir" }) // Арабский голос Amir (из доступных арабских голосов Talkify)
+                .enableTextHighlighting();
+        });
+    </script>
+    <script src="translations.js"></script>
+    <script src="prayers.js"></script>
+    <script src="language.js"></script>
+    <script src="theme.js"></script>
+    <script src="error_sound.js"></script>
+    <script src="transcription.js"></script>
+    <script src="settings.js"></script>
+    <script src="main.js"></script>
+    <script src="permissions.js"></script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bab08e818fad835',t:'MTc2Nzg2ODM4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>

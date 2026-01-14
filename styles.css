@@ -1,0 +1,502 @@
+/* styles.css */
+:root {
+    --bg-color: #f0f4f8;
+    --text-color: #2c3e50;
+    --container-bg: #ffffff;
+    --accent-color: #008000; /* Green for Islamic theme */
+    --error-color: #e74c3c;
+    --input-bg: #ecf0f1;
+    --font-size-base: 14px;
+    --font-size-prayer: 16px;
+    --icon-size: 1.2em;
+    --toggle-color-on: #3498db;
+    --toggle-size: 2.5em;
+}
+body.dark {
+    --bg-color: #1a1a1a;
+    --text-color: #ecf0f1;
+    --container-bg: #2c3e50;
+    --accent-color: #2ecc71;
+    --error-color: #e74c3c;
+    --input-bg: #34495e;
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: var(--font-size-base);
+}
+.container {
+    max-width: 100%;
+    width: 100%;
+    padding: 10px;
+    background: var(--container-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    transition: background 0.3s;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.container.full-screen {
+    max-width: none;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--container-bg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 10;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.chat-area {
+    margin-top: 60px; /* Space for header */
+    margin-bottom: 60px; /* Space for input */
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    width: 100%;
+    max-width: 600px;
+    align-self: center;
+}
+.fixed-input {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--container-bg);
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+    flex-wrap: wrap;
+}
+.header h1, .header h2 {
+    margin: 0;
+}
+.header .settings-btn, .header .close-settings, .header .back-btn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: auto;
+    padding: 4px;
+}
+.header button { width: auto; }
+select, button {
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: var(--font-size-base);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+select {
+    height: 40px;
+}
+select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+#prayer-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.prayer-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, var(--accent-color), #219653);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    margin: 5px;
+    font-size: var(--font-size-prayer);
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+    flex-direction: row-reverse;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#user-text {
+    flex: 3;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: var(--font-size-base);
+}
+#audio-btn, #stop-btn {
+    padding: 5px;
+    margin-left: 5px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 0.8em; /* Smaller size */
+    width: 40px;
+}
+#audio-btn.recording {
+    background: var(--error-color);
+}
+#feedback {
+    color: var(--error-color);
+    margin-top: 10px;
+    display: none;
+}
+.toggle-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+.toggle-label i {
+    font-size: var(--toggle-size);
+    margin-right: 8px;
+    color: var(--toggle-color-on);
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: var(--container-bg);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 350px;
+    width: 85%;
+}
+#remaining-time {
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+#continue-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s;
+}
+#save-reminder {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+#save-reminder:disabled {
+    background: grey;
+}
+#transcription, #translation {
+    margin-bottom: 10px;
+    font-size: 1em;
+    text-align: center;
+    display: none;
+}
+.history-center {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    text-align: right;
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 5px;
+        margin: 5px;
+        max-width: none;
+    }
+    .header {
+        flex-direction: column;
+    }
+    .header .settings-btn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        transform: none;
+        margin-top: 0;
+    }
+    .back-btn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+    .location-info {
+        position: static;
+        transform: none;
+        text-align: center;
+        margin-bottom: 5px;
+        max-width: none;
+    }
+    #date-info {
+        position: static;
+        top: auto;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
+@media (min-width: 1200px) {
+    .container {
+        padding: 20px;
+    }
+    :root {
+        --icon-size: 1.3em;
+    }
+}
+button {
+    font-size: var(--font-size-base) !important;
+}
+.icon {
+    font-size: var(--icon-size);
+}
+.header .settings-btn,
+.header .close-settings {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+}
+.select-group.wide {
+    width: 100%;
+}
+.select-group.wide select {
+    width: 100%;
+    height: 50px;
+    font-size: 1em;
+}
+#prayer-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+.prayer-btn {
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent-color), #219653);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+.header .settings-btn,
+.header .close-settings {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+}
+.select-group.wide {
+    width: 100%;
+}
+.select-group.wide select {
+    width: 100%;
+    height: 50px;
+    font-size: 1em;
+}
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+    flex-wrap: wrap;
+}
+.location-info {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.8;
+    max-width: 150px;
+    text-align: left;
+}
+#date-info {
+    position: absolute;
+    left: 15px;
+    top: calc(50% + 20px);
+    font-size: 0.8em;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+#reminders-section {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9em;
+    max-width: 200px;
+    text-align: right;
+}
+.reminder-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.delete-reminder, .delete-all {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--error-color);
+}
+.header h1 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+.header .settings-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+}
+@media (max-width: 600px) {
+    .location-info {
+        position: static;
+        transform: none;
+        text-align: left;
+        margin-bottom: 0;
+        max-width: none;
+        top: 15px;
+        left: 15px;
+    }
+    #date-info {
+        position: static;
+        text-align: left;
+        margin-bottom: 10px;
+        top: calc(15px + 20px);
+        left: 15px;
+    }
+    .header {
+        flex-direction: column;
+    }
+    .header .settings-btn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        transform: none;
+        margin-top: 0;
+    }
+    #reminders-section {
+        position: static;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
+.segment {
+    margin-bottom: 8px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+    text-align: right;
+}
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #006400, #90EE90); /* Dark green to light green */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.preloader .icon {
+    color: blue;
+    font-size: 4em; /* Increased size */
+}
+.reminder-summary {
+    padding: 8px;
+    background: #000;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+.full-screen #date-info {
+    display: none;
+}
+#reminders-list-main {
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+#back-btn.disabled {
+    background: grey;
+}
+.fixed-header #back-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1001;
+}
