@@ -180,7 +180,7 @@ document.getElementById('test-mic').addEventListener('click', () => {
 document.getElementById('mic-volume').addEventListener('input', e => {
     if (gainNode) gainNode.gain.value = e.target.value / 100;
 });
-micVolume.addEventListener('change', () => {
+micVolume.addEventListener('input', () => {
     saveSettings();
     document.getElementById('mic-volume-shower').textContent = micVolume.value
 });
