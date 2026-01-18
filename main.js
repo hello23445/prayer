@@ -302,7 +302,11 @@ window.addEventListener('load', () => {
     initPermissions();
 });
 document.addEventListener('click', (e) => {
-    const tag = e.target.tagName.toLowerCase();
+    const target = e.target;
+    const tag = target.tagName.toLowerCase();
+
+    // если клик по элементу с id="location-info" — ничего не делаем
+    if (target.id === 'location-info') return;
 
     // Если клик НЕ по интерактивному элементу — убираем клавиатуру
     if (!['input', 'textarea', 'select', 'i', 'button', 'a', 'label'].includes(tag)) {
