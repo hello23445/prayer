@@ -55,7 +55,7 @@
                 <option value="dark">Темный</option>
             </select>
             <label id="lang-label">Язык:</label>
-            <select id="lang-select">
+            <select id="lang-select" onchange="localStorage.setItem('lang1', this.value)">
                 <option value="ru">Русский</option>
                 <option value="az">Азербайджанский</option>
                 <option value="en">Английский</option>
@@ -73,16 +73,72 @@
             </select>
             <label id="error-sound-label">Звук ошибки:</label>
             <div class="select-group wide">
-                <select id="error-sound-select" style="flex: 1;">
+                <select id="error-sound-select" style="flex: 1;"  onchange="if (this.value === 'none'){document.getElementById('play-error-sound').disabled = true;range.disabled = true; document.getElementById('error-volume-shower').disabled = true;} else {document.getElementById('play-error-sound').disabled = false;range.disabled = false; document.getElementById('error-volume-shower').disabled = false}">
                     <option value="none">Выключить</option>
                     <option value="beep">Бип</option>
                 </select>
                 <button id="play-error-sound" class="play-btn"><i class="fa-solid fa-circle-play icon"></i></button>
             </div>
-            <label id="error-volume-label">Громкость звука ошибки:</label>
-            <input type="range" id="error-volume" min="0" max="500" value="100" step="20" style="width: 40%;"><p id="error-volume-shower" style="display: inline-block; margin-left: 1%;">1</p>
+            <div id="error-sound-preview" style="margin-top: 5px;">
+                <label id="error-volume-label">Громкость звука ошибки:</label>
+                <input type="range" id="error-volume" min="0" max="500" value="100" step="20" style="width: 40%;">
+<input type="number" id="error-volume-shower" min="0" max="500"
+       style="display: inline-block; margin-left: 1%; color: black; width: 4%;">
+<script>
+const lang = (localStorage.getItem('lang1') || 'en').trim().toLowerCase();
+    const range = document.getElementById('error-volume');
+const number = document.getElementById('error-volume-shower');
+const errorSoundSelect2 = document.getElementById('error-sound-select');
+errorSoundSelect2.addEventListener('onchange', () => {
+    if (errorSoundSelect2.value === 'none'){
+        document.getElementById('error-sound-preview').style.display = 'none';
+    }
+});
+// range → number
+range.addEventListener('change', () => {
+    if (+range.value === 0) {
+        document.getElementById('play-error-sound').disabled = true
+        document.getElementById('error-volume-shower').disabled = true;
+        document.getElementById('error-sound-select').value = 'none';
+        range.disabled = true
+        if (lang === 'ru') {
+            range.title = 'Громкость звука ошибки отключена';
+        } else if (lang === 'az') {
+            range.title = 'Səhv səs səviyyəsi deaktiv edilib';
+        } else {
+            range.title = 'Error sound volume is disabled';
+        }
+    } else {
+        range.title = '';
+        range.disabled = false;
+        document.getElementById('error-volume-shower').disabled = false;
+        document.getElementById('play-error-sound').disabled = false;
+    }
+});
+
+
+range.addEventListener('input', () => {
+    number.value = range.value;
+});
+
+// number → range (ввод)
+number.addEventListener('input', () => {
+    range.value = number.value;
+});
+
+// number → range (потеря фокуса / change)
+number.addEventListener('change', () => {
+    if (number.value === '') {
+        range.value = 250;
+        number.value = 250;
+    }
+});
+
+</script>
+            </div>
             <br><label id="mic-volume-label">Громкость микрофона:</label>
-            <input type="range" id="mic-volume" min="20" max="500" value="100" step="20" style="width: 40%;"><p id="mic-volume-shower" style="display: inline-block; margin-left: 1%;">1</p>
+            <input type="range" id="mic-volume" min="20" max="500" value="100" step="20" style="width: 40%;"><input type="number" id="mic-volume-shower" min="20" max="500"
+       style="display: inline-block; margin-left: 1%; color: black; width: 4%;">
             <div id="mic-level" style="width:100%; height:20px; background:#ddd; margin:10px 0; border-radius:4px; overflow:hidden;">
                 <div id="level-bar" style="width:0%; height:100%; background:#4caf50; transition:width 0.1s;"></div>
             </div>

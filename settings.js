@@ -117,13 +117,26 @@ function loadSettings() {
         if (asrSel) asrSel.value = settings.asrMethod || 'standard';
         asrMethod = settings.asrMethod || 'standard';
         if (micVol) micVol.value = settings.micVolume || 100;
-        document.getElementById('mic-volume-shower').textContent = micVol.value;
+        document.getElementById('mic-volume-shower').value = micVol.value;
         if (errorVol) errorVol.value = settings.errorVolume || 100;
-        document.getElementById('error-volume-shower').textContent = errorVol.value;
+        document.getElementById('error-volume-shower').value = errorVol.value;
         transcriptionEnabled = settings.transcriptionEnabled !== undefined ? settings.transcriptionEnabled : true;
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
         updateToggleIcons();
         updateErrorSoundOptions(settings.errorVolume);
+        localStorage.setItem('lang1', document.getElementById('lang-select').value);
+        if (errorSoundSelect.value === 'none'){
+            document.getElementById('play-error-sound').disabled = true
+            document.getElementById('error-volume-shower').disabled = true;
+            errorSoundSelect.value = 'none';
+            range.disabled = true
+        }
+        else{
+            document.getElementById('play-error-sound').disabled = false;
+            document.getElementById('error-volume-shower').disabled = false;
+            this.value = 'beep';
+            range.disabled = false;
+        }
     } else {
         applyTheme('system');
         applyLang('ru');
@@ -137,7 +150,7 @@ function updateErrorSoundOptions(volume) {
     const errorSoundSelect = document.getElementById('error-sound-select');
     const t = translations[currentLang];
     if (volume == 0) {
-        errorSoundSelect.options[1].textContent = t.noneSound;
+        errorSoundSelect.options[0].textContent = t.noneSound;
     } else {
         errorSoundSelect.options[1].textContent = t.beepSound;
     }
@@ -198,10 +211,41 @@ document.getElementById('mic-volume').addEventListener('input', e => {
     if (gainNode) gainNode.gain.value = e.target.value / 100;
 });
 micVolume.addEventListener('input', () => {
+    document.getElementById('mic-volume-shower').value = micVolume.value;
     saveSettings();
-    document.getElementById('mic-volume-shower').textContent = micVolume.value
+});
+
+document.getElementById('mic-volume-shower').addEventListener('input', () => {
+    document.getElementById('mic-volume').value = document.getElementById('mic-volume-shower').value;
+});
+
+document.getElementById('mic-volume-shower').addEventListener('change', () => {
+    if (document.getElementById('mic-volume-shower').value === '') {
+        document.getElementById('mic-volume').value = 100;
+        document.getElementById('mic-volume-shower').value = 100;
+    }
 });
 errorVolume.addEventListener('input', () => {
     saveSettings();
-    document.getElementById('error-volume-shower').textContent = errorVolume.value
+    document.getElementById('error-volume-shower').value = errorVolume.value
+});
+const btn = document.getElementById('play-error-sound');
+
+const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+        if (mutation.attributeName === 'disabled') {
+            console.log('disabled изменён:', btn.disabled);
+
+            if (btn.disabled) {
+                btn.style.background = 'gray';
+            } else {
+                btn.style.background = '';
+            }
+        }
+    });
+});
+
+observer.observe(btn, {
+    attributes: true,
+    attributeFilter: ['disabled']
 });
