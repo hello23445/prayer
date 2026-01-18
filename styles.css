@@ -1,4 +1,7 @@
 /* styles.css */
+* {
+    touch-action: manipulation;
+}
 :root {
     --bg-color: #f0f4f8;
     --text-color: #2c3e50;
