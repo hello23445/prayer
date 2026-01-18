@@ -11,7 +11,6 @@ let translationEnabled = true;
 let transcriptionLang = 'latin';
 let currentLang = 'ru';
 let userLocationName = 'Определение местоположения...';
-let reminders = JSON.parse(localStorage.getItem('reminders')) || {};
 let asrMethod = 'standard'; // default
 const cyrillicMap = {
     'ﺍ': 'а', 'ﺀ': 'ъ', 'ﺏ': 'б', 'ﺕ': 'т', 'ﺙ': 'с', 'ﺝ': 'дж', 'ﺡ': 'х', 'ﺥ': 'х', 'ﺩ': 'д', 'ﺫ': 'з',
@@ -67,7 +66,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const userText = document.getElementById('user-text');
         userText.value = ''; // Clear current
         const fullText = Array.from(history.querySelectorAll('.segment p:first-child')).map(p => p.textContent).join(' ');
-        compareTexts(currentPrayer.arabic, fullText);
+        compareTexts(getOriginalArabic(currentPrayer), fullText);
     };
     recognition.onend = () => {
         if (!isPaused) {
@@ -110,7 +109,7 @@ async function getTranslation(text, target) {
 document.querySelectorAll('.prayer-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const value = btn.dataset.value;
-        currentPrayer = prayers[value];
+        currentPrayer = words[value.charAt(0).toUpperCase() + value.slice(1)];
         if (prayerTimes) {
             showPrayerModal(value);
         } else {
@@ -129,6 +128,7 @@ document.getElementById('back-btn').addEventListener('click', () => {
     document.getElementById('open-settings').style.display = 'block'; // Show settings in main menu
     document.getElementById('prayer-menu').style.display = 'flex'; // Show main menu
     document.getElementById('location-info').style.display = 'block'; // Show location back
+    document.getElementById('date-info').style.display = 'block'; // Show date back
 });
 document.getElementById('audio-btn').addEventListener('click', () => {
     if (!isRecording && !isPaused) {
@@ -160,17 +160,38 @@ document.getElementById('stop-btn').addEventListener('click', () => {
     document.getElementById('back-btn').disabled = false;
     document.getElementById('back-btn').classList.remove('disabled');
 });
+function getOriginalArabic(prayer) {
+    return Object.values(prayer).map(wordObj => Object.values(wordObj).find(val => val.startsWith('word')) || '').join(' ');
+}
 function compareTexts(original, user) {
     const originalWords = original.split(/\s+/);
     const userWords = user.split(/\s+/);
+    const prayerWords = Object.values(currentPrayer);
     let feedback = '';
     let perfect = true;
+    let origIndex = 0;
     for (let i = 0; i < userWords.length; i++) {
-        if (userWords[i] !== originalWords[i]) {
+        if (userWords[i] !== originalWords[origIndex]) {
             feedback += `${translations[currentLang].feedbackError}: ${userWords[i]}<br>`;
             perfect = false;
             playErrorSound(document.getElementById('error-sound-select').value);
+        } else {
+            // Check for skipped important words
+            while (origIndex < originalWords.length && originalWords[origIndex] === userWords[i]) {
+                origIndex++;
+            }
         }
+    }
+    // Check for skipped important words at the end
+    while (origIndex < originalWords.length) {
+        const wordKey = Object.keys(prayerWords[origIndex])[0]; // Assuming word11 is the arabic key
+        const status = prayerWords[origIndex][`${wordKey}_status`];
+        if (status === 'important') {
+            feedback += `${translations[currentLang].feedbackError}: Пропущено важное слово ${originalWords[origIndex]}<br>`;
+            perfect = false;
+            playErrorSound(document.getElementById('error-sound-select').value);
+        }
+        origIndex++;
     }
     document.getElementById('feedback').innerHTML = feedback || (perfect ? translations[currentLang].feedbackPerfect : '');
     document.getElementById('feedback').style.display = 'block';
@@ -200,37 +221,6 @@ async function calculatePrayerTimes(lat, lng) {
         document.getElementById('location-info').textContent = 'Нет сети';
     }
 }
-function getNextReminder() {
-    if (!prayerTimes || Object.keys(reminders).length === 0) return null;
-    const now = new Date().getTime();
-    let minRemindTime = Infinity;
-    let next = null;
-    const prayerOrder = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-    prayerOrder.forEach(key => {
-        if (reminders[key]) {
-            let prayerTime = prayerTimes[key].getTime();
-            // Если время намаза прошло — рассматриваем следующий день
-            if (prayerTime < now) prayerTime += 24 * 60 * 60 * 1000;
-            let remindTime;
-            if (reminders[key] === 'next') {
-                const idx = prayerOrder.indexOf(key);
-                const nextKey = prayerOrder[(idx + 1) % prayerOrder.length];
-                remindTime = prayerTimes[nextKey].getTime();
-                if (nextKey === 'fajr' || remindTime < now) remindTime += 24 * 60 * 60 * 1000;
-            } else {
-                remindTime = prayerTime - parseInt(reminders[key]) * 60000;
-            }
-            if (remindTime > now && remindTime < minRemindTime) {
-                minRemindTime = remindTime;
-                const text = reminders[key] === 'next'
-                    ? translations[currentLang].nextPrayer
-                    : `${reminders[key]} минут раньше`;
-                next = { prayer: key, text };
-            }
-        }
-    });
-    return next;
-}
 function showPrayerModal(value) {
     const t = translations[currentLang];
     const name = t[value];
@@ -240,11 +230,6 @@ function showPrayerModal(value) {
     document.getElementById('prayer-time').textContent = ` (${hhmm})`;
     updateRemainingTime(value);
     prayerModalInterval = setInterval(() => updateRemainingTime(value), 1000);
-    document.getElementById('reminder-select').value = reminders[value] || '';
-    document.getElementById('save-reminder').disabled = !document.getElementById('reminder-select').value;
-    document.getElementById('reminder-select').addEventListener('change', () => {
-        document.getElementById('save-reminder').disabled = !document.getElementById('reminder-select').value;
-    });
     if (value === 'asr') {
         document.getElementById('asr-method-container').style.display = 'block';
         document.getElementById('asr-method-select-modal').value = asrMethod;
@@ -266,18 +251,9 @@ function showPrayerModal(value) {
         document.getElementById('asr-method-container').style.display = 'none';
     }
     document.getElementById('prayer-modal').style.display = 'flex';
-    document.getElementById('reminders-list').style.display = 'none';
     document.getElementById('modal-back').onclick = () => {
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
-    };
-    document.getElementById('save-reminder').onclick = () => {
-        const reminder = document.getElementById('reminder-select').value;
-        if (reminder) {
-            reminders[value] = reminder;
-            localStorage.setItem('reminders', JSON.stringify(reminders));
-            updateMainReminders();
-        }
     };
     document.getElementById('continue-btn').onclick = () => {
         clearInterval(prayerModalInterval);
@@ -292,7 +268,6 @@ function showPrayerModal(value) {
         document.getElementById('open-settings').style.display = 'none';
         document.getElementById('prayer-menu').style.display = 'none';
         document.getElementById('date-info').style.display = 'none';
-        document.getElementById('reminders-section').style.display = 'none';
     };
 }
 function updateRemainingTime(value) {
@@ -318,72 +293,6 @@ function updateRemainingTime(value) {
         timeText = `${secs} секунд`;
     }
     document.getElementById('remaining-time').textContent = text + timeText;
-    
-    // Update reminder options disabled status dynamically
-    const remainingMinutes = Math.floor((time - new Date()) / 60000);
-    Array.from(document.getElementById('reminder-select').options).forEach(option => {
-        if (option.value && option.value !== 'next' && parseInt(option.value) > remainingMinutes) {
-            option.disabled = true;
-        } else {
-            option.disabled = false;
-        }
-    });
-}
-function updateRemindersList(value) {
-    const list = document.getElementById('reminders-list');
-    list.innerHTML = '<h3 id="reminders-title">' + translations[currentLang].remindersTitle + '</h3>';
-    Object.keys(reminders).forEach(key => {
-        const p = document.createElement('p');
-        p.textContent = `${translations[currentLang][key]}: ${reminders[key]} минут раньше`;
-        list.appendChild(p);
-    });
-}
-function updateMainReminders() {
-    const section = document.getElementById('reminders-section');
-    const summary = document.getElementById('reminders-summary');
-    const listMain = document.getElementById('reminders-list-main');
-    if (Object.keys(reminders).length === 0) {
-        section.style.display = 'none';
-        summary.innerHTML = '';
-        return;
-    }
-    const next = getNextReminder();
-    if (!next) {
-        section.style.display = 'none';
-        summary.innerHTML = '';
-        return;
-    }
-    section.style.display = 'block';
-    summary.innerHTML = `${translations[currentLang][next.prayer]} ${next.text} <i class="fa-solid fa-angle-down icon"></i>`;
-    summary.style.cursor = 'pointer';
-    summary.onclick = () => {
-        listMain.style.display = listMain.style.display === 'none' ? 'block' : 'none';
-    };
-    listMain.innerHTML = '<h4>Все напоминания</h4>';
-    Object.keys(reminders).forEach(key => {
-        const div = document.createElement('div');
-        div.style.marginBottom = '8px';
-        div.innerHTML = `${translations[currentLang][key]}: ${reminders[key] === 'next' ? 'до следующего' : reminders[key] + ' минут раньше'}
-            <button class="delete-reminder" data-key="${key}"><i class="fa-solid fa-trash-can icon"></i></button>`;
-        listMain.appendChild(div);
-    });
-    const deleteAll = document.createElement('button');
-    deleteAll.textContent = 'Удалить все';
-    deleteAll.className = 'delete-all';
-    deleteAll.onclick = () => {
-        reminders = {};
-        localStorage.setItem('reminders', JSON.stringify(reminders));
-        updateMainReminders();
-    };
-    listMain.appendChild(deleteAll);
-    document.querySelectorAll('.delete-reminder').forEach(btn => {
-        btn.onclick = e => {
-            const key = e.target.closest('button').dataset.key;
-            delete reminders[key];
-            localStorage.setItem('reminders', JSON.stringify(reminders));
-            updateMainReminders();
-        };
-    });
 }
 window.addEventListener('load', () => {
     document.getElementById('location-info').textContent = userLocationName;
@@ -391,5 +300,4 @@ window.addEventListener('load', () => {
     document.getElementById('preloader').style.display = 'none';
     document.getElementById('main-container').style.display = 'flex';
     initPermissions();
-    updateMainReminders();
 });

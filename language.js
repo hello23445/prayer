@@ -62,10 +62,6 @@ function applyLang(lang) {
     if (notifyPromptEl) notifyPromptEl.textContent = t.notifyPrompt;
     const micPromptEl = document.getElementById('mic-prompt');
     if (micPromptEl) micPromptEl.textContent = t.micPrompt;
-    const reminderLabelEl = document.getElementById('reminder-label');
-    if (reminderLabelEl) reminderLabelEl.textContent = t.reminderLabel;
-    const remindersTitleEl = document.getElementById('reminders-title');
-    if (remindersTitleEl) remindersTitleEl.textContent = t.remindersTitle;
     const asrMethodLabelEl = document.getElementById('asr-method-label');
     if (asrMethodLabelEl) asrMethodLabelEl.textContent = t.asrMethodLabel;
     const asrMethodLabelModalEl = document.getElementById('asr-method-label-modal');
@@ -95,26 +91,15 @@ function applyLang(lang) {
     }
     if (document.getElementById('mic-volume-label')) document.getElementById('mic-volume-label').textContent = t.micVolumeLabel;
     if (document.getElementById('test-mic')) document.getElementById('test-mic').textContent = t.testMic;
-    if (document.getElementById('save-reminder')) document.getElementById('save-reminder').textContent = t.saveReminder;
     if (document.getElementById('continue-btn')) document.getElementById('continue-btn').textContent = t.continueBtn;
     if (document.getElementById('geo-yes')) document.getElementById('geo-yes').textContent = t.allowBtn;
     if (document.getElementById('notify-yes')) document.getElementById('notify-yes').textContent = t.allowBtn;
     if (document.getElementById('mic-yes')) document.getElementById('mic-yes').textContent = t.allowBtn;
-    if (document.getElementById('reminder-select')) {
-        const reminderSelect = document.getElementById('reminder-select');
-        reminderSelect.options[0].textContent = t.noReminder;
-        reminderSelect.options[1].textContent = t.tenMin;
-        reminderSelect.options[2].textContent = t.twentyMin;
-        reminderSelect.options[3].textContent = t.thirtyMin;
-        reminderSelect.options[4].textContent = t.fortyMin;
-        reminderSelect.options[5].textContent = t.fiftyMin;
-        reminderSelect.options[6].textContent = t.oneHour;
-        reminderSelect.options[7].textContent = t.twoHours;
-    }
+    if (document.getElementById('error-volume-label')) document.getElementById('error-volume-label').textContent = t.errorVolumeLabel;
     updateTranscriptionAndTranslation();
     updateDateDisplay();
     updateLocationDisplay();
-    updateMainReminders();
+    updateButtonTitles();
 }
 function updatePrayerButtons() {
     document.querySelectorAll('.prayer-btn').forEach(btn => {
@@ -143,4 +128,38 @@ function updateDateDisplay() {
     const monthName = months[currentLang][monthIndex];
     const dateStr = `${day} ${monthName} ${year}`;
     document.getElementById('date-info').textContent = dateStr;
+}
+function updateButtonTitles() {
+    const t = translations[currentLang];
+    document.querySelectorAll('button').forEach(btn => {
+        const id = btn.id;
+        if (id === 'open-settings') {
+            btn.title = t.openSettingsTitle;
+        } else if (id === 'back-btn') {
+            btn.title = t.backBtnTitle;
+        } else if (id === 'audio-btn') {
+            btn.title = t.audioBtnTitle;
+        } else if (id === 'stop-btn') {
+            btn.title = t.stopBtnTitle;
+        } else if (id === 'close-settings') {
+            btn.title = t.closeSettingsTitle;
+        } else if (id === 'play-error-sound') {
+            btn.title = t.playErrorSoundTitle;
+        } else if (id === 'test-mic') {
+            btn.title = t.testMicTitle;
+        } else if (id === 'geo-yes') {
+            btn.title = t.geoYesTitle;
+        } else if (id === 'notify-yes') {
+            btn.title = t.notifyYesTitle;
+        } else if (id === 'mic-yes') {
+            btn.title = t.micYesTitle;
+        } else if (id === 'modal-back') {
+            btn.title = t.modalBackTitle;
+        } else if (id === 'continue-btn') {
+            btn.title = t.continueBtnTitle;
+        } else if (btn.classList.contains('prayer-btn')) {
+            const value = btn.dataset.value;
+            btn.title = t[value + 'Title'];
+        }
+    });
 }

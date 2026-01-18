@@ -10,6 +10,7 @@ const transcriptionLangSelectEl = document.getElementById('transcription-lang-se
 const errorSoundSelect = document.getElementById('error-sound-select');
 const playErrorSoundBtn = document.getElementById('play-error-sound');
 const micVolume = document.getElementById('mic-volume');
+const errorVolume = document.getElementById('error-volume');
 if (openSettingsBtn && mainContainer && settingsDiv) {
     openSettingsBtn.addEventListener('click', () => {
         mainContainer.style.display = 'none';
@@ -87,11 +88,13 @@ function saveSettings() {
         transcriptionLang: (document.getElementById('transcription-lang-select') ? document.getElementById('transcription-lang-select').value : 'latin'),
         errorSound: (document.getElementById('error-sound-select') ? document.getElementById('error-sound-select').value : 'beep'),
         micVolume: (document.getElementById('mic-volume') ? document.getElementById('mic-volume').value : 100),
+        errorVolume: (document.getElementById('error-volume') ? document.getElementById('error-volume').value : 100),
         transcriptionEnabled,
         translationEnabled,
         asrMethod: (document.getElementById('asr-method-select') ? document.getElementById('asr-method-select').value : 'standard')
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
+    updateErrorSoundOptions(settings.errorVolume);
 }
 function loadSettings() {
     const saved = localStorage.getItem('namazSettings');
@@ -103,6 +106,7 @@ function loadSettings() {
         const errorSel = document.getElementById('error-sound-select');
         const asrSel = document.getElementById('asr-method-select');
         const micVol = document.getElementById('mic-volume');
+        const errorVol = document.getElementById('error-volume');
         if (themeSel) themeSel.value = settings.theme || 'system';
         applyTheme(settings.theme || 'system');
         if (langSel) langSel.value = settings.lang || 'ru';
@@ -114,15 +118,28 @@ function loadSettings() {
         asrMethod = settings.asrMethod || 'standard';
         if (micVol) micVol.value = settings.micVolume || 100;
         document.getElementById('mic-volume-shower').textContent = micVol.value;
+        if (errorVol) errorVol.value = settings.errorVolume || 100;
+        document.getElementById('error-volume-shower').textContent = errorVol.value;
         transcriptionEnabled = settings.transcriptionEnabled !== undefined ? settings.transcriptionEnabled : true;
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
         updateToggleIcons();
+        updateErrorSoundOptions(settings.errorVolume);
     } else {
         applyTheme('system');
         applyLang('ru');
         transcriptionEnabled = true;
         translationEnabled = true;
         updateToggleIcons();
+        updateErrorSoundOptions(100);
+    }
+}
+function updateErrorSoundOptions(volume) {
+    const errorSoundSelect = document.getElementById('error-sound-select');
+    const t = translations[currentLang];
+    if (volume == 0) {
+        errorSoundSelect.options[1].textContent = t.noneSound;
+    } else {
+        errorSoundSelect.options[1].textContent = t.beepSound;
     }
 }
 let audioStream = null;
@@ -183,4 +200,8 @@ document.getElementById('mic-volume').addEventListener('input', e => {
 micVolume.addEventListener('input', () => {
     saveSettings();
     document.getElementById('mic-volume-shower').textContent = micVolume.value
+});
+errorVolume.addEventListener('input', () => {
+    saveSettings();
+    document.getElementById('error-volume-shower').textContent = errorVolume.value
 });

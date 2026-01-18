@@ -387,26 +387,6 @@ button {
     color: var(--text-color);
     opacity: 0.7;
 }
-#reminders-section {
-    position: absolute;
-    right: 60px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.9em;
-    max-width: 200px;
-    text-align: right;
-}
-.reminder-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-}
-.delete-reminder, .delete-all {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: var(--error-color);
-}
 .header h1 {
     margin: 0;
     flex: 1;
@@ -446,11 +426,6 @@ button {
         transform: none;
         margin-top: 0;
     }
-    #reminders-section {
-        position: static;
-        text-align: center;
-        margin-bottom: 10px;
-    }
 }
 .segment {
     margin-bottom: 8px;
@@ -474,22 +449,8 @@ button {
     color: blue;
     font-size: 4em; /* Increased size */
 }
-.reminder-summary {
-    padding: 8px;
-    background: #000;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
-}
 .full-screen #date-info {
     display: none;
-}
-#reminders-list-main {
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 #back-btn.disabled {
     background: grey;

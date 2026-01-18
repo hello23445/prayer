@@ -17,10 +17,6 @@
         <div class="header">
             <div class="location-info" id="location-info"><i class="fa-solid fa-location-arrow fa-2xs icon"></i> Определение местоположения...</div>
             <div id="date-info"></div>
-            <div id="reminders-section" style="display:none;">
-                <div id="reminders-summary" class="reminder-summary"></div>
-                <div id="reminders-list-main" style="display:none; padding:10px; background:#000; color:#fff; border-radius:8px; overflow-y: auto; max-height: 200px;"></div>
-            </div>
             <button id="open-settings" class="settings-btn"><i class="fa-solid fa-gear icon"></i></button>
         </div>
         <div id="prayer-menu">
@@ -83,7 +79,9 @@
                 </select>
                 <button id="play-error-sound" class="play-btn"><i class="fa-solid fa-circle-play icon"></i></button>
             </div>
-            <label id="mic-volume-label">Громкость микрофона:</label>
+            <label id="error-volume-label">Громкость звука ошибки:</label>
+            <input type="range" id="error-volume" min="0" max="500" value="100" step="20" style="width: 40%;"><p id="error-volume-shower" style="display: inline-block; margin-left: 1%;">1</p>
+            <br><label id="mic-volume-label">Громкость микрофона:</label>
             <input type="range" id="mic-volume" min="20" max="500" value="100" step="20" style="width: 40%;"><p id="mic-volume-shower" style="display: inline-block; margin-left: 1%;">1</p>
             <div id="mic-level" style="width:100%; height:20px; background:#ddd; margin:10px 0; border-radius:4px; overflow:hidden;">
                 <div id="level-bar" style="width:0%; height:100%; background:#4caf50; transition:width 0.1s;"></div>
@@ -132,22 +130,6 @@
                     <option value="standard">Шафи, Малики, Ханбали</option>
                 </select>
             </div>
-            <label id="reminder-label">Напомнить:</label>
-            <select id="reminder-select">
-                <option value="">Не напоминать</option>
-                <option value="10">10 минут раньше</option>
-                <option value="20">20 минут раньше</option>
-                <option value="30">30 минут раньше</option>
-                <option value="40">40 минут раньше</option>
-                <option value="50">50 минут раньше</option>
-                <option value="60">1 час раньше</option>
-                <option value="120">2 часа раньше</option>
-            </select>
-            <button id="save-reminder" disabled>Сохранить</button>
-            <div id="reminders-list" style="display: none;">
-                <h3 id="reminders-title">Список напоминаний</h3>
-                <!-- Reminders will be populated here -->
-            </div>
             <button id="continue-btn">Продолжить <i class="fa-solid fa-right-long icon"></i></button>
         </div>
     </div>
@@ -190,7 +172,7 @@
         });
     </script>
     <script src="translations.js"></script>
-    <script src="prayers.js"></script>
+    <script src="words.js"></script>
     <script src="language.js"></script>
     <script src="theme.js"></script>
     <script src="error_sound.js"></script>
