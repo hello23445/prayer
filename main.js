@@ -305,7 +305,7 @@ document.addEventListener('click', (e) => {
     const tag = e.target.tagName.toLowerCase();
 
     // Если клик НЕ по интерактивному элементу — убираем клавиатуру
-    if (!['input', 'textarea', 'select', 'button', 'a', 'label'].includes(tag)) {
+    if (!['input', 'textarea', 'select', 'i', 'button', 'a', 'label'].includes(tag)) {
         document.activeElement?.blur();
     }
 });
