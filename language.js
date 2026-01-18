@@ -58,8 +58,6 @@ function applyLang(lang) {
     if (saveSettingsEl) saveSettingsEl.textContent = t.saveSettings;
     const geoPromptEl = document.getElementById('geo-prompt');
     if (geoPromptEl) geoPromptEl.textContent = t.geoPrompt;
-    const notifyPromptEl = document.getElementById('notify-prompt');
-    if (notifyPromptEl) notifyPromptEl.textContent = t.notifyPrompt;
     const micPromptEl = document.getElementById('mic-prompt');
     if (micPromptEl) micPromptEl.textContent = t.micPrompt;
     const asrMethodLabelEl = document.getElementById('asr-method-label');
@@ -93,7 +91,6 @@ function applyLang(lang) {
     if (document.getElementById('test-mic')) document.getElementById('test-mic').textContent = t.testMic;
     if (document.getElementById('continue-btn')) document.getElementById('continue-btn').textContent = t.continueBtn;
     if (document.getElementById('geo-yes')) document.getElementById('geo-yes').textContent = t.allowBtn;
-    if (document.getElementById('notify-yes')) document.getElementById('notify-yes').textContent = t.allowBtn;
     if (document.getElementById('mic-yes')) document.getElementById('mic-yes').textContent = t.allowBtn;
     if (document.getElementById('error-volume-label')) document.getElementById('error-volume-label').textContent = t.errorVolumeLabel;
     updateTranscriptionAndTranslation();
@@ -154,8 +151,6 @@ function updateButtonTitles() {
             btn.title = t.testMicTitle;
         } else if (id === 'geo-yes') {
             btn.title = t.geoYesTitle;
-        } else if (id === 'notify-yes') {
-            btn.title = t.notifyYesTitle;
         } else if (id === 'mic-yes') {
             btn.title = t.micYesTitle;
         } else if (id === 'modal-back') {

@@ -311,6 +311,8 @@ document.addEventListener('click', (e) => {
     // Если клик НЕ по интерактивному элементу — убираем клавиатуру
     if (!['input','p', 'textarea', 'select', 'i', 'button', 'a', 'label'].includes(tag)) {
         document.activeElement?.blur();
-        alert('dw')
     }
 });
+if (localStorage.getItem('admin') === 'true') {
+    document.getElementById('showcode').style.display = 'inline-block';
+}

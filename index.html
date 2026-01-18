@@ -181,12 +181,6 @@ number.addEventListener('change', () => {
             <button id="geo-yes">Разрешить</button>
         </div>
     </div>
-    <div id="notify-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <p id="notify-prompt">Разрешить отправку уведомлений для напоминаний о намазе?</p>
-            <button id="notify-yes">Разрешить</button>
-        </div>
-    </div>
     <div id="mic-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <p id="mic-prompt">Разрешить использование микрофона для записи?</p>
@@ -215,11 +209,104 @@ number.addEventListener('change', () => {
             <p id="current-location"></p>
             <button id="update-location">Обновить</button>
             <button id="close-location-modal">Назад</button>
+            <button onclick="showSourceCode()" style="display: none;" id="showcode">Показать код</button>
+
         </div>
     </div>
     <audio id="error-sound-beep" preload="auto">
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
+<script>
+(function () {
+    let modal = null;
+
+    function createModal() {
+        modal = document.createElement('div');
+        modal.id = 'source-modal';
+        modal.innerHTML = `
+            <div class="source-backdrop"></div>
+            <div class="source-window">
+                <button class="source-close">×</button>
+                <pre class="source-code"></pre>
+            </div>
+        `;
+
+        const style = document.createElement('style');
+        style.textContent = `
+            #source-modal {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: none;
+            }
+            .source-backdrop {
+                position: absolute;
+                inset: 0;
+                background: rgba(0,0,0,.6);
+            }
+            .source-window {
+                position: relative;
+                max-width: 90vw;
+                max-height: 90vh;
+                margin: 5vh auto;
+                background: #0f172a;
+                color: #e5e7eb;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 20px 60px rgba(0,0,0,.5);
+            }
+            .source-code {
+                margin: 0;
+                padding: 16px;
+                font-size: 13px;
+                overflow: auto;
+                max-height: 90vh;
+                white-space: pre;
+            }
+            .source-close {
+                position: absolute;
+                top: 8px;
+                right: 12px;
+                background: none;
+                border: none;
+                font-size: 24px;
+                color: #fff;
+                cursor: pointer;
+            }
+        `;
+
+        document.head.appendChild(style);
+        document.body.appendChild(modal);
+
+        modal.querySelector('.source-backdrop').onclick = close;
+        modal.querySelector('.source-close').onclick = close;
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') close();
+        });
+    }
+
+    function open() {
+        if (!modal) createModal();
+
+        modal.querySelector('.source-code').textContent =
+            document.documentElement.outerHTML;
+
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+        if (!modal) return;
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    // глобальный вызов
+    window.showSourceCode = open;
+})();
+
+</script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js"></script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js"></script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js"></script>

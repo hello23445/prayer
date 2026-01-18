@@ -99,41 +99,41 @@ async function requestMicrophonePermission() {
         };
     });
 }
-async function requestNotificationPermission() {
-    if (Notification.permission === 'granted') {
-        return Promise.resolve();
-    }
-    if (Notification.permission !== 'default') return;
-    return new Promise((resolve) => {
-        document.getElementById('notify-modal').style.display = 'flex';
-        document.getElementById('notify-yes').onclick = () => {
-            document.getElementById('notify-modal').style.display = 'none';
-            Notification.requestPermission().then(perm => {
-                if (perm !== 'granted') {
-                    alert('Уведомления не разрешены. Напоминания о намазе не будут работать.');
-                }
-                resolve();
-            });
-        };
-    });
-}
 async function initPermissions() {
     await requestGeolocation();
     await requestMicrophonePermission();
-    await requestNotificationPermission();
     // Добавляем обработчик клика на location-info
-    document.getElementById('location-info').addEventListener('click', () => {
-        const t = translations[currentLang];
-        document.getElementById('current-location').textContent = userLocationName;
-        document.getElementById('update-location').textContent = t.updateLocationBtn;
-        document.getElementById('close-location-modal').textContent = t.backBtn;
-        document.getElementById('location-modal').style.display = 'flex';
-    });
-    document.getElementById('update-location').addEventListener('click', async () => {
-        await requestGeolocation(true); // force update
-        document.getElementById('location-modal').style.display = 'none';
-    });
-    document.getElementById('close-location-modal').addEventListener('click', () => {
-        document.getElementById('location-modal').style.display = 'none';
-    });
+    const locationInfo = document.getElementById('location-info');
+    if (locationInfo) {
+        locationInfo.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const t = translations[currentLang];
+            const locationModal = document.getElementById('location-modal');
+            if (locationModal) {
+                document.getElementById('current-location').textContent = userLocationName;
+                document.getElementById('update-location').textContent = t.updateLocationBtn;
+                document.getElementById('close-location-modal').textContent = t.backBtn;
+                locationModal.style.display = 'flex';
+            }
+        });
+    }
+    const updateLocationBtn = document.getElementById('update-location');
+    if (updateLocationBtn) {
+        updateLocationBtn.addEventListener('click', async () => {
+            await requestGeolocation(true); // force update
+            const locationModal = document.getElementById('location-modal');
+            if (locationModal) {
+                locationModal.style.display = 'none';
+            }
+        });
+    }
+    const closeLocationModalBtn = document.getElementById('close-location-modal');
+    if (closeLocationModalBtn) {
+        closeLocationModalBtn.addEventListener('click', () => {
+            const locationModal = document.getElementById('location-modal');
+            if (locationModal) {
+                locationModal.style.display = 'none';
+            }
+        });
+    }
 }
