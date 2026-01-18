@@ -82,16 +82,28 @@
             <div id="error-sound-preview" style="margin-top: 5px;">
                 <label id="error-volume-label">Громкость звука ошибки:</label>
                 <input type="range" id="error-volume" min="0" max="500" value="100" step="20" style="width: 40%;">
-<input type="number" id="error-volume-shower" min="0" max="500"
-       style="display: inline-block; margin-left: 1%; color: black; width: 4%;">
+<input class="error-volume-shower" type="number" id="error-volume-shower" min="0" max="500">
 <script>
 const lang = (localStorage.getItem('lang1') || 'en').trim().toLowerCase();
-    const range = document.getElementById('error-volume');
+const range = document.getElementById('error-volume');
 const number = document.getElementById('error-volume-shower');
 const errorSoundSelect2 = document.getElementById('error-sound-select');
-errorSoundSelect2.addEventListener('onchange', () => {
+number.addEventListener('input', () => {
+    if (number.value > 500) {
+        number.value = 500;
+    } else if (number.value < 0) {
+        number.value = 0;
+    }
+});
+errorSoundSelect2.addEventListener('change', () => {
     if (errorSoundSelect2.value === 'none'){
         document.getElementById('error-sound-preview').style.display = 'none';
+    } else {
+        if (+range.value === 0) {
+            range.value = 20;
+            number.value = 20;
+        }
+        document.getElementById('error-sound-preview').style.display = 'block';
     }
 });
 // range → number
@@ -137,8 +149,7 @@ number.addEventListener('change', () => {
 </script>
             </div>
             <br><label id="mic-volume-label">Громкость микрофона:</label>
-            <input type="range" id="mic-volume" min="20" max="500" value="100" step="20" style="width: 40%;"><input type="number" id="mic-volume-shower" min="20" max="500"
-       style="display: inline-block; margin-left: 1%; color: black; width: 4%;">
+            <input type="range" id="mic-volume" min="20" max="500" value="100" step="20" style="width: 40%;"><input type="number" id="mic-volume-shower" min="20" max="500">
             <div id="mic-level" style="width:100%; height:20px; background:#ddd; margin:10px 0; border-radius:4px; overflow:hidden;">
                 <div id="level-bar" style="width:0%; height:100%; background:#4caf50; transition:width 0.1s;"></div>
             </div>
@@ -151,6 +162,16 @@ number.addEventListener('change', () => {
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="translation-toggle-label">Показывать перевод</span>
             </div>
+        </div>
+    </div>
+    <!-- Полноэкранные настройки -->
+    <div id="settings" style="display: none;">
+        <div id="settings-content">
+            <div class="header">
+                <h2 id="settings-title">Настройки</h2>
+                <button id="close-settings" class="close-settings"><i class="fa-solid fa-xmark icon"></i></button>
+            </div>
+            <!-- ... (остальной код настроек без изменений) ... -->
         </div>
     </div>
     <!-- Modals -->
@@ -189,6 +210,13 @@ number.addEventListener('change', () => {
             <button id="continue-btn">Продолжить <i class="fa-solid fa-right-long icon"></i></button>
         </div>
     </div>
+    <div id="location-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p id="current-location"></p>
+            <button id="update-location">Обновить</button>
+            <button id="close-location-modal">Назад</button>
+        </div>
+    </div>
     <audio id="error-sound-beep" preload="auto">
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
@@ -196,6 +224,17 @@ number.addEventListener('change', () => {
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js"></script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js"></script>
     <script>
+        const micVolumeInput = document.getElementById('mic-volume-shower');
+
+        micVolumeInput.addEventListener('input', () => {
+            let value = micVolumeInput.value;
+
+            if (value > 500) {
+                micVolumeInput.value = 500;
+            } else if (value < 20) {
+                micVolumeInput.value = 20;
+            }
+        });
         window.addEventListener('load', function() {
             if (typeof talkify === 'undefined') {
                 console.error('Talkify не загрузился. Используем fallback на speechSynthesis.');

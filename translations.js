@@ -1,6 +1,10 @@
 // translations.js
 const translations = {
     ru: {
+        updateLocationBtn: 'Обновить',
+        updateLocationTitle: 'Обновить местоположение',
+        closeLocationModalTitle: 'Закрыть модальное окно',
+        backBtn: 'Назад',
         title: 'Намаз',
         fajr: 'Фаджр',
         dhuhr: 'Зухр',
@@ -61,6 +65,10 @@ const translations = {
         ishaTitle: 'Иша (ночной намаз)'
     },
     az: {
+        updateLocationBtn: 'Yenilə',
+        backBtn: 'Geri',
+        updateLocationTitle: 'Yerləşməni yenilə',
+        closeLocationModalTitle: 'Modal pəncərəni bağla',
         title: 'Namaz',
         fajr: 'Sübh',
         dhuhr: 'Zöhr',
@@ -121,6 +129,10 @@ const translations = {
         ishaTitle: 'İşə (gecə namazı)'
     },
     en: {
+        updateLocationBtn: 'Update',
+        backBtn: 'Back',
+        updateLocationTitle: 'Update location',
+        closeLocationModalTitle: 'Close modal window',
         title: 'Namaz',
         fajr: 'Fajr',
         dhuhr: 'Dhuhr',

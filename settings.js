@@ -62,6 +62,10 @@ if (transcriptionLangSelectEl) {
 }
 if (errorSoundSelect) {
     errorSoundSelect.addEventListener('change', (e) => {
+        if (e.target.value !== 'none' && document.getElementById('error-volume').value == 0) {
+            document.getElementById('error-volume').value = 20;
+            document.getElementById('error-volume-shower').value = 20;
+        }
         saveSettings();
     });
 }

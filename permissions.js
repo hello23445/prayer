@@ -11,7 +11,16 @@ async function getLocationName(lat, lng) {
     }
     return 'Неизвестно';
 }
-async function requestGeolocation() {
+async function requestGeolocation(force = false) {
+    const savedCoords = localStorage.getItem('userCoordinates');
+    const savedLocation = localStorage.getItem('userLocationName');
+    if (savedCoords && savedLocation && !force) {
+        coordinates = JSON.parse(savedCoords);
+        userLocationName = savedLocation;
+        document.getElementById('location-info').innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
+        calculatePrayerTimes(coordinates.lat, coordinates.lng);
+        return Promise.resolve();
+    }
     const perm = await navigator.permissions.query({ name: 'geolocation' });
     if (perm.state === 'granted') {
         return new Promise((resolve, reject) => {
@@ -20,6 +29,8 @@ async function requestGeolocation() {
                 const lng = pos.coords.longitude;
                 coordinates = { lat, lng };
                 userLocationName = await getLocationName(lat, lng);
+                localStorage.setItem('userCoordinates', JSON.stringify(coordinates));
+                localStorage.setItem('userLocationName', userLocationName);
                 calculatePrayerTimes(lat, lng);
                 document.getElementById('location-info').innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
                 resolve();
@@ -50,6 +61,8 @@ async function requestGeolocation() {
               
                 // Получаем название города через Nominatim
                 userLocationName = await getLocationName(lat, lng);
+                localStorage.setItem('userCoordinates', JSON.stringify(coordinates));
+                localStorage.setItem('userLocationName', userLocationName);
                 // Здесь можно вызвать вашу функцию расчета намазов
                 calculatePrayerTimes(lat, lng);
                 locationInfo.innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
@@ -108,4 +121,19 @@ async function initPermissions() {
     await requestGeolocation();
     await requestMicrophonePermission();
     await requestNotificationPermission();
+    // Добавляем обработчик клика на location-info
+    document.getElementById('location-info').addEventListener('click', () => {
+        const t = translations[currentLang];
+        document.getElementById('current-location').textContent = userLocationName;
+        document.getElementById('update-location').textContent = t.updateLocationBtn;
+        document.getElementById('close-location-modal').textContent = t.backBtn;
+        document.getElementById('location-modal').style.display = 'flex';
+    });
+    document.getElementById('update-location').addEventListener('click', async () => {
+        await requestGeolocation(true); // force update
+        document.getElementById('location-modal').style.display = 'none';
+    });
+    document.getElementById('close-location-modal').addEventListener('click', () => {
+        document.getElementById('location-modal').style.display = 'none';
+    });
 }

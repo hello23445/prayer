@@ -58,6 +58,13 @@ body {
     box-shadow: none;
     padding: 0;
 }
+#mic-volume-shower{
+    display: inline-block;
+    margin-left: 1%;
+    color: black;
+    width: 6%;
+}
+#error-volume-shower{display: inline-block; margin-left: 1%; color: black; width: 6%;}
 .fixed-header {
     position: fixed;
     top: 0;
@@ -261,6 +268,9 @@ select:focus {
     text-align: right;
 }
 @media (max-width: 600px) {
+    .mic-volume-shower , .error-volume-shower{
+        width: 15%;
+    }
     .container {
         padding: 5px;
         margin: 5px;
@@ -296,6 +306,9 @@ select:focus {
     }
 }
 @media (min-width: 1200px) {
+    .mic-volume-shower , .error-volume-shower{
+        width: 6%;
+    }
     .container {
         padding: 20px;
     }
@@ -400,6 +413,9 @@ button {
     font-size: 1.5em;
 }
 @media (max-width: 600px) {
+    .mic-volume-shower , .error-volume-shower{
+        width: 15%;
+    }
     .location-info {
         position: static;
         transform: none;

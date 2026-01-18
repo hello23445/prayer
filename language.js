@@ -131,6 +131,11 @@ function updateDateDisplay() {
 }
 function updateButtonTitles() {
     const t = translations[currentLang];
+    // ... (остальные кнопки без изменений)
+    const updateLocationBtn = document.getElementById('update-location');
+    if (updateLocationBtn) updateLocationBtn.title = t.updateLocationTitle;
+    const closeLocationModalBtn = document.getElementById('close-location-modal');
+    if (closeLocationModalBtn) closeLocationModalBtn.title = t.closeLocationModalTitle;
     document.querySelectorAll('button').forEach(btn => {
         const id = btn.id;
         if (id === 'open-settings') {
