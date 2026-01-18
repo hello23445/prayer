@@ -309,7 +309,7 @@ document.addEventListener('click', (e) => {
     if (target.id === 'location-info') return;
 
     // Если клик НЕ по интерактивному элементу — убираем клавиатуру
-    if (!['input', 'textarea', 'select', 'i', 'button', 'a', 'label'].includes(tag)) {
+    if (!['input','p', 'textarea', 'select', 'i', 'button', 'a', 'label'].includes(tag)) {
         document.activeElement?.blur();
     }
 });
