@@ -11,13 +11,15 @@ const errorSoundSelect = document.getElementById('error-sound-select');
 const playErrorSoundBtn = document.getElementById('play-error-sound');
 const micVolume = document.getElementById('mic-volume');
 const errorVolume = document.getElementById('error-volume');
+const viewModeSelect = document.getElementById('view-mode-select');
 if (openSettingsBtn && mainContainer && settingsDiv) {
     openSettingsBtn.addEventListener('click', () => {
         mainContainer.style.display = 'none';
         settingsDiv.style.display = 'block';
-        // Показываем кнопку Back в Telegram WebApp
+        // Показываем кнопку Back и скрываем Settings в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.BackButton.show();
+            window.Telegram.WebApp.SettingsButton.hide();
         }
     });
 }
@@ -28,7 +30,7 @@ if (closeSettingsBtn && mainContainer && settingsDiv) {
         saveSettings();
         stopMicTest();
         document.getElementById('test-mic').textContent = translations[currentLang].testMic;
-        // Скрываем кнопку Back в Telegram WebApp
+        // Скрываем кнопку Back и показываем Settings в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.BackButton.hide();
             window.Telegram.WebApp.SettingsButton.show();
@@ -78,6 +80,12 @@ if (errorSoundSelect) {
         saveSettings();
     });
 }
+if (viewModeSelect) {
+    viewModeSelect.addEventListener('change', (e) => {
+        applyViewMode(e.target.value);
+        saveSettings();
+    });
+}
 const transToggle = document.getElementById('transcription-toggle');
 const translToggle = document.getElementById('translation-toggle');
 if (transToggle) {
@@ -94,6 +102,15 @@ if (translToggle) {
         saveSettings();
     });
 }
+function applyViewMode(mode) {
+    if (window.tg && tg && tg.invoke) {
+        if (mode === 'fullscreen') {
+            window.tg.invoke('web_app_request_fullscreen');
+        } else {
+            window.tg.invoke('web_app_exit_fullscreen');
+        }
+    }
+}
 function saveSettings() {
     const settings = {
         theme: (document.getElementById('theme-select') ? document.getElementById('theme-select').value : 'system'),
@@ -104,7 +121,8 @@ function saveSettings() {
         errorVolume: (document.getElementById('error-volume') ? document.getElementById('error-volume').value : 100),
         transcriptionEnabled,
         translationEnabled,
-        asrMethod: (document.getElementById('asr-method-select') ? document.getElementById('asr-method-select').value : 'standard')
+        asrMethod: (document.getElementById('asr-method-select') ? document.getElementById('asr-method-select').value : 'standard'),
+        viewMode: (document.getElementById('view-mode-select') ? document.getElementById('view-mode-select').value : 'normal')
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
     updateErrorSoundOptions(settings.errorVolume);
@@ -120,6 +138,7 @@ function loadSettings() {
         const asrSel = document.getElementById('asr-method-select');
         const micVol = document.getElementById('mic-volume');
         const errorVol = document.getElementById('error-volume');
+        const viewModeSel = document.getElementById('view-mode-select');
         if (themeSel) themeSel.value = settings.theme || 'system';
         applyTheme(settings.theme || 'system');
         if (langSel) langSel.value = settings.lang || 'ru';
@@ -133,6 +152,7 @@ function loadSettings() {
         document.getElementById('mic-volume-shower').value = micVol.value;
         if (errorVol) errorVol.value = settings.errorVolume || 100;
         document.getElementById('error-volume-shower').value = errorVol.value;
+        if (viewModeSel) viewModeSel.value = settings.viewMode || 'normal';
         transcriptionEnabled = settings.transcriptionEnabled !== undefined ? settings.transcriptionEnabled : true;
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
         updateToggleIcons();
@@ -150,6 +170,7 @@ function loadSettings() {
             this.value = 'beep';
             range.disabled = false;
         }
+        applyViewMode(settings.viewMode || 'normal');
     } else {
         applyTheme('system');
         applyLang('ru');
@@ -157,6 +178,7 @@ function loadSettings() {
         translationEnabled = true;
         updateToggleIcons();
         updateErrorSoundOptions(100);
+        applyViewMode('normal');
     }
 }
 function updateErrorSoundOptions(volume) {

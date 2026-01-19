@@ -162,16 +162,11 @@ number.addEventListener('change', () => {
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="translation-toggle-label">Показывать перевод</span>
             </div>
-        </div>
-    </div>
-    <!-- Полноэкранные настройки -->
-    <div id="settings" style="display: none;">
-        <div id="settings-content">
-            <div class="header">
-                <h2 id="settings-title">Настройки</h2>
-                <button id="close-settings" class="close-settings"><i class="fa-solid fa-xmark icon"></i></button>
-            </div>
-            <!-- ... (остальной код настроек без изменений) ... -->
+            <label id="view-mode-label">Вид:</label>
+            <select id="view-mode-select">
+                <option value="normal">Не полноэкранный</option>
+                <option value="fullscreen">Полноэкранный</option>
+            </select>
         </div>
     </div>
     <!-- Modals -->
@@ -220,7 +215,6 @@ number.addEventListener('change', () => {
 <script>
     const tg = window.Telegram?.WebApp;
     if (tg) {
-        alert('Приложение запущено внутри Telegram WebApp');
         tg.ready();
 
         // ВАЖНО
@@ -284,6 +278,28 @@ number.addEventListener('change', () => {
                 tg.BackButton.hide();
                 // Показываем кнопку Settings
                 tg.SettingsButton.show();
+            }
+        });
+
+        // Обработчик события fullscreen_changed
+        tg.onEvent('fullscreen_changed', (is_fullscreen) => {
+            const mode = is_fullscreen ? 'fullscreen' : 'normal';
+            const viewModeSelect = document.getElementById('view-mode-select');
+            if (viewModeSelect) {
+                viewModeSelect.value = mode;
+            }
+            // Сохраняем в localStorage
+            const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
+            settings.viewMode = mode;
+            localStorage.setItem('namazSettings', JSON.stringify(settings));
+        });
+
+        // Обработчик события fullscreen_failed
+        tg.onEvent('fullscreen_failed', (error) => {
+            console.error('Fullscreen failed:', error);
+            const viewModeSelect = document.getElementById('view-mode-select');
+            if (viewModeSelect) {
+                viewModeSelect.value = 'normal';
             }
         });
     }
