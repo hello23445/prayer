@@ -218,10 +218,8 @@ number.addEventListener('change', () => {
     </audio>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-    alert('Обновление...')
-    const tg = window.Telegram.WebApp || null;
-    if (tg && tg !== null) {
-        alert('Обновлено!');
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
         tg.ready();
 
         // ВАЖНО
@@ -251,6 +249,9 @@ number.addEventListener('change', () => {
             tg.invoke('web_app_setup_back_button', { is_visible: true });
         });
         
+        // Делаем тг доступным глобально для других скриптов
+        window.tg = tg;
+        
         // Слушаем событие нажатия кнопки Back
         tg.onEvent('back_button_pressed', () => {
             const prayerWindow = document.getElementById('prayer-window');
@@ -259,6 +260,9 @@ number.addEventListener('change', () => {
             
             // Если открыто меню молитвы
             if (prayerWindow.style.display === 'block') {
+                if (typeof isRecording !== 'undefined' && isRecording) {
+                    return; // Не закрываем если идет запись
+                }
                 prayerWindow.style.display = 'none';
                 document.getElementById('prayer-menu').style.display = 'flex';
                 mainContainer.classList.remove('full-screen');
@@ -276,9 +280,12 @@ number.addEventListener('change', () => {
             else if (settingsDiv.style.display === 'block') {
                 mainContainer.style.display = 'flex';
                 settingsDiv.style.display = 'none';
-                saveSettings();
-                stopMicTest();
-                document.getElementById('test-mic').textContent = translations[currentLang].testMic;
+                // Вызываем функции если они доступны
+                if (typeof saveSettings === 'function') saveSettings();
+                if (typeof stopMicTest === 'function') stopMicTest();
+                if (typeof translations !== 'undefined' && typeof currentLang !== 'undefined') {
+                    document.getElementById('test-mic').textContent = translations[currentLang].testMic;
+                }
                 tg.invoke('web_app_setup_back_button', { is_visible: false });
                 // Показываем кнопку Settings
                 tg.invoke('web_app_setup_settings_button', { is_visible: true });

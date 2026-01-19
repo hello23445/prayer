@@ -76,6 +76,10 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
             document.getElementById('stop-btn').style.display = 'none';
             document.getElementById('back-btn').disabled = false;
             document.getElementById('back-btn').classList.remove('disabled');
+            // Показываем кнопку Back в Telegram WebApp когда запись закончилась
+            if (window.tg) {
+                window.tg.invoke('web_app_setup_back_button', { is_visible: true });
+            }
         }
     };
     recognition.onerror = (event) => {
@@ -145,6 +149,10 @@ document.getElementById('audio-btn').addEventListener('click', () => {
         document.getElementById('stop-btn').style.display = 'inline-block';
         document.getElementById('back-btn').disabled = true;
         document.getElementById('back-btn').classList.add('disabled');
+        // Скрываем кнопку Back в Telegram WebApp при записи
+        if (window.tg) {
+            window.tg.invoke('web_app_setup_back_button', { is_visible: false });
+        }
     } else if (isPaused) {
         recognition.start();
         isPaused = false;
@@ -164,6 +172,10 @@ document.getElementById('stop-btn').addEventListener('click', () => {
     document.getElementById('stop-btn').style.display = 'none';
     document.getElementById('back-btn').disabled = false;
     document.getElementById('back-btn').classList.remove('disabled');
+    // Показываем кнопку Back в Telegram WebApp когда запись остановлена
+    if (window.tg) {
+        window.tg.invoke('web_app_setup_back_button', { is_visible: true });
+    }
 });
 function getOriginalArabic(prayer) {
     return Object.values(prayer).map(wordObj => Object.values(wordObj).find(val => val.startsWith('word')) || '').join(' ');
