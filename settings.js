@@ -102,12 +102,20 @@ if (translToggle) {
         saveSettings();
     });
 }
-function applyViewMode(mode) {
-    if (window.tg && tg && tg.invoke) {
+async function applyViewMode(mode) {
+    if (window.tg) {
         if (mode === 'fullscreen') {
-            window.tg.invoke('web_app_request_fullscreen');
+            try {
+                await window.tg.requestFullscreen();
+            } catch (err) {
+                console.error('Fullscreen request failed', err);
+                const viewModeSelect = document.getElementById('view-mode-select');
+                if (viewModeSelect) {
+                    viewModeSelect.value = 'normal';
+                }
+            }
         } else {
-            window.tg.invoke('web_app_exit_fullscreen');
+            window.tg.exitFullscreen();
         }
     }
 }
@@ -152,7 +160,10 @@ function loadSettings() {
         document.getElementById('mic-volume-shower').value = micVol.value;
         if (errorVol) errorVol.value = settings.errorVolume || 100;
         document.getElementById('error-volume-shower').value = errorVol.value;
-        if (viewModeSel) viewModeSel.value = settings.viewMode || 'normal';
+        if (viewModeSel) {
+            const currentMode = window.tg?.isFullscreen ? 'fullscreen' : 'normal';
+            viewModeSel.value = settings.viewMode || currentMode;
+        }
         transcriptionEnabled = settings.transcriptionEnabled !== undefined ? settings.transcriptionEnabled : true;
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
         updateToggleIcons();
