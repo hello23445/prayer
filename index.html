@@ -44,11 +44,11 @@
     <!-- Полноэкранные настройки -->
     <div id="settings" style="display: none;">
         <div id="settings-content">
-            <div class="header">
+            <div class="header" style="margin-top: 2%;">
                 <h2 id="settings-title">Настройки</h2>
                 <button id="close-settings" class="close-settings"><i class="fa-solid fa-xmark icon"></i></button>
             </div>
-            <h3 id="language-section" style="text-align: center;">Язык</h3>
+            <h2 id="language-section" style="text-align: center;">Язык</h2>
             <label id="lang-label">Язык интерфейса:</label>
             <select id="lang-select" onchange="localStorage.setItem('lang1', this.value)">
                 <option value="ru">Русский</option>
@@ -61,7 +61,7 @@
                 <option value="cyrillic-ru">Кириллица (Русский)</option>
                 <option value="cyrillic-kz">Кириллица (Казахский)</option>
             </select>
-            <h3 id="volume-section" style="text-align: center;">Громкость</h3>
+            <h2 id="volume-section" style="text-align: center;">Громкость</h2>
             <label id="error-volume-label">Громкость звука ошибки:</label>
             <input type="range" id="error-volume" min="0" max="500" value="100" step="20" style="width: 40%;">
             <input class="error-volume-shower" type="number" id="error-volume-shower" min="0" max="500">
@@ -136,7 +136,7 @@
                 <div id="level-bar" style="width:0%; height:100%; background:#4caf50; transition:width 0.1s;"></div>
             </div>
             <button id="test-mic">Тест микрофона</button>
-            <h3 id="other-params-section" style="text-align: center;">Другие параметры</h3>
+            <h2 id="other-params-section" style="text-align: center;">Другие параметры</h2>
             <label id="asr-method-label">Метод расчета Аср:</label>
             <select id="asr-method-select">
                 <option value="hanafi">Ханафитский</option>
@@ -150,7 +150,7 @@
                 </select>
                 <button id="play-error-sound" class="play-btn"><i class="fa-solid fa-circle-play icon"></i></button>
             </div>
-            <h3 id="app-view-section" style="text-align: center;">Вид приложения</h3>
+            <h2 id="app-view-section" style="text-align: center;">Вид приложения</h2>
             <label id="theme-label">Тема:</label>
             <select id="theme-select">
                 <option value="system">Как на устройстве</option>

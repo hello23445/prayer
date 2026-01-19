@@ -25,7 +25,7 @@ body.dark {
 }
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: var(--bg-color);
+    background-color: var(--container-bg);
     color: var(--text-color);
     margin: 0;
     padding: 0;
@@ -494,4 +494,7 @@ button {
 }
 #location-modal[style*="display: flex"] {
     display: flex !important;
+}
+h2{
+    margin-top: 4%;
 }
