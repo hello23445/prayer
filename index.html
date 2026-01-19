@@ -226,8 +226,31 @@ number.addEventListener('change', () => {
         tg.invoke('web_app_setup_closing_behavior', {
             need_confirmation: true
         });
-        alert('Telegram WebApp имеется!');
-        tg.BackButton.onClick(() => {
+        
+        // Настройка кнопки Back
+        tg.invoke('web_app_setup_back_button', {
+            is_visible: false
+        });
+        
+        // Настройка кнопки Settings
+        tg.invoke('web_app_setup_settings_button', {
+            is_visible: true
+        });
+        
+        // Слушаем событие нажатия кнопки Settings
+        tg.onEvent('settings_button_pressed', () => {
+            const mainContainer = document.getElementById('main-container');
+            const settingsDiv = document.getElementById('settings');
+            mainContainer.style.display = 'none';
+            settingsDiv.style.display = 'block';
+            // Скрываем кнопку Settings
+            tg.invoke('web_app_setup_settings_button', { is_visible: false });
+            // Показываем кнопку Back
+            tg.invoke('web_app_setup_back_button', { is_visible: true });
+        });
+        
+        // Слушаем событие нажатия кнопки Back
+        tg.onEvent('back_button_pressed', () => {
             const prayerWindow = document.getElementById('prayer-window');
             const settingsDiv = document.getElementById('settings');
             const mainContainer = document.getElementById('main-container');
@@ -243,7 +266,9 @@ number.addEventListener('change', () => {
                 document.getElementById('open-settings').style.display = 'block';
                 document.getElementById('location-info').style.display = 'block';
                 document.getElementById('date-info').style.display = 'block';
-                tg.BackButton.hide();
+                tg.invoke('web_app_setup_back_button', { is_visible: false });
+                // Показываем кнопку Settings
+                tg.invoke('web_app_setup_settings_button', { is_visible: true });
             } 
             // Если открыты настройки
             else if (settingsDiv.style.display === 'block') {
@@ -252,7 +277,9 @@ number.addEventListener('change', () => {
                 saveSettings();
                 stopMicTest();
                 document.getElementById('test-mic').textContent = translations[currentLang].testMic;
-                tg.BackButton.hide();
+                tg.invoke('web_app_setup_back_button', { is_visible: false });
+                // Показываем кнопку Settings
+                tg.invoke('web_app_setup_settings_button', { is_visible: true });
             }
         });
     }

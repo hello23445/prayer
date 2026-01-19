@@ -129,9 +129,10 @@ document.getElementById('back-btn').addEventListener('click', () => {
     document.getElementById('prayer-menu').style.display = 'flex'; // Show main menu
     document.getElementById('location-info').style.display = 'block'; // Show location back
     document.getElementById('date-info').style.display = 'block'; // Show date back
-    // Скрываем кнопку Back в Telegram WebApp
+    // Скрываем кнопку Back и показываем кнопку Settings в Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.BackButton.hide();
+        window.Telegram.WebApp.invoke('web_app_setup_back_button', { is_visible: false });
+        window.Telegram.WebApp.invoke('web_app_setup_settings_button', { is_visible: true });
     }
 });
 document.getElementById('audio-btn').addEventListener('click', () => {
@@ -274,7 +275,9 @@ function showPrayerModal(value) {
         document.getElementById('date-info').style.display = 'none';
         // Показываем кнопку Back в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.BackButton.show();
+            window.Telegram.WebApp.invoke('web_app_setup_back_button', { is_visible: true });
+            // Скрываем кнопку Settings
+            window.Telegram.WebApp.invoke('web_app_setup_settings_button', { is_visible: false });
         }
     };
 }
