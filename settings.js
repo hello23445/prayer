@@ -162,6 +162,7 @@ function loadSettings() {
         document.getElementById('mic-volume-shower').value = micVol.value;
         if (errorVol) errorVol.value = settings.errorVolume || 100;
         document.getElementById('error-volume-shower').value = errorVol.value;
+        window.errorVolumeValue = settings.errorVolume || 100;
         if (viewModeSel) {
             const currentMode = window.tg?.isFullscreen ? 'fullscreen' : 'normal';
             viewModeSel.value = settings.viewMode || currentMode;
@@ -274,8 +275,9 @@ document.getElementById('mic-volume-shower').addEventListener('change', () => {
     }
 });
 errorVolume.addEventListener('input', () => {
+    window.errorVolumeValue = errorVolume.value;
+    document.getElementById('error-volume-shower').value = errorVolume.value;
     saveSettings();
-    document.getElementById('error-volume-shower').value = errorVolume.value
 });
 const btn = document.getElementById('play-error-sound');
 

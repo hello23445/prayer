@@ -339,3 +339,8 @@ document.addEventListener('click', (e) => {
 if (localStorage.getItem('admin') === 'true') {
     document.getElementById('showcode').style.display = 'inline-block';
 }
+document.getElementById('update-location').addEventListener('click', async () => {
+    document.getElementById('preloader').style.display = 'flex';
+    document.getElementById('location-modal').style.display = 'none';
+    await initGeolocation(true); // true to force update
+});

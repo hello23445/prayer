@@ -33,6 +33,7 @@ async function requestGeolocation(force = false) {
                 localStorage.setItem('userLocationName', userLocationName);
                 calculatePrayerTimes(lat, lng);
                 document.getElementById('location-info').innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
+                document.getElementById('preloader').style.display = 'none';
                 resolve();
             }, err => {
                 reject(err);
@@ -51,6 +52,7 @@ async function requestGeolocation(force = false) {
             if (!navigator.geolocation) {
                 alert('Геолокация не поддерживается вашим браузером.');
                 locationInfo.textContent = 'Геолокация не поддерживается';
+                document.getElementById('preloader').style.display = 'none';
                 reject(new Error('Geolocation not supported'));
                 return;
             }
@@ -66,11 +68,13 @@ async function requestGeolocation(force = false) {
                 // Здесь можно вызвать вашу функцию расчета намазов
                 calculatePrayerTimes(lat, lng);
                 locationInfo.innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
+                document.getElementById('preloader').style.display = 'none';
                 resolve();
             }, err => {
                 console.error(err);
                 alert('Ошибка геолокации: ' + err.message);
                 locationInfo.textContent = 'Геолокация не разрешена';
+                document.getElementById('preloader').style.display = 'none';
                 // Рекурсивно пробуем снова
                 requestGeolocation().then(resolve, reject);
             });

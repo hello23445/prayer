@@ -95,8 +95,28 @@ function applyLang(lang) {
     if (document.getElementById('error-volume-label')) document.getElementById('error-volume-label').textContent = t.errorVolumeLabel;
     updateTranscriptionAndTranslation();
     updateDateDisplay();
-    updateLocationDisplay();
     updateButtonTitles();
+    // Update view mode
+    const viewModeLabelEl = document.getElementById('view-mode-label');
+    if (viewModeLabelEl) viewModeLabelEl.textContent = t.viewModeLabel;
+    const viewModeSelect = document.getElementById('view-mode-select');
+    if (viewModeSelect) {
+        viewModeSelect.options[0].textContent = t.normalView;
+        viewModeSelect.options[1].textContent = t.fullscreenView;
+    }
+    // Update section headings
+    const languageSectionEl = document.getElementById('language-section');
+    if (languageSectionEl) languageSectionEl.textContent = t.languageSection;
+    const volumeSectionEl = document.getElementById('volume-section');
+    if (volumeSectionEl) volumeSectionEl.textContent = t.volumeSection;
+    const otherParamsSectionEl = document.getElementById('other-params-section');
+    if (otherParamsSectionEl) otherParamsSectionEl.textContent = t.otherParamsSection;
+    const appViewSectionEl = document.getElementById('app-view-section');
+    if (appViewSectionEl) appViewSectionEl.textContent = t.appViewSection;
+    if (!window.Telegram?.WebApp) {
+        document.getElementById('view-mode-label').textContent = t.viewDisabled;
+        document.getElementById('view-mode-select').disabled = true;
+    }
 }
 function updatePrayerButtons() {
     document.querySelectorAll('.prayer-btn').forEach(btn => {
