@@ -17,7 +17,7 @@ if (openSettingsBtn && mainContainer && settingsDiv) {
         settingsDiv.style.display = 'block';
         // Показываем кнопку Back в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.invoke('web_app_setup_back_button', { is_visible: true });
+            window.Telegram.WebApp.BackButton.show();
         }
     });
 }
@@ -30,8 +30,8 @@ if (closeSettingsBtn && mainContainer && settingsDiv) {
         document.getElementById('test-mic').textContent = translations[currentLang].testMic;
         // Скрываем кнопку Back в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.invoke('web_app_setup_back_button', { is_visible: false });
-            window.Telegram.WebApp.invoke('web_app_setup_settings_button', { is_visible: true });
+            window.Telegram.WebApp.BackButton.hide();
+            window.Telegram.WebApp.SettingsButton.show();
         }
     });
 }

@@ -220,40 +220,35 @@ number.addEventListener('change', () => {
 <script>
     const tg = window.Telegram?.WebApp;
     if (tg) {
+        alert('Приложение запущено внутри Telegram WebApp');
         tg.ready();
 
         // ВАЖНО
-        tg.invoke('web_app_setup_closing_behavior', {
-            need_confirmation: true
-        });
+        tg.enableClosingConfirmation();
         
         // Настройка кнопки Back
-        tg.invoke('web_app_setup_back_button', {
-            is_visible: false
-        });
+        tg.BackButton.hide();
         
         // Настройка кнопки Settings
-        tg.invoke('web_app_setup_settings_button', {
-            is_visible: true
-        });
+        tg.SettingsButton.show();
         
         // Слушаем событие нажатия кнопки Settings
-        tg.onEvent('settings_button_pressed', () => {
+        tg.onEvent('settingsButtonClicked', () => {
             const mainContainer = document.getElementById('main-container');
             const settingsDiv = document.getElementById('settings');
             mainContainer.style.display = 'none';
             settingsDiv.style.display = 'block';
             // Скрываем кнопку Settings
-            tg.invoke('web_app_setup_settings_button', { is_visible: false });
+            tg.SettingsButton.hide();
             // Показываем кнопку Back
-            tg.invoke('web_app_setup_back_button', { is_visible: true });
+            tg.BackButton.show();
         });
         
         // Делаем тг доступным глобально для других скриптов
         window.tg = tg;
         
         // Слушаем событие нажатия кнопки Back
-        tg.onEvent('back_button_pressed', () => {
+        tg.onEvent('backButtonClicked', () => {
             const prayerWindow = document.getElementById('prayer-window');
             const settingsDiv = document.getElementById('settings');
             const mainContainer = document.getElementById('main-container');
@@ -272,9 +267,9 @@ number.addEventListener('change', () => {
                 document.getElementById('open-settings').style.display = 'block';
                 document.getElementById('location-info').style.display = 'block';
                 document.getElementById('date-info').style.display = 'block';
-                tg.invoke('web_app_setup_back_button', { is_visible: false });
+                tg.BackButton.hide();
                 // Показываем кнопку Settings
-                tg.invoke('web_app_setup_settings_button', { is_visible: true });
+                tg.SettingsButton.show();
             } 
             // Если открыты настройки
             else if (settingsDiv.style.display === 'block') {
@@ -286,9 +281,9 @@ number.addEventListener('change', () => {
                 if (typeof translations !== 'undefined' && typeof currentLang !== 'undefined') {
                     document.getElementById('test-mic').textContent = translations[currentLang].testMic;
                 }
-                tg.invoke('web_app_setup_back_button', { is_visible: false });
+                tg.BackButton.hide();
                 // Показываем кнопку Settings
-                tg.invoke('web_app_setup_settings_button', { is_visible: true });
+                tg.SettingsButton.show();
             }
         });
     }

@@ -78,7 +78,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
             document.getElementById('back-btn').classList.remove('disabled');
             // Показываем кнопку Back в Telegram WebApp когда запись закончилась
             if (window.tg) {
-                window.tg.invoke('web_app_setup_back_button', { is_visible: true });
+                window.tg.BackButton.show();
             }
         }
     };
@@ -135,8 +135,8 @@ document.getElementById('back-btn').addEventListener('click', () => {
     document.getElementById('date-info').style.display = 'block'; // Show date back
     // Скрываем кнопку Back и показываем кнопку Settings в Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.invoke('web_app_setup_back_button', { is_visible: false });
-        window.Telegram.WebApp.invoke('web_app_setup_settings_button', { is_visible: true });
+        window.Telegram.WebApp.BackButton.hide();
+        window.Telegram.WebApp.SettingsButton.show();
     }
 });
 document.getElementById('audio-btn').addEventListener('click', () => {
@@ -151,7 +151,7 @@ document.getElementById('audio-btn').addEventListener('click', () => {
         document.getElementById('back-btn').classList.add('disabled');
         // Скрываем кнопку Back в Telegram WebApp при записи
         if (window.tg) {
-            window.tg.invoke('web_app_setup_back_button', { is_visible: false });
+            window.tg.BackButton.hide();
         }
     } else if (isPaused) {
         recognition.start();
@@ -174,7 +174,7 @@ document.getElementById('stop-btn').addEventListener('click', () => {
     document.getElementById('back-btn').classList.remove('disabled');
     // Показываем кнопку Back в Telegram WebApp когда запись остановлена
     if (window.tg) {
-        window.tg.invoke('web_app_setup_back_button', { is_visible: true });
+        window.tg.BackButton.show();
     }
 });
 function getOriginalArabic(prayer) {
@@ -287,9 +287,9 @@ function showPrayerModal(value) {
         document.getElementById('date-info').style.display = 'none';
         // Показываем кнопку Back в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.invoke('web_app_setup_back_button', { is_visible: true });
+            window.Telegram.WebApp.BackButton.show();
             // Скрываем кнопку Settings
-            window.Telegram.WebApp.invoke('web_app_setup_settings_button', { is_visible: false });
+            window.Telegram.WebApp.SettingsButton.hide();
         }
     };
 }
