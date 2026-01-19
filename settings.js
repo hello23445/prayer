@@ -113,8 +113,10 @@ async function applyViewMode(mode) {
                 if (viewModeSelect) {
                     viewModeSelect.value = 'normal';
                 }
+                saveSettings();
             }
         } else {
+            window.tg.expand();
             window.tg.exitFullscreen();
         }
     }
