@@ -217,8 +217,10 @@ number.addEventListener('change', () => {
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
 <script>
+    alert = ('Обновлено!')
     const tg = window.Telegram.WebApp;
     if (tg) {
+        alert('Telegram WebApp имеется!');
         tg.BackButton.onClick(() => {
             const prayerWindow = document.getElementById('prayer-window');
             const settingsDiv = document.getElementById('settings');
