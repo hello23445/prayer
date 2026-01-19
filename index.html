@@ -218,7 +218,6 @@
 <script>
     const tg = window.Telegram?.WebApp;
     if (!tg || tg !== null){
-        document.getElementById('view-mode-select').disabled = true;
         document.getElementById('view-mode-label').textContent = 'Вид: (только в Telegram)';
     }
     if (tg) {
