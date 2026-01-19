@@ -217,6 +217,37 @@ number.addEventListener('change', () => {
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
 <script>
+    const tg = window.Telegram.WebApp;
+    if (tg) {
+        tg.BackButton.onClick(() => {
+            const prayerWindow = document.getElementById('prayer-window');
+            const settingsDiv = document.getElementById('settings');
+            const mainContainer = document.getElementById('main-container');
+            
+            // Если открыто меню молитвы
+            if (prayerWindow.style.display === 'block') {
+                prayerWindow.style.display = 'none';
+                document.getElementById('prayer-menu').style.display = 'flex';
+                mainContainer.classList.remove('full-screen');
+                document.getElementById('history').innerHTML = '';
+                document.getElementById('user-text').value = '';
+                document.getElementById('feedback').style.display = 'none';
+                document.getElementById('open-settings').style.display = 'block';
+                document.getElementById('location-info').style.display = 'block';
+                document.getElementById('date-info').style.display = 'block';
+                tg.BackButton.hide();
+            } 
+            // Если открыты настройки
+            else if (settingsDiv.style.display === 'block') {
+                mainContainer.style.display = 'flex';
+                settingsDiv.style.display = 'none';
+                saveSettings();
+                stopMicTest();
+                document.getElementById('test-mic').textContent = translations[currentLang].testMic;
+                tg.BackButton.hide();
+            }
+        });
+    }
 (function () {
     let modal = null;
 

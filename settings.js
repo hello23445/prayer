@@ -15,6 +15,10 @@ if (openSettingsBtn && mainContainer && settingsDiv) {
     openSettingsBtn.addEventListener('click', () => {
         mainContainer.style.display = 'none';
         settingsDiv.style.display = 'block';
+        // Показываем кнопку Back в Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.BackButton.show();
+        }
     });
 }
 if (closeSettingsBtn && mainContainer && settingsDiv) {
@@ -24,6 +28,10 @@ if (closeSettingsBtn && mainContainer && settingsDiv) {
         saveSettings();
         stopMicTest();
         document.getElementById('test-mic').textContent = translations[currentLang].testMic;
+        // Скрываем кнопку Back в Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.BackButton.hide();
+        }
     });
 }
 if (playErrorSoundBtn) {

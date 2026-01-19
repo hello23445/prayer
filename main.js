@@ -129,6 +129,10 @@ document.getElementById('back-btn').addEventListener('click', () => {
     document.getElementById('prayer-menu').style.display = 'flex'; // Show main menu
     document.getElementById('location-info').style.display = 'block'; // Show location back
     document.getElementById('date-info').style.display = 'block'; // Show date back
+    // Скрываем кнопку Back в Telegram WebApp
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.BackButton.hide();
+    }
 });
 document.getElementById('audio-btn').addEventListener('click', () => {
     if (!isRecording && !isPaused) {
@@ -268,6 +272,10 @@ function showPrayerModal(value) {
         document.getElementById('open-settings').style.display = 'none';
         document.getElementById('prayer-menu').style.display = 'none';
         document.getElementById('date-info').style.display = 'none';
+        // Показываем кнопку Back в Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.BackButton.show();
+        }
     };
 }
 function updateRemainingTime(value) {
