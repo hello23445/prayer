@@ -295,15 +295,11 @@ function applyButtonColors() {
     const buttonColor = (document.getElementById('button-color-input') ? document.getElementById('button-color-input').value : '#0088cc');
     const buttonTextColor = (document.getElementById('button-text-color-input') ? document.getElementById('button-text-color-input').value : '#ffffff');
     
-    // Применяем цвета к главной кнопке Telegram
-    // Убеждаемся что цвета в правильном формате (без #)
-    const bgColor = buttonColor.replace('#', '');
-    const textColor = buttonTextColor.replace('#', '');
-    
+    // Применяем цвета к главной кнопке Telegram в формате #RRGGBB
     try {
         window.tg.MainButton.setParams({
-            bg_color: bgColor,
-            text_color: textColor
+            color: buttonColor,
+            text_color: buttonTextColor
         });
     } catch (e) {
         console.error('Ошибка при установке цветов кнопки:', e);
