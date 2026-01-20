@@ -360,6 +360,21 @@
             const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
             settings.viewMode = mode;
             localStorage.setItem('namazSettings', JSON.stringify(settings));
+            
+            // Обновляем margin-top для header2 в настройках
+            const header2 = document.getElementById('header2');
+            if (header2) {
+                header2.style.marginTop = is_fullscreen ? '30%' : '2%';
+            }
+            
+            // Обновляем margin-top для fixed-header в prayer-window если он открыт
+            const prayerWindow = document.getElementById('prayer-window');
+            if (prayerWindow && prayerWindow.style.display !== 'none') {
+                const fixedHeader = prayerWindow.querySelector('.fixed-header');
+                if (fixedHeader) {
+                    fixedHeader.style.marginTop = is_fullscreen ? '30%' : '2%';
+                }
+            }
         });
 
         // Обработчик события fullscreen_failed

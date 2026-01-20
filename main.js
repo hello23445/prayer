@@ -337,6 +337,15 @@ function showPrayerModal(value) {
         document.getElementById('open-settings').style.display = 'none';
         document.getElementById('prayer-menu').style.display = 'none';
         document.getElementById('date-info').style.display = 'none';
+        // Применяем margin-top к header в зависимости от fullscreen режима
+        const prayerWindow = document.getElementById('prayer-window');
+        if (prayerWindow) {
+            const fixedHeader = prayerWindow.querySelector('.fixed-header');
+            if (fixedHeader) {
+                const viewMode = localStorage.getItem('namazSettings') ? JSON.parse(localStorage.getItem('namazSettings')).viewMode : 'normal';
+                fixedHeader.style.marginTop = (viewMode === 'fullscreen') ? '30%' : '2%';
+            }
+        }
         currentView = 'prayer';
         manageMainButton();
         // Показываем кнопку Back в Telegram WebApp
