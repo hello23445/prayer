@@ -16,6 +16,9 @@ const mainButtonToggle = document.getElementById('main-button-toggle');
 const mainButtonOptions = document.getElementById('main-button-options');
 const whereShowSelect = document.getElementById('where-show-select');
 const onPressSelect = document.getElementById('on-press-select');
+const buttonColorOptions = document.getElementById('button-color-options');
+const buttonColorInput = document.getElementById('button-color-input');
+const buttonTextColorInput = document.getElementById('button-text-color-input');
 let mainButtonEnabled = false;
 if (openSettingsBtn && mainContainer && settingsDiv) {
     openSettingsBtn.addEventListener('click', () => {
@@ -100,6 +103,10 @@ if (mainButtonToggle) {
         mainButtonEnabled = !mainButtonEnabled;
         updateMainButtonToggle();
         mainButtonOptions.style.display = mainButtonEnabled ? 'block' : 'none';
+        // Показываем/скрываем панель цветов в зависимости от статуса
+        if (buttonColorOptions) {
+            buttonColorOptions.style.display = mainButtonEnabled ? 'block' : 'none';
+        }
         saveSettings();
         manageMainButton();
     });
@@ -114,6 +121,18 @@ if (onPressSelect) {
     onPressSelect.addEventListener('change', (e) => {
         saveSettings();
         manageMainButton();
+    });
+}
+if (buttonColorInput) {
+    buttonColorInput.addEventListener('change', () => {
+        saveSettings();
+        applyButtonColors();
+    });
+}
+if (buttonTextColorInput) {
+    buttonTextColorInput.addEventListener('change', () => {
+        saveSettings();
+        applyButtonColors();
     });
 }
 const transToggle = document.getElementById('transcription-toggle');
@@ -171,7 +190,9 @@ function saveSettings() {
         viewMode: (document.getElementById('view-mode-select') ? document.getElementById('view-mode-select').value : 'normal'),
         mainButtonEnabled,
         whereShow: (document.getElementById('where-show-select') ? document.getElementById('where-show-select').value : 'main'),
-        onPress: (document.getElementById('on-press-select') ? document.getElementById('on-press-select').value : 'open_main')
+        onPress: (document.getElementById('on-press-select') ? document.getElementById('on-press-select').value : 'open_main'),
+        buttonColor: (document.getElementById('button-color-input') ? document.getElementById('button-color-input').value : '#0088cc'),
+        buttonTextColor: (document.getElementById('button-text-color-input') ? document.getElementById('button-text-color-input').value : '#ffffff')
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
     updateErrorSoundOptions(settings.errorVolume);
@@ -220,7 +241,14 @@ function loadSettings() {
         updateToggleIcons();
         updateMainButtonToggle();
         mainButtonOptions.style.display = mainButtonEnabled ? 'block' : 'none';
+        // Загружаем цвета кнопки
+        if (buttonColorInput) buttonColorInput.value = settings.buttonColor || '#0088cc';
+        if (buttonTextColorInput) buttonTextColorInput.value = settings.buttonTextColor || '#ffffff';
+        if (buttonColorOptions) {
+            buttonColorOptions.style.display = mainButtonEnabled ? 'block' : 'none';
+        }
         updateErrorSoundOptions(settings.errorVolume);
+        applyButtonColors(); // Применяем цвета при загрузке
         localStorage.setItem('lang1', document.getElementById('lang-select').value);
         if (errorSoundSelect.value === 'none'){
             document.getElementById('play-error-sound').disabled = true
@@ -262,6 +290,17 @@ let audioStream = null;
 let analyser = null;
 let gainNode = null;
 let rafId = null;
+function applyButtonColors() {
+    if (!window.tg) return;
+    const buttonColor = (document.getElementById('button-color-input') ? document.getElementById('button-color-input').value : '#0088cc');
+    const buttonTextColor = (document.getElementById('button-text-color-input') ? document.getElementById('button-text-color-input').value : '#ffffff');
+    
+    // Применяем цвета к главной кнопке Telegram
+    window.tg.MainButton.setParams({
+        bg_color: buttonColor,
+        text_color: buttonTextColor
+    });
+}
 async function startMicTest() {
     if (audioStream) return;
     try {

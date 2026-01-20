@@ -146,6 +146,7 @@
                 <select id="where-show-select">
                     <option value="main">В главном меню</option>
                     <option value="settings">В настройках</option>
+                    <option value="both">Обе</option>
                 </select>
                 <label id="on-press-label">При нажатии главной кнопки:</label>
                 <select id="on-press-select">
@@ -153,6 +154,12 @@
                     <option value="open_settings">Открыть настройки</option>
                     <option value="next_prayer">Переход к следующему намазу</option>
                 </select>
+                <div id="button-color-options" style="display: none;">
+                    <label id="button-color-label">Цвет кнопки:</label>
+                    <input type="color" id="button-color-input" value="#0088cc">
+                    <label id="button-text-color-label">Цвета текста кнопки:</label>
+                    <input type="color" id="button-text-color-input" value="#ffffff">
+                </div>
             </div>
             <h2 id="app-view-section" style="text-align: center;">Вид приложения</h2>
             <label id="theme-label">Тема:</label>

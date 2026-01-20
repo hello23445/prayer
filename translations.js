@@ -58,12 +58,15 @@ const translations = {
         whereShowMainButton: 'Где показывать главную кнопку:',
         inMainMenu: 'В главном меню',
         inSettings: 'В настройках',
+        inBoth: 'Обе',
         onMainButtonPress: 'При нажатии главной кнопки:',
         openMainMenu: 'Открыть главное меню',
         openSettings: 'Открыть настройки',
         goBack: 'Переход назад',
         goNextPrayer: 'Переход к следующему намазу',
         returnToMainMenu: 'Вернуться в главное меню',
+        buttonColorLabel: 'Цвет кнопки:',
+        buttonTextColorLabel: 'Цвета текста кнопки:',
 
         // Titles для кнопок и подсказки
         openSettingsTitle: 'Открыть настройки',

@@ -62,6 +62,7 @@ function applyLang(lang) {
     if (whereShowSelect) {
         whereShowSelect.options[0].textContent = t.inMainMenu;
         whereShowSelect.options[1].textContent = t.inSettings;
+        whereShowSelect.options[2].textContent = t.inBoth;
     }
     const onPressLabelEl = document.getElementById('on-press-label');
     if (onPressLabelEl) onPressLabelEl.textContent = t.onMainButtonPress;
@@ -134,6 +135,13 @@ function applyLang(lang) {
         document.getElementById('view-mode-label').textContent = t.viewDisabled;
         document.getElementById('view-mode-select').disabled = true;
     }
+    
+    // Update button color labels
+    const buttonColorLabel = document.getElementById('button-color-label');
+    if (buttonColorLabel) buttonColorLabel.textContent = t.buttonColorLabel;
+    const buttonTextColorLabel = document.getElementById('button-text-color-label');
+    if (buttonTextColorLabel) buttonTextColorLabel.textContent = t.buttonTextColorLabel;
+    
     manageMainButton(); // Update Main Button text on lang change
 }
 function updatePrayerButtons() {

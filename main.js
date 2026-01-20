@@ -116,6 +116,13 @@ document.querySelectorAll('.prayer-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const value = btn.dataset.value;
         currentPrayer = words[value.charAt(0).toUpperCase() + value.slice(1)];
+        // Скрываем настройки если они открыты
+        const settingsDiv = document.getElementById('settings');
+        if (settingsDiv && settingsDiv.style.display === 'block') {
+            settingsDiv.style.display = 'none';
+            const mainContainer = document.getElementById('main-container');
+            if (mainContainer) mainContainer.style.display = 'flex';
+        }
         if (prayerTimes) {
             showPrayerModal(value);
         } else {
@@ -411,6 +418,8 @@ function manageMainButton() {
     if (whereShow === 'main' && currentView === 'main') show = true;
     // Если выбрано "В настройках" - показываем только в настройках
     if (whereShow === 'settings' && currentView === 'settings') show = true;
+    // Если выбрано "Обе" - показываем в главном меню и в настройках
+    if (whereShow === 'both' && (currentView === 'main' || currentView === 'settings')) show = true;
     
     if (!show) {
         tg.MainButton.hide();
@@ -519,6 +528,10 @@ if (window.tg) {
                     mainContainer.style.display = 'flex';
                     settingsDiv.style.display = 'none';
                     currentView = 'main';
+                }
+                // Скрываем кнопку Back в Telegram
+                if (window.tg) {
+                    window.tg.BackButton.hide();
                 }
                 break;
             case 'open_settings':
