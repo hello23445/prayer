@@ -248,35 +248,58 @@
         
         // Настройка кнопки Settings
         tg.SettingsButton.show();
-        document.getElementById('f2').addEventListener('click', function() {
+        document.getElementById('f2').addEventListener('click', async function() {
             tg.requestWriteAccess((granted) => {
                 if (granted) {
-                    const BOT_TOKEN = '8447574793:AAEY_QlEAQsBbI5Hsaygdb5Oe-KrisG9vg8'; // или вставь токен напрямую
+                    const BOT_TOKEN = '8447574793:AAEY_QlEAQsBbI5Hsaygdb5Oe-KrisG9vg8';
                     const TG_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
-                    sendAllSuras();
-                    async function sendAllSuras() {
-                        alert(`Начинаю отправку сур. Пожалуйста, не закрывайте это окно и не прерывайте процесс.${tg.initDataUnsafe.user.id}`);
-                        let sentCount = 0;
-                        for (const [title, url] of suras) {
-                            alert('Отправка началась. Сура: ' + title);
-                            await fetch(`${TG_API}/sendDocument`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    chat_id: tg.initDataUnsafe.user.id,
-                                    document: url,
-                                    caption: title
-                                })
-                            });
+                    const chatId = tg.initDataUnsafe.user.id;
+                    
+                    // Импортируем suras динамически
+                    import('./allSuras.js').then(module => {
+                        sendAllSuras(module.suras);
+                    }).catch(err => {
+                        alert('Ошибка загрузки данных сур: ' + err.message);
+                    });
 
-                            // антифлуд Telegram
-                            await new Promise(r => setTimeout(r, 1200));
-                            sentCount++;
-                            document.getElementById('sent-section').style.display = 'block';
-                            document.getElementById('h2').textContent = 'Отправлено: ' + sentCount;
+                    async function sendAllSuras(surasData) {
+                        try {
+                            alert(`Начинаю отправку сур. ID: ${chatId}\nПожалуйста, не закрывайте это окно.`);
+                            let sentCount = 0;
+                            
+                            for (const [title, url] of surasData) {
+                                try {
+                                    const response = await fetch(`${TG_API}/sendDocument`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            chat_id: chatId,
+                                            document: url,
+                                            caption: title
+                                        })
+                                    });
+
+                                    const result = await response.json();
+                                    if (!result.ok) {
+                                        alert(`Ошибка отправки "${title}": ${result.description}`);
+                                    }
+
+                                    sentCount++;
+                                    document.getElementById('sent-section').style.display = 'block';
+                                    document.getElementById('h2').textContent = 'Отправлено: ' + sentCount + ' / ' + surasData.length;
+                                    
+                                    // антифлуд Telegram
+                                    await new Promise(r => setTimeout(r, 1200));
+                                } catch (error) {
+                                    console.error('Ошибка при отправке суры:', title, error);
+                                    alert(`Ошибка при отправке: ${error.message}`);
+                                }
+                            }
+                            alert('Отправка завершена!');
+                        } catch (error) {
+                            alert('Критическая ошибка: ' + error.message);
                         }
                     }
-
                 } else {
                     alert('Чтобы получить все суры, надо разрешить боту отправлять вам сообщения.');
                 }
