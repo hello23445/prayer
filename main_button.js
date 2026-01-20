@@ -26,23 +26,63 @@ function getNextPrayer() {
 
     // Check each prayer time
     for (let prayer of prayerOrder) {
-        const prayerTimeStr = prayerTimes[prayer];
-        const [hours, minutes] = prayerTimeStr.split(':').map(Number);
-        const prayerTime = hours * 60 + minutes;
+        const prayerTimeObj = prayerTimes[prayer];
+        
+        if (!prayerTimeObj) continue;
+        
+        // Handle both string and Date formats
+        let prayerHours, prayerMinutes;
+        
+        if (typeof prayerTimeObj === 'string') {
+            // String format like "05:30"
+            try {
+                const [hours, minutes] = prayerTimeObj.split(':').map(Number);
+                prayerHours = hours;
+                prayerMinutes = minutes;
+            } catch (e) {
+                console.error('Error parsing prayer time string:', prayerTimeObj, e);
+                continue;
+            }
+        } else if (prayerTimeObj instanceof Date) {
+            // Date object format
+            prayerHours = prayerTimeObj.getHours();
+            prayerMinutes = prayerTimeObj.getMinutes();
+        } else {
+            console.warn('Unknown prayer time format:', prayer, prayerTimeObj);
+            continue;
+        }
+        
+        const prayerTime = prayerHours * 60 + prayerMinutes;
+        const timeStr = `${String(prayerHours).padStart(2, '0')}:${String(prayerMinutes).padStart(2, '0')}`;
 
         if (prayerTime > currentTime) {
+            const today = new Date();
+            const timeObj = new Date(today.getFullYear(), today.getMonth(), today.getDate(), prayerHours, prayerMinutes);
+            
             return {
                 name: prayer,
-                time: prayerTimeStr,
-                timeObj: new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes)
+                time: timeStr,
+                timeObj: timeObj
             };
         }
     }
 
     // If no prayer found today, next is Fajr tomorrow
+    const fajrTimeObj = prayerTimes.fajr;
+    if (!fajrTimeObj) return null;
+    
+    let fajrTime = '';
+    if (typeof fajrTimeObj === 'string') {
+        fajrTime = fajrTimeObj;
+    } else if (fajrTimeObj instanceof Date) {
+        fajrTime = `${String(fajrTimeObj.getHours()).padStart(2, '0')}:${String(fajrTimeObj.getMinutes()).padStart(2, '0')}`;
+    } else {
+        return null;
+    }
+    
     return {
         name: 'fajr',
-        time: prayerTimes.fajr,
+        time: fajrTime,
         isNext: true // Flag to indicate it's tomorrow
     };
 }
@@ -92,7 +132,16 @@ function updateMainButton() {
                     // Tomorrow
                     const tomorrow = new Date(now);
                     tomorrow.setDate(tomorrow.getDate() + 1);
-                    const [h, m] = nextPrayer.time.split(':').map(Number);
+                    if (!nextPrayer.time || typeof nextPrayer.time !== 'string') {
+                        console.error('Invalid prayer time:', nextPrayer);
+                        break;
+                    }
+                    const parts = nextPrayer.time.split(':');
+                    if (parts.length !== 2) {
+                        console.error('Invalid prayer time format:', nextPrayer.time);
+                        break;
+                    }
+                    const [h, m] = parts.map(Number);
                     prayerTimeObj = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), h, m);
                 } else {
                     prayerTimeObj = nextPrayer.timeObj;
