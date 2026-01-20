@@ -255,6 +255,7 @@
                     const TG_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
                     sendAllSuras(tg.initDataUnsafe.user.id);
                     async function sendAllSuras(chatId) {
+                        alert('Начинаю отправку сур. Пожалуйста, не закрывайте это окно и не прерывайте процесс.');
                         let sentCount = 0;
                         for (const [title, url] of suras) {
                             await fetch(`${TG_API}/sendDocument`, {
