@@ -27,8 +27,8 @@
             <button class="prayer-btn" data-value="isha">Иша</button>
         </div>
         <div id="prayer-window" style="display: none;">
-            <div class="header fixed-header">
-                <button id="back-btn" class="back-btn"><i class="fa-solid fa-arrow-left icon"></i></button>
+            <div class="header fixed-header header22">
+                <button id="back-btn" class="back-btn header22"><i class="fa-solid fa-arrow-left icon"></i></button>
                 <h2 id="prayer-name"></h2>
                 <span id="prayer-time"></span>
             </div>
@@ -44,7 +44,7 @@
     <!-- Полноэкранные настройки -->
     <div id="settings" style="display: none;">
         <div id="settings-content">
-            <div class="header" id="header2" style="margin-top: 2%;">
+            <div class="header header22" id="header2" style="margin-top: 2%;">
                 <h2 id="settings-title">Настройки</h2>
                 <button id="close-settings" class="close-settings"><i class="fa-solid fa-xmark icon"></i></button>
             </div>
@@ -169,7 +169,10 @@
                 <option value="dark">Темный</option>
             </select>
             <label id="view-mode-label">Вид:</label>
-            <select id="view-mode-select" disabled onchange="if (this.value === 'fullscreen'){document.getElementById('header2').style.marginTop = '30%'} else{document.getElementById('header2').style.marginTop = '2%'}">
+            <select id="view-mode-select" disabled onchange="document.querySelectorAll('.header22').forEach(el => {
+    el.style.marginTop =
+        (viewMode === 'fullscreen') ? '30%' : '2%';
+});">
                 <option value="normal">Не полноэкранный</option>
                 <option value="fullscreen">Полноэкранный</option>
             </select>

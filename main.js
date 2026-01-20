@@ -456,6 +456,11 @@ window.addEventListener('load', () => {
     const viewMode = localStorage.getItem('namazSettings') ? JSON.parse(localStorage.getItem('namazSettings')).viewMode : 'normal';
     if (header2) {
         header2.style.marginTop = (viewMode === 'fullscreen') ? '30%' : '2%';
+        document.querySelectorAll('.header22').forEach(el => {
+            el.style.marginTop =
+                (viewMode === 'fullscreen') ? '30%' : '2%';
+        });
+
     }
     document.getElementById('preloader').style.display = 'none';
     document.getElementById('main-container').style.display = 'flex';
