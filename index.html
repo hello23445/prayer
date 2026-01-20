@@ -44,7 +44,7 @@
     <!-- Полноэкранные настройки -->
     <div id="settings" style="display: none;">
         <div id="settings-content">
-            <div class="header" style="margin-top: 2%;">
+            <div class="header" style="margin-top: 10%;">
                 <h2 id="settings-title">Настройки</h2>
                 <button id="close-settings" class="close-settings"><i class="fa-solid fa-xmark icon"></i></button>
             </div>
@@ -166,7 +166,7 @@
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="transcription-toggle-label">Показывать транскрипцию</span>
             </div>
-            <div class="toggle-label" id="translation-toggle">
+            <div class="toggle-label" id="translation-toggle" style="margin-bottom: 6%;">
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="translation-toggle-label">Показывать перевод</span>
             </div>
@@ -252,6 +252,7 @@
             const prayerWindow = document.getElementById('prayer-window');
             const settingsDiv = document.getElementById('settings');
             const mainContainer = document.getElementById('main-container');
+            const prayerModal = document.getElementById('prayer-modal');
             
             // Если открыто меню молитвы
             if (prayerWindow.style.display === 'block') {
@@ -285,6 +286,14 @@
                 // Показываем кнопку Settings
                 tg.SettingsButton.show();
             }
+            // Если открыто модальное окно деталей намаза
+            else if (prayerModal.style.display === 'flex') {
+                clearInterval(prayerModalInterval);
+                prayerModal.style.display = 'none';
+                tg.BackButton.hide();
+                // Показываем кнопку Settings
+                tg.SettingsButton.show();
+            }
         });
 
         // Обработчик события fullscreen_changed
@@ -308,6 +317,9 @@
                 viewModeSelect.value = 'normal';
             }
         });
+        
+        // Установка блокировки ориентации в портретный режим
+        tg.setScreenOrientationLock('portrait');
     }
 (function () {
     let modal = null;

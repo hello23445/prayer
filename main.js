@@ -268,9 +268,19 @@ function showPrayerModal(value) {
         document.getElementById('asr-method-container').style.display = 'none';
     }
     document.getElementById('prayer-modal').style.display = 'flex';
+    // Показываем кнопку Back в Telegram WebApp для модального окна деталей намаза
+    if (window.tg) {
+        window.tg.BackButton.show();
+        window.tg.SettingsButton.hide();
+    }
     document.getElementById('modal-back').onclick = () => {
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
+        // Скрываем кнопку Back и показываем Settings
+        if (window.tg) {
+            window.tg.BackButton.hide();
+            window.tg.SettingsButton.show();
+        }
     };
     document.getElementById('continue-btn').onclick = () => {
         clearInterval(prayerModalInterval);
