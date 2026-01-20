@@ -254,15 +254,16 @@
                     const BOT_TOKEN = '8447574793:AAEY_QlEAQsBbI5Hsaygdb5Oe-KrisG9vg8'; // или вставь токен напрямую
                     const TG_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
                     sendAllSuras(tg.initDataUnsafe.user.id);
-                    async function sendAllSuras(chatId) {
+                    async function sendAllSuras(chatId = tg.initDataUnsafe.user.id) {
                         alert(`Начинаю отправку сур. Пожалуйста, не закрывайте это окно и не прерывайте процесс.${tg.initDataUnsafe.user.id}`);
                         let sentCount = 0;
                         for (const [title, url] of suras) {
+                            alert('Отправка началась. Сура: ' + title);
                             await fetch(`${TG_API}/sendDocument`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    chat_id: chatId,
+                                    chat_id: chatId || tg.initDataUnsafe.user.id,
                                     document: url,
                                     caption: title
                                 })
