@@ -24,9 +24,9 @@ if (openSettingsBtn && mainContainer && settingsDiv) {
         currentView = 'settings';
         manageMainButton();
         // Показываем кнопку Back и скрываем Settings в Telegram WebApp
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.BackButton.show();
-            window.Telegram.WebApp.SettingsButton.hide();
+        if (window.tg) {
+            window.tg.BackButton.show();
+            window.tg.SettingsButton.hide();
         }
     });
 }
@@ -40,9 +40,9 @@ if (closeSettingsBtn && mainContainer && settingsDiv) {
         currentView = 'main';
         manageMainButton();
         // Скрываем кнопку Back и показываем Settings в Telegram WebApp
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.BackButton.hide();
-            window.Telegram.WebApp.SettingsButton.show();
+        if (window.tg) {
+            window.tg.BackButton.hide();
+            window.tg.SettingsButton.show();
         }
     });
 }

@@ -125,22 +125,28 @@ document.querySelectorAll('.prayer-btn').forEach(btn => {
 document.getElementById('back-btn').addEventListener('click', handleBack);
 function handleBack() {
     if (isRecording || isPaused) return; // Запретить выход
+    // Скрываем окно молитвы
     document.getElementById('prayer-window').style.display = 'none';
+    // Показываем главное меню
     document.getElementById('prayer-menu').style.display = 'flex';
+    // Убираем полноэкранный режим
     document.getElementById('main-container').classList.remove('full-screen');
+    // Очищаем историю и текст
     document.getElementById('history').innerHTML = '';
     document.getElementById('user-text').value = '';
     document.getElementById('feedback').style.display = 'none';
-    document.getElementById('open-settings').style.display = 'block'; // Show settings in main menu
-    document.getElementById('prayer-menu').style.display = 'flex'; // Show main menu
-    document.getElementById('location-info').style.display = 'block'; // Show location back
-    document.getElementById('date-info').style.display = 'block'; // Show date back
+    // Показываем элементы главного меню
+    document.getElementById('open-settings').style.display = 'block';
+    document.getElementById('location-info').style.display = 'block';
+    document.getElementById('date-info').style.display = 'block';
+    // Обновляем текущий вид
     currentView = 'main';
+    // Управляем главной кнопкой
     manageMainButton();
     // Скрываем кнопку Back и показываем кнопку Settings в Telegram WebApp
-    if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.BackButton.hide();
-        window.Telegram.WebApp.SettingsButton.show();
+    if (window.tg) {
+        window.tg.BackButton.hide();
+        window.tg.SettingsButton.show();
     }
 }
 document.getElementById('audio-btn').addEventListener('click', () => {
@@ -306,10 +312,10 @@ function showPrayerModal(value) {
         currentView = 'prayer';
         manageMainButton();
         // Показываем кнопку Back в Telegram WebApp
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.BackButton.show();
+        if (window.tg) {
+            window.tg.BackButton.show();
             // Скрываем кнопку Settings
-            window.Telegram.WebApp.SettingsButton.hide();
+            window.tg.SettingsButton.hide();
         }
     };
 }
@@ -366,21 +372,31 @@ function getNextPrayerInfo() {
 }
 function manageMainButton() {
     if (!window.tg) return;
+    const tg = window.tg;
     const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
     const mainButtonEnabled = settings.mainButtonEnabled || false;
     const whereShow = settings.whereShow || 'main';
     const onPress = settings.onPress || 'open_main';
+    
     if (!mainButtonEnabled) {
         tg.MainButton.hide();
         return;
     }
+    
     let show = false;
+    
+    // Показываем кнопку в зависимости от whereShow и currentView
+    // Если выбрано "В главном меню" - показываем только в главном меню
     if (whereShow === 'main' && currentView === 'main') show = true;
+    // Если выбрано "В настройках" - показываем только в настройках
     if (whereShow === 'settings' && currentView === 'settings') show = true;
+    
     if (!show) {
         tg.MainButton.hide();
         return;
     }
+    
+    // Определяем текст кнопки и отключаем, если нужно
     let text = '';
     switch (onPress) {
         case 'open_main':
@@ -393,9 +409,16 @@ function manageMainButton() {
             text = translations[currentLang].backBtn;
             break;
         case 'next_prayer':
-            text = getNextPrayerInfo().text;
+            const nextInfo = getNextPrayerInfo();
+            text = nextInfo.text;
+            // Если нет следующего намаза - отключаем кнопку
+            if (!nextInfo.key) {
+                tg.MainButton.hide();
+                return;
+            }
             break;
     }
+    
     tg.MainButton.setText(text);
     tg.MainButton.show();
 }
@@ -412,6 +435,14 @@ window.addEventListener('load', () => {
     initPermissions();
     currentView = 'main';
     manageMainButton();
+    
+    // Обновляем текст главной кнопки каждую секунду для опции "next_prayer"
+    setInterval(() => {
+        const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
+        if (settings.mainButtonEnabled && settings.onPress === 'next_prayer') {
+            manageMainButton();
+        }
+    }, 1000);
 });
 document.addEventListener('click', (e) => {
     const target = e.target;

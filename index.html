@@ -246,6 +246,8 @@
             const settingsDiv = document.getElementById('settings');
             mainContainer.style.display = 'none';
             settingsDiv.style.display = 'block';
+            currentView = 'settings'; // Обновляем currentView
+            if (typeof manageMainButton === 'function') manageMainButton(); // Управляем главной кнопкой
             // Скрываем кнопку Settings
             tg.SettingsButton.hide();
             // Показываем кнопку Back
@@ -277,6 +279,8 @@
                 document.getElementById('open-settings').style.display = 'block';
                 document.getElementById('location-info').style.display = 'block';
                 document.getElementById('date-info').style.display = 'block';
+                currentView = 'main'; // Обновляем currentView
+                manageMainButton(); // Управляем главной кнопкой
                 tg.BackButton.hide();
                 // Показываем кнопку Settings
                 tg.SettingsButton.show();
@@ -291,6 +295,8 @@
                 if (typeof translations !== 'undefined' && typeof currentLang !== 'undefined') {
                     document.getElementById('test-mic').textContent = translations[currentLang].testMic;
                 }
+                currentView = 'main'; // Обновляем currentView
+                manageMainButton(); // Управляем главной кнопкой
                 tg.BackButton.hide();
                 // Показываем кнопку Settings
                 tg.SettingsButton.show();
@@ -299,6 +305,8 @@
             else if (prayerModal.style.display === 'flex') {
                 clearInterval(prayerModalInterval);
                 prayerModal.style.display = 'none';
+                currentView = 'main'; // Обновляем currentView
+                manageMainButton(); // Управляем главной кнопкой
                 tg.BackButton.hide();
                 // Показываем кнопку Settings
                 tg.SettingsButton.show();
@@ -306,6 +314,8 @@
             // Если открыто модальное окно локации
             else if (locationModal.style.display === 'flex') {
                 locationModal.style.display = 'none';
+                currentView = 'main'; // Обновляем currentView
+                manageMainButton(); // Управляем главной кнопкой
                 tg.BackButton.hide();
                 // Показываем кнопку Settings
                 tg.SettingsButton.show();
