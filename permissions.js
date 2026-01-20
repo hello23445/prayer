@@ -141,6 +141,8 @@ async function initPermissions() {
                 document.getElementById('close-location-modal').textContent = t.backBtn;
                 locationModal.style.display = 'flex';
             }
+            currentView = 'location_modal';
+            manageMainButton();
             if (window.tg) {
                 window.tg.BackButton.show();
             }
@@ -154,6 +156,8 @@ async function initPermissions() {
             if (locationModal) {
                 locationModal.style.display = 'none';
             }
+            currentView = 'main';
+            manageMainButton();
         });
     }
     const closeLocationModalBtn = document.getElementById('close-location-modal');
@@ -163,6 +167,8 @@ async function initPermissions() {
             if (locationModal) {
                 locationModal.style.display = 'none';
             }
+            currentView = 'main';
+            manageMainButton();
         });
     }
 }

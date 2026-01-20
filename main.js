@@ -12,6 +12,7 @@ let transcriptionLang = 'latin';
 let currentLang = 'ru';
 let userLocationName = 'Определение местоположения...';
 let asrMethod = 'standard'; // default
+let currentView = 'main'; // Global current view state
 const cyrillicMap = {
     'ﺍ': 'а', 'ﺀ': 'ъ', 'ﺏ': 'б', 'ﺕ': 'т', 'ﺙ': 'с', 'ﺝ': 'дж', 'ﺡ': 'х', 'ﺥ': 'х', 'ﺩ': 'д', 'ﺫ': 'з',
     'ﺭ': 'р', 'ﺯ': 'з', 'ﺱ': 'с', 'ﺵ': 'ш', 'ﺹ': 'с', 'ﺽ': 'д', 'ﻁ': 'т', 'ﻅ': 'з', 'ﻉ': '', 'ﻍ': 'г',
@@ -121,7 +122,8 @@ document.querySelectorAll('.prayer-btn').forEach(btn => {
         }
     });
 });
-document.getElementById('back-btn').addEventListener('click', () => {
+document.getElementById('back-btn').addEventListener('click', handleBack);
+function handleBack() {
     if (isRecording || isPaused) return; // Запретить выход
     document.getElementById('prayer-window').style.display = 'none';
     document.getElementById('prayer-menu').style.display = 'flex';
@@ -133,12 +135,14 @@ document.getElementById('back-btn').addEventListener('click', () => {
     document.getElementById('prayer-menu').style.display = 'flex'; // Show main menu
     document.getElementById('location-info').style.display = 'block'; // Show location back
     document.getElementById('date-info').style.display = 'block'; // Show date back
+    currentView = 'main';
+    manageMainButton();
     // Скрываем кнопку Back и показываем кнопку Settings в Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.BackButton.hide();
         window.Telegram.WebApp.SettingsButton.show();
     }
-});
+}
 document.getElementById('audio-btn').addEventListener('click', () => {
     if (!isRecording && !isPaused) {
         recognition.start();
@@ -268,6 +272,8 @@ function showPrayerModal(value) {
         document.getElementById('asr-method-container').style.display = 'none';
     }
     document.getElementById('prayer-modal').style.display = 'flex';
+    currentView = 'prayer_modal';
+    manageMainButton();
     // Показываем кнопку Back в Telegram WebApp для модального окна деталей намаза
     if (window.tg) {
         window.tg.BackButton.show();
@@ -276,6 +282,8 @@ function showPrayerModal(value) {
     document.getElementById('modal-back').onclick = () => {
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
+        currentView = 'main';
+        manageMainButton();
         // Скрываем кнопку Back и показываем Settings
         if (window.tg) {
             window.tg.BackButton.hide();
@@ -295,6 +303,8 @@ function showPrayerModal(value) {
         document.getElementById('open-settings').style.display = 'none';
         document.getElementById('prayer-menu').style.display = 'none';
         document.getElementById('date-info').style.display = 'none';
+        currentView = 'prayer';
+        manageMainButton();
         // Показываем кнопку Back в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.BackButton.show();
@@ -327,6 +337,68 @@ function updateRemainingTime(value) {
     }
     document.getElementById('remaining-time').textContent = text + timeText;
 }
+function getNextPrayerInfo() {
+    if (!prayerTimes) return { key: null, text: '' };
+    const now = new Date();
+    let nextKey = null;
+    let minDiff = Infinity;
+    Object.keys(prayerTimes).forEach(key => {
+        let time = prayerTimes[key];
+        let diff = time - now;
+        if (diff < 0) {
+            time = new Date(time.getTime() + 24 * 3600 * 1000);
+            diff = time - now;
+        }
+        if (diff < minDiff) {
+            minDiff = diff;
+            nextKey = key;
+        }
+    });
+    const name = translations[currentLang][nextKey];
+    const time = prayerTimes[nextKey];
+    const hhmm = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
+    const hours = Math.floor(minDiff / 3600000);
+    const mins = Math.floor((minDiff % 3600000) / 60000);
+    const secs = Math.floor((minDiff % 60000) / 1000);
+    const remaining = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const text = `${name}:${hhmm}(${remaining})`;
+    return { key: nextKey, text };
+}
+function manageMainButton() {
+    if (!window.tg) return;
+    const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
+    const mainButtonEnabled = settings.mainButtonEnabled || false;
+    const whereShow = settings.whereShow || 'main';
+    const onPress = settings.onPress || 'open_main';
+    if (!mainButtonEnabled) {
+        tg.MainButton.hide();
+        return;
+    }
+    let show = false;
+    if (whereShow === 'main' && currentView === 'main') show = true;
+    if (whereShow === 'settings' && currentView === 'settings') show = true;
+    if (!show) {
+        tg.MainButton.hide();
+        return;
+    }
+    let text = '';
+    switch (onPress) {
+        case 'open_main':
+            text = translations[currentLang].returnToMainMenu;
+            break;
+        case 'open_settings':
+            text = translations[currentLang].openSettings;
+            break;
+        case 'go_back':
+            text = translations[currentLang].backBtn;
+            break;
+        case 'next_prayer':
+            text = getNextPrayerInfo().text;
+            break;
+    }
+    tg.MainButton.setText(text);
+    tg.MainButton.show();
+}
 window.addEventListener('load', () => {
     document.getElementById('location-info').textContent = userLocationName;
     loadSettings();
@@ -338,6 +410,8 @@ window.addEventListener('load', () => {
     document.getElementById('preloader').style.display = 'none';
     document.getElementById('main-container').style.display = 'flex';
     initPermissions();
+    currentView = 'main';
+    manageMainButton();
 });
 document.addEventListener('click', (e) => {
     const target = e.target;
@@ -383,3 +457,24 @@ document.getElementById('update-location').addEventListener('click', async () =>
         }
     };
 });
+if (window.tg) {
+    tg.onEvent('mainButtonClicked', () => {
+        const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
+        const onPress = settings.onPress || 'open_main';
+        switch (onPress) {
+            case 'open_main':
+                if (currentView !== 'main') handleBack();
+                break;
+            case 'open_settings':
+                document.getElementById('open-settings').click();
+                break;
+            case 'go_back':
+                handleBack();
+                break;
+            case 'next_prayer':
+                const nextKey = getNextPrayerInfo().key;
+                if (nextKey) showPrayerModal(nextKey);
+                break;
+        }
+    });
+}

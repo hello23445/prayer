@@ -45,14 +45,27 @@ const translations = {
         allowBtn: 'Разрешить',
         errorVolumeLabel: 'Громкость звука ошибки:',
         viewModeLabel: 'Вид:',
-        normalView: 'Не полноэкранный(Рекомендуется)',
+        normalView: 'Не полноэкранный (Рекомендуется)',
         fullscreenView: 'Полноэкранный',
         viewDisabled: 'Вид: (только в Telegram)',
         languageSection: 'Язык',
         volumeSection: 'Громкость',
         otherParamsSection: 'Другие параметры',
         appViewSection: 'Вид приложения',
-        // Titles for buttons
+
+        // Новая функциональность главной кнопки
+        addMainButton: 'Добавить главную кнопку',
+        whereShowMainButton: 'Где показывать главную кнопку:',
+        inMainMenu: 'В главном меню',
+        inSettings: 'В настройках',
+        onMainButtonPress: 'При нажатии главной кнопки:',
+        openMainMenu: 'Открыть главное меню',
+        openSettings: 'Открыть настройки',
+        goBack: 'Переход назад',
+        goNextPrayer: 'Переход к следующему намазу',
+        returnToMainMenu: 'Вернуться в главное меню',
+
+        // Titles для кнопок и подсказки
         openSettingsTitle: 'Открыть настройки',
         backBtnTitle: 'Назад',
         audioBtnTitle: 'Запись аудио',
@@ -72,22 +85,9 @@ const translations = {
         geoErrorMessage: 'Включите разрешение на использование геолокации в настройках вашего устройства.',
         geoRestartMessage: 'После предоставления разрешения на использование геолокации перезапустите приложение.',
         geoNotAllowed: 'Геолокация не разрешена',
-        geoDetecting: 'Определение...',
-        // Main Button translations
-        mainButtonEnabled: 'Добавить главную кнопку',
-        mainButtonLocationLabel: 'Где показывать главную кнопку:',
-        mainButtonLocationMain: 'В главном меню',
-        mainButtonLocationSettings: 'В настройках',
-        mainButtonActionLabel: 'При нажатии главной кнопки:',
-        mainButtonActionMainMenu: 'Открыть главное меню',
-        mainButtonActionSettings: 'Открыть настройки',
-        mainButtonActionBack: 'Переход назад',
-        mainButtonActionNextPrayer: 'Переход к следующему намазу',
-        mainButtonTextMainMenu: 'Вернуться в главное меню',
-        mainButtonTextSettings: 'Настройки',
-        mainButtonTextBack: 'Назад',
-        mainButtonTextNextPrayer: '{prayer}:{time} ({timeLeft})'
+        geoDetecting: 'Определение...'
     },
+
     az: {
         updateLocationBtn: 'Yenilə',
         backBtn: 'Geri',
@@ -130,17 +130,30 @@ const translations = {
         testMic: 'Mikrofon testi',
         testMicStop: 'Testi dayandır',
         continueBtn: 'Davam et',
-        allowBtn: 'Icazə ver',
+        allowBtn: 'İcazə ver',
         errorVolumeLabel: 'Səhv səsinin səsi:',
         viewModeLabel: 'Görünüş:',
-        normalView: 'Tam ekran deyil(Tövsiyə olunur)',
+        normalView: 'Tam ekran deyil (Tövsiyə olunur)',
         fullscreenView: 'Tam ekran',
         viewDisabled: 'Görünüş: (yalnız Telegramda)',
         languageSection: 'Dil',
         volumeSection: 'Səs',
         otherParamsSection: 'Digər parametrlər',
         appViewSection: 'Tətbiq görünüşü',
-        // Titles for buttons
+
+        // Новая функциональность главной кнопки
+        addMainButton: 'Əsas düyməni əlavə et',
+        whereShowMainButton: 'Əsas düymə harada göstərilsin:',
+        inMainMenu: 'Əsas menyuda',
+        inSettings: 'Parametrlərdə',
+        onMainButtonPress: 'Əsas düyməyə basıldıqda:',
+        openMainMenu: 'Əsas menyunu aç',
+        openSettings: 'Parametrləri aç',
+        goBack: 'Geri qayıt',
+        goNextPrayer: 'Növbəti namaza keçid',
+        returnToMainMenu: 'Əsas menyuya qayıt',
+
+        // Titles
         openSettingsTitle: 'Parametrləri aç',
         backBtnTitle: 'Geri',
         audioBtnTitle: 'Audio qeyd',
@@ -160,22 +173,9 @@ const translations = {
         geoErrorMessage: 'Cihazınızın ayarlarında geolokasiyanın istifadəsinə icazəni aktivləşdirin.',
         geoRestartMessage: 'Geolokasiyanın istifadəsinə icazə verdikdən sonra tətbiqəni yenidən başlatın.',
         geoNotAllowed: 'Geolokasiyanın icazəsi verilməyib',
-        geoDetecting: 'Təyin edilir...',
-        // Main Button translations
-        mainButtonEnabled: 'Əsas düymə əlavə et',
-        mainButtonLocationLabel: 'Əsas düymə harada göstəriləcək:',
-        mainButtonLocationMain: 'Əsas menyuda',
-        mainButtonLocationSettings: 'Parametrlərdə',
-        mainButtonActionLabel: 'Əsas düymə basılarkən:',
-        mainButtonActionMainMenu: 'Əsas menyunu aç',
-        mainButtonActionSettings: 'Parametrləri aç',
-        mainButtonActionBack: 'Geriyə get',
-        mainButtonActionNextPrayer: 'Növbəti namaza get',
-        mainButtonTextMainMenu: 'Əsas menyuya qayıt',
-        mainButtonTextSettings: 'Parametrlər',
-        mainButtonTextBack: 'Geri',
-        mainButtonTextNextPrayer: '{prayer}:{time} ({timeLeft})'
+        geoDetecting: 'Təyin edilir...'
     },
+
     en: {
         updateLocationBtn: 'Update',
         backBtn: 'Back',
@@ -221,14 +221,27 @@ const translations = {
         allowBtn: 'Allow',
         errorVolumeLabel: 'Error sound volume:',
         viewModeLabel: 'View:',
-        normalView: 'Not fullscreen(Recommended)',
+        normalView: 'Not fullscreen (Recommended)',
         fullscreenView: 'Fullscreen',
         viewDisabled: 'View: (only in Telegram)',
         languageSection: 'Language',
         volumeSection: 'Volume',
         otherParamsSection: 'Other parameters',
         appViewSection: 'App view',
-        // Titles for buttons
+
+        // Новая функциональность главной кнопки
+        addMainButton: 'Add Main Button',
+        whereShowMainButton: 'Where to show Main Button:',
+        inMainMenu: 'In main menu',
+        inSettings: 'In settings',
+        onMainButtonPress: 'When Main Button is pressed:',
+        openMainMenu: 'Open main menu',
+        openSettings: 'Open settings',
+        goBack: 'Go back',
+        goNextPrayer: 'Go to next prayer',
+        returnToMainMenu: 'Return to main menu',
+
+        // Titles
         openSettingsTitle: 'Open settings',
         backBtnTitle: 'Back',
         audioBtnTitle: 'Audio recording',
@@ -248,20 +261,6 @@ const translations = {
         geoErrorMessage: 'Enable geolocation permission in your device settings.',
         geoRestartMessage: 'After allowing geolocation permission, restart the application.',
         geoNotAllowed: 'Geolocation not allowed',
-        geoDetecting: 'Detecting...',
-        // Main Button translations
-        mainButtonEnabled: 'Add main button',
-        mainButtonLocationLabel: 'Where to show main button:',
-        mainButtonLocationMain: 'In main menu',
-        mainButtonLocationSettings: 'In settings',
-        mainButtonActionLabel: 'When main button is pressed:',
-        mainButtonActionMainMenu: 'Open main menu',
-        mainButtonActionSettings: 'Open settings',
-        mainButtonActionBack: 'Go back',
-        mainButtonActionNextPrayer: 'Go to next prayer',
-        mainButtonTextMainMenu: 'Return to main menu',
-        mainButtonTextSettings: 'Settings',
-        mainButtonTextBack: 'Back',
-        mainButtonTextNextPrayer: '{prayer}:{time} ({timeLeft})'
+        geoDetecting: 'Detecting...'
     }
 };

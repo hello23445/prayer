@@ -201,39 +201,14 @@ select:focus {
 .toggle-label {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     margin-bottom: 8px;
     cursor: pointer;
-    padding: 8px 0;
-    width: 100%;
-    box-sizing: border-box;
-}
-.toggle-label span {
-    flex: 1;
-    margin-right: auto;
+    justify-content: space-between;
 }
 .toggle-label i {
     font-size: var(--toggle-size);
-    margin-left: auto;
+    margin-left: 8px;
     color: var(--toggle-color-on);
-    flex-shrink: 0;
-}
-@media (max-width: 600px) {
-    .toggle-label {
-        flex-direction: row;
-        justify-content: flex-end;
-    }
-    .toggle-label span {
-        order: 1;
-        margin-right: 10px;
-        margin-left: 0;
-        text-align: left;
-    }
-    .toggle-label i {
-        order: 2;
-        margin-left: 0;
-        margin-right: 0;
-    }
 }
 .modal {
     position: fixed;

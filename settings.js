@@ -12,10 +12,17 @@ const playErrorSoundBtn = document.getElementById('play-error-sound');
 const micVolume = document.getElementById('mic-volume');
 const errorVolume = document.getElementById('error-volume');
 const viewModeSelect = document.getElementById('view-mode-select');
+const mainButtonToggle = document.getElementById('main-button-toggle');
+const mainButtonOptions = document.getElementById('main-button-options');
+const whereShowSelect = document.getElementById('where-show-select');
+const onPressSelect = document.getElementById('on-press-select');
+let mainButtonEnabled = false;
 if (openSettingsBtn && mainContainer && settingsDiv) {
     openSettingsBtn.addEventListener('click', () => {
         mainContainer.style.display = 'none';
         settingsDiv.style.display = 'block';
+        currentView = 'settings';
+        manageMainButton();
         // Показываем кнопку Back и скрываем Settings в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.BackButton.show();
@@ -30,6 +37,8 @@ if (closeSettingsBtn && mainContainer && settingsDiv) {
         saveSettings();
         stopMicTest();
         document.getElementById('test-mic').textContent = translations[currentLang].testMic;
+        currentView = 'main';
+        manageMainButton();
         // Скрываем кнопку Back и показываем Settings в Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.BackButton.hide();
@@ -86,6 +95,27 @@ if (viewModeSelect) {
         saveSettings();
     });
 }
+if (mainButtonToggle) {
+    mainButtonToggle.addEventListener('click', () => {
+        mainButtonEnabled = !mainButtonEnabled;
+        updateMainButtonToggle();
+        mainButtonOptions.style.display = mainButtonEnabled ? 'block' : 'none';
+        saveSettings();
+        manageMainButton();
+    });
+}
+if (whereShowSelect) {
+    whereShowSelect.addEventListener('change', (e) => {
+        saveSettings();
+        manageMainButton();
+    });
+}
+if (onPressSelect) {
+    onPressSelect.addEventListener('change', (e) => {
+        saveSettings();
+        manageMainButton();
+    });
+}
 const transToggle = document.getElementById('transcription-toggle');
 const translToggle = document.getElementById('translation-toggle');
 if (transToggle) {
@@ -102,52 +132,12 @@ if (translToggle) {
         saveSettings();
     });
 }
-
-// Main Button settings handlers
-const mainButtonToggle = document.getElementById('main-button-toggle');
-const mainButtonSettings = document.getElementById('main-button-settings');
-const mainButtonLocationSelect = document.getElementById('main-button-location-select');
-const mainButtonActionSelect = document.getElementById('main-button-action-select');
-
-if (mainButtonToggle) {
-    mainButtonToggle.addEventListener('click', () => {
-        mainButtonEnabled = !mainButtonEnabled;
-        updateMainButtonToggleIcon();
-        if (mainButtonSettings) {
-            mainButtonSettings.style.display = mainButtonEnabled ? 'block' : 'none';
-        }
-        updateMainButton();
-        saveSettings();
-    });
-}
-
-if (mainButtonLocationSelect) {
-    mainButtonLocationSelect.addEventListener('change', (e) => {
-        mainButtonLocation = e.target.value;
-        updateMainButton();
-        saveSettings();
-    });
-}
-
-if (mainButtonActionSelect) {
-    mainButtonActionSelect.addEventListener('change', (e) => {
-        mainButtonAction = e.target.value;
-        updateMainButton();
-        saveSettings();
-    });
-}
-
-function updateMainButtonToggleIcon() {
+function updateMainButtonToggle() {
     const icon = mainButtonToggle.querySelector('i');
-    if (mainButtonEnabled) {
-        icon.classList.remove('fa-toggle-off');
-        icon.classList.add('fa-toggle-on');
-    } else {
-        icon.classList.remove('fa-toggle-on');
-        icon.classList.add('fa-toggle-off');
+    if (icon) {
+        icon.className = mainButtonEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
     }
 }
-
 async function applyViewMode(mode) {
     if (window.tg) {
         if (mode === 'fullscreen') {
@@ -180,8 +170,8 @@ function saveSettings() {
         asrMethod: (document.getElementById('asr-method-select') ? document.getElementById('asr-method-select').value : 'standard'),
         viewMode: (document.getElementById('view-mode-select') ? document.getElementById('view-mode-select').value : 'normal'),
         mainButtonEnabled,
-        mainButtonLocation,
-        mainButtonAction
+        whereShow: (document.getElementById('where-show-select') ? document.getElementById('where-show-select').value : 'main'),
+        onPress: (document.getElementById('on-press-select') ? document.getElementById('on-press-select').value : 'open_main')
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
     updateErrorSoundOptions(settings.errorVolume);
@@ -198,6 +188,8 @@ function loadSettings() {
         const micVol = document.getElementById('mic-volume');
         const errorVol = document.getElementById('error-volume');
         const viewModeSel = document.getElementById('view-mode-select');
+        const whereShowSel = document.getElementById('where-show-select');
+        const onPressSel = document.getElementById('on-press-select');
         if (themeSel) themeSel.value = settings.theme || 'system';
         applyTheme(settings.theme || 'system');
         if (langSel) langSel.value = settings.lang || 'ru';
@@ -216,21 +208,14 @@ function loadSettings() {
             const currentMode = window.tg?.isFullscreen ? 'fullscreen' : 'normal';
             viewModeSel.value = settings.viewMode || currentMode;
         }
+        if (whereShowSel) whereShowSel.value = settings.whereShow || 'main';
+        if (onPressSel) onPressSel.value = settings.onPress || 'open_main';
         transcriptionEnabled = settings.transcriptionEnabled !== undefined ? settings.transcriptionEnabled : true;
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
-        // Load main button settings
         mainButtonEnabled = settings.mainButtonEnabled !== undefined ? settings.mainButtonEnabled : false;
-        mainButtonLocation = settings.mainButtonLocation || 'main';
-        mainButtonAction = settings.mainButtonAction || 'main-menu';
-        const mainButtonLocationSel = document.getElementById('main-button-location-select');
-        const mainButtonActionSel = document.getElementById('main-button-action-select');
-        if (mainButtonLocationSel) mainButtonLocationSel.value = mainButtonLocation;
-        if (mainButtonActionSel) mainButtonActionSel.value = mainButtonAction;
-        if (mainButtonSettings) {
-            mainButtonSettings.style.display = mainButtonEnabled ? 'block' : 'none';
-        }
         updateToggleIcons();
-        updateMainButtonToggleIcon();
+        updateMainButtonToggle();
+        mainButtonOptions.style.display = mainButtonEnabled ? 'block' : 'none';
         updateErrorSoundOptions(settings.errorVolume);
         localStorage.setItem('lang1', document.getElementById('lang-select').value);
         if (errorSoundSelect.value === 'none'){
@@ -252,16 +237,13 @@ function loadSettings() {
         transcriptionEnabled = true;
         translationEnabled = true;
         mainButtonEnabled = false;
-        mainButtonLocation = 'main';
-        mainButtonAction = 'main-menu';
-        if (mainButtonSettings) {
-            mainButtonSettings.style.display = 'none';
-        }
         updateToggleIcons();
-        updateMainButtonToggleIcon();
+        updateMainButtonToggle();
+        mainButtonOptions.style.display = 'none';
         updateErrorSoundOptions(50);
         applyViewMode('normal');
     }
+    manageMainButton();
 }
 function updateErrorSoundOptions(volume) {
     const errorSoundSelect = document.getElementById('error-sound-select');

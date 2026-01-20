@@ -54,6 +54,24 @@ function applyLang(lang) {
     if (transcriptionToggleLabelEl) transcriptionToggleLabelEl.textContent = t.transcriptionToggle;
     const translationToggleLabelEl = document.getElementById('translation-toggle-label');
     if (translationToggleLabelEl) translationToggleLabelEl.textContent = t.translationToggle;
+    const mainButtonToggleLabelEl = document.getElementById('main-button-toggle-label');
+    if (mainButtonToggleLabelEl) mainButtonToggleLabelEl.textContent = t.addMainButton;
+    const whereShowLabelEl = document.getElementById('where-show-label');
+    if (whereShowLabelEl) whereShowLabelEl.textContent = t.whereShowMainButton;
+    const whereShowSelect = document.getElementById('where-show-select');
+    if (whereShowSelect) {
+        whereShowSelect.options[0].textContent = t.inMainMenu;
+        whereShowSelect.options[1].textContent = t.inSettings;
+    }
+    const onPressLabelEl = document.getElementById('on-press-label');
+    if (onPressLabelEl) onPressLabelEl.textContent = t.onMainButtonPress;
+    const onPressSelect = document.getElementById('on-press-select');
+    if (onPressSelect) {
+        onPressSelect.options[0].textContent = t.openMainMenu;
+        onPressSelect.options[1].textContent = t.openSettings;
+        onPressSelect.options[2].textContent = t.goBack;
+        onPressSelect.options[3].textContent = t.goNextPrayer;
+    }
     const saveSettingsEl = document.getElementById('save-settings');
     if (saveSettingsEl) saveSettingsEl.textContent = t.saveSettings;
     const geoPromptEl = document.getElementById('geo-prompt');
@@ -113,29 +131,11 @@ function applyLang(lang) {
     if (otherParamsSectionEl) otherParamsSectionEl.textContent = t.otherParamsSection;
     const appViewSectionEl = document.getElementById('app-view-section');
     if (appViewSectionEl) appViewSectionEl.textContent = t.appViewSection;
-    // Update main button settings
-    const mainButtonToggleLabelEl = document.getElementById('main-button-toggle-label');
-    if (mainButtonToggleLabelEl) mainButtonToggleLabelEl.textContent = t.mainButtonEnabled;
-    const mainButtonLocationLabelEl = document.getElementById('main-button-location-label');
-    if (mainButtonLocationLabelEl) mainButtonLocationLabelEl.textContent = t.mainButtonLocationLabel;
-    const mainButtonLocationSelect = document.getElementById('main-button-location-select');
-    if (mainButtonLocationSelect) {
-        mainButtonLocationSelect.options[0].textContent = t.mainButtonLocationMain;
-        mainButtonLocationSelect.options[1].textContent = t.mainButtonLocationSettings;
-    }
-    const mainButtonActionLabelEl = document.getElementById('main-button-action-label');
-    if (mainButtonActionLabelEl) mainButtonActionLabelEl.textContent = t.mainButtonActionLabel;
-    const mainButtonActionSelect = document.getElementById('main-button-action-select');
-    if (mainButtonActionSelect) {
-        mainButtonActionSelect.options[0].textContent = t.mainButtonActionMainMenu;
-        mainButtonActionSelect.options[1].textContent = t.mainButtonActionSettings;
-        mainButtonActionSelect.options[2].textContent = t.mainButtonActionBack;
-        mainButtonActionSelect.options[3].textContent = t.mainButtonActionNextPrayer;
-    }
     if (!window.Telegram?.WebApp) {
         document.getElementById('view-mode-label').textContent = t.viewDisabled;
         document.getElementById('view-mode-select').disabled = true;
     }
+    manageMainButton(); // Update Main Button text on lang change
 }
 function updatePrayerButtons() {
     document.querySelectorAll('.prayer-btn').forEach(btn => {

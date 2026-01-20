@@ -137,6 +137,24 @@
                 </select>
                 <button id="play-error-sound" class="play-btn"><i class="fa-solid fa-circle-play icon"></i></button>
             </div>
+            <div class="toggle-label" id="main-button-toggle">
+                <span id="main-button-toggle-label">Добавить главную кнопку</span>
+                <i class="fa-solid fa-toggle-off icon"></i>
+            </div>
+            <div id="main-button-options" style="display: none;">
+                <label id="where-show-label">Где показывать главную кнопку:</label>
+                <select id="where-show-select">
+                    <option value="main">В главном меню</option>
+                    <option value="settings">В настройках</option>
+                </select>
+                <label id="on-press-label">При нажатии главной кнопки:</label>
+                <select id="on-press-select">
+                    <option value="open_main">Открыть главное меню</option>
+                    <option value="open_settings">Открыть настройки</option>
+                    <option value="go_back">Переход назад</option>
+                    <option value="next_prayer">Переход к следующему намазу</option>
+                </select>
+            </div>
             <h2 id="app-view-section" style="text-align: center;">Вид приложения</h2>
             <label id="theme-label">Тема:</label>
             <select id="theme-select">
@@ -149,24 +167,6 @@
                 <option value="normal">Не полноэкранный</option>
                 <option value="fullscreen">Полноэкранный</option>
             </select>
-            <div class="toggle-label" id="main-button-toggle">
-                <span id="main-button-toggle-label">Добавить главную кнопку</span>
-                <i class="fa-solid fa-toggle-off icon"></i>
-            </div>
-            <div id="main-button-settings" style="display: none;">
-                <label id="main-button-location-label">Где показывать главную кнопку:</label>
-                <select id="main-button-location-select">
-                    <option value="main">В главном меню</option>
-                    <option value="settings">В настройках</option>
-                </select>
-                <label id="main-button-action-label">При нажатии главной кнопки:</label>
-                <select id="main-button-action-select">
-                    <option value="main-menu">Открыть главное меню</option>
-                    <option value="settings">Открыть настройки</option>
-                    <option value="back">Переход назад</option>
-                    <option value="next-prayer">Переход к следующему намазу</option>
-                </select>
-            </div>
             <div class="toggle-label" id="transcription-toggle">
                 <span id="transcription-toggle-label">Показывать транскрипцию</span>
                 <i class="fa-solid fa-toggle-on icon"></i>
@@ -231,10 +231,7 @@
     if (tg || tg !== null && window.Telegram?.WebApp) {
         tg.ready();
         document.getElementById('view-mode-select').disabled = false;
-        // Установка блокировки ориентации в портретный режим
-        tg.WebApp.request('web_app_toggle_orientation_lock', {
-            locked: true
-        });
+
         // ВАЖНО
         tg.enableClosingConfirmation();
         
@@ -336,6 +333,13 @@
                 viewModeSelect.value = 'normal';
             }
         });
+        
+        // Установка блокировки ориентации в портретный режим
+        if (window.Telegram?.WebApp) {
+            Telegram.WebApp.request('web_app_toggle_orientation_lock', {
+                locked: true
+            });
+        }
     }
     </script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js" defer></script>
@@ -391,7 +395,6 @@
     <script src="error_sound.js" defer></script>
     <script src="transcription.js" defer></script>
     <script src="settings.js" defer></script>
-    <script src="main_button.js" defer></script>
     <script src="main.js" defer></script>
     <script src="permissions.js" defer></script>
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bab08e818fad835',t:'MTc2Nzg2ODM4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
