@@ -44,7 +44,7 @@
     <!-- Полноэкранные настройки -->
     <div id="settings" style="display: none;">
         <div id="settings-content">
-            <div class="header" id="header2">
+            <div class="header" id="header2" style="margin-top: 2%;">
                 <h2 id="settings-title">Настройки</h2>
                 <button id="close-settings" class="close-settings"><i class="fa-solid fa-xmark icon"></i></button>
             </div>
@@ -207,6 +207,7 @@
             <p id="current-location"></p>
             <button id="update-location">Обновить</button>
             <button id="close-location-modal">Назад</button>
+            <button id="f2">Написать в личку</button>
             <button onclick="showSourceCode()" style="display: none;" id="showcode">Показать код</button>
 
         </div>
@@ -217,7 +218,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
     const tg = window.Telegram?.WebApp || null;
-    alert(tg?.initDataUnsafe?.user?.id);
+    // alert(tg?.initDataUnsafe?.user?.id);
     if (!tg || tg !== null){
         document.getElementById('view-mode-label').textContent = 'Вид: (только в Telegram)';
     }
@@ -233,7 +234,15 @@
         
         // Настройка кнопки Settings
         tg.SettingsButton.show();
-        
+        document.getElementById('f2').addEventListener('click', function() {
+            tg.requestWriteAccess((granted) => {
+                if (granted) {
+                    console.log('✅ Write access разрешён');
+                } else {
+                    console.log('❌ Write access отклонён');
+                }
+            });
+        });
         // Слушаем событие нажатия кнопки Settings
         tg.onEvent('settingsButtonClicked', () => {
             const mainContainer = document.getElementById('main-container');
