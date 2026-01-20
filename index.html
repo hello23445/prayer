@@ -44,7 +44,7 @@
     <!-- Полноэкранные настройки -->
     <div id="settings" style="display: none;">
         <div id="settings-content">
-            <div class="header" style="margin-top: 10%;">
+            <div class="header" id="header2">
                 <h2 id="settings-title">Настройки</h2>
                 <button id="close-settings" class="close-settings"><i class="fa-solid fa-xmark icon"></i></button>
             </div>
@@ -158,7 +158,7 @@
                 <option value="dark">Темный</option>
             </select>
             <label id="view-mode-label">Вид:</label>
-            <select id="view-mode-select">
+            <select id="view-mode-select" disabled onchange="if (this.value === 'fullscreen'){document.getElementById('header2').style.marginTop = '30%'} else{document.getElementById('header2').style.marginTop = '2%'}">
                 <option value="normal">Не полноэкранный</option>
                 <option value="fullscreen">Полноэкранный</option>
             </select>
@@ -166,7 +166,7 @@
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="transcription-toggle-label">Показывать транскрипцию</span>
             </div>
-            <div class="toggle-label" id="translation-toggle" style="margin-bottom: 6%;">
+            <div class="toggle-label" id="translation-toggle" style="margin-bottom: 10%;">
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="translation-toggle-label">Показывать перевод</span>
             </div>
@@ -214,14 +214,16 @@
     <audio id="error-sound-beep" preload="auto">
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script>
-    const tg = window.Telegram?.WebApp;
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+    const tg = window.Telegram?.WebApp || null;
+    alert(tg?.initDataUnsafe?.user?.id);
     if (!tg || tg !== null){
         document.getElementById('view-mode-label').textContent = 'Вид: (только в Telegram)';
     }
-    if (tg) {
+    if (tg || tg !== null && window.Telegram?.WebApp) {
         tg.ready();
+        document.getElementById('view-mode-select').disabled = false;
 
         // ВАЖНО
         tg.enableClosingConfirmation();
