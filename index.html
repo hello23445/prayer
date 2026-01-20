@@ -166,7 +166,7 @@
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="transcription-toggle-label">Показывать транскрипцию</span>
             </div>
-            <div class="toggle-label" id="translation-toggle" style="margin-bottom: 6%;">
+            <div class="toggle-label" id="translation-toggle">
                 <i class="fa-solid fa-toggle-on icon"></i>
                 <span id="translation-toggle-label">Показывать перевод</span>
             </div>
@@ -222,7 +222,7 @@
     }
     if (tg) {
         tg.ready();
-        tg.WebApp.setOrientationLock('portrait');
+
         // ВАЖНО
         tg.enableClosingConfirmation();
         
