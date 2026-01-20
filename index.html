@@ -155,10 +155,14 @@
                     <option value="next_prayer">Переход к следующему намазу</option>
                 </select>
                 <div id="button-color-options" style="display: none;">
-                    <label id="button-color-label">Цвет кнопки:</label>
-                    <input type="color" id="button-color-input" value="#0088cc">
-                    <label id="button-text-color-label">Цвета текста кнопки:</label>
-                    <input type="color" id="button-text-color-input" value="#ffffff">
+                    <div class="toggle-label">
+                        <span id="button-color-label">Цвет кнопки:</span>
+                        <input type="color" id="button-color-input" value="#0088cc" style="width: 50px; height: 40px; border: none; cursor: pointer;">
+                    </div>
+                    <div class="toggle-label">
+                        <span id="button-text-color-label">Цвета текста кнопки:</span>
+                        <input type="color" id="button-text-color-input" value="#ffffff" style="width: 50px; height: 40px; border: none; cursor: pointer;">
+                    </div>
                 </div>
             </div>
             <h2 id="app-view-section" style="text-align: center;">Вид приложения</h2>
