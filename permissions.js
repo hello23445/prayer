@@ -48,7 +48,7 @@ async function requestGeolocation(force = false) {
         yesBtn.onclick = null; // убираем старые обработчики
         yesBtn.onclick = async () => {
             modal.style.display = 'none';
-            locationInfo.textContent = 'Определение...';
+            locationInfo.textContent = translations[currentLang].geoDetecting || 'Определение...';
             if (!navigator.geolocation) {
                 alert('Геолокация не поддерживается вашим браузером.');
                 locationInfo.textContent = 'Геолокация не поддерживается';
@@ -72,38 +72,33 @@ async function requestGeolocation(force = false) {
                 resolve();
             }, err => {
                 console.error(err);
-                locationInfo.textContent = 'Геолокация не разрешена';
+                locationInfo.textContent = translations[currentLang].geoNotAllowed || 'Геолокация не разрешена';
                 document.getElementById('preloader').style.display = 'none';
                 
-                // Создаем модальное окно об ошибке
+                // Создаем модальное окно об ошибке с использованием CSS классов
                 const errorModal = document.createElement('div');
                 errorModal.id = 'geolocation-error-modal';
-                errorModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+                errorModal.className = 'modal';
+                errorModal.style.display = 'flex';
+                errorModal.style.zIndex = '10000';
                 
                 const errorContent = document.createElement('div');
-                errorContent.style.cssText = 'background: white; padding: 30px; border-radius: 12px; text-align: center; max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+                errorContent.className = 'modal-content';
                 
                 const errorText = document.createElement('p');
-                errorText.textContent = 'Включите разрешение на использование геолокации в настройках вашего устройства.';
-                errorText.style.cssText = 'font-size: 16px; margin: 0; line-height: 1.5; color: #333;';
+                errorText.textContent = translations[currentLang].geoErrorMessage || 'Включите разрешение на использование геолокации в настройках вашего устройства.';
+                errorText.style.cssText = 'margin: 0; line-height: 1.5;';
+                
+                const restartText = document.createElement('p');
+                restartText.textContent = translations[currentLang].geoRestartMessage || 'После предоставления разрешения на использование геолокации перезапустите приложение.';
+                restartText.style.cssText = 'margin: 10px 0 0 0; line-height: 1.5;';
                 
                 errorContent.appendChild(errorText);
+                errorContent.appendChild(restartText);
                 errorModal.appendChild(errorContent);
                 document.body.appendChild(errorModal);
                 
-                // Закрытие модального окна при клике на задний фон
-                errorModal.addEventListener('click', (e) => {
-                    if (e.target === errorModal) {
-                        errorModal.remove();
-                    }
-                });
-                
-                // Закрытие через 5 секунд
-                setTimeout(() => {
-                    if (document.contains(errorModal)) {
-                        errorModal.remove();
-                    }
-                }, 5000);
+                // Окно не закрывается автоматически
             });
         };
     });

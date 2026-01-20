@@ -64,7 +64,7 @@
             <h2 id="volume-section" style="text-align: center;">Громкость</h2>
             <label id="error-volume-label">Громкость звука ошибки:</label>
             <input type="range" id="error-volume" min="0" max="100" value="50" step="5" style="width: 40%;">
-            <input class="error-volume-shower" type="number" id="error-volume-shower" min="0" max="100">
+            <input class="error-volume-shower" type="number" id="error-volume-shower" min="0" max="500" value="100">
             <script>
             const lang = (localStorage.getItem('lang1') || 'en').trim().toLowerCase();
             const range = document.getElementById('error-volume');

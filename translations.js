@@ -68,7 +68,11 @@ const translations = {
         dhuhrTitle: 'Зухр (полуденный намаз)',
         asrTitle: 'Аср (послеполуденный намаз)',
         maghribTitle: 'Магриб (вечерний намаз)',
-        ishaTitle: 'Иша (ночной намаз)'
+        ishaTitle: 'Иша (ночной намаз)',
+        geoErrorMessage: 'Включите разрешение на использование геолокации в настройках вашего устройства.',
+        geoRestartMessage: 'После предоставления разрешения на использование геолокации перезапустите приложение.',
+        geoNotAllowed: 'Геолокация не разрешена',
+        geoDetecting: 'Определение...'
     },
     az: {
         updateLocationBtn: 'Yenilə',
@@ -138,7 +142,11 @@ const translations = {
         dhuhrTitle: 'Zöhr (günorta namazı)',
         asrTitle: 'Əsr (günortadan sonra namazı)',
         maghribTitle: 'Məğrib (axşam namazı)',
-        ishaTitle: 'İşə (gecə namazı)'
+        ishaTitle: 'İşə (gecə namazı)',
+        geoErrorMessage: 'Cihazınızın ayarlarında geolokasiyanın istifadəsinə icazəni aktivləşdirin.',
+        geoRestartMessage: 'Geolokasiyanın istifadəsinə icazə verdikdən sonra tətbiqəni yenidən başlatın.',
+        geoNotAllowed: 'Geolokasiyanın icazəsi verilməyib',
+        geoDetecting: 'Təyin edilir...'
     },
     en: {
         updateLocationBtn: 'Update',
@@ -208,6 +216,10 @@ const translations = {
         dhuhrTitle: 'Dhuhr (noon prayer)',
         asrTitle: 'Asr (afternoon prayer)',
         maghribTitle: 'Maghrib (evening prayer)',
-        ishaTitle: 'Isha (night prayer)'
+        ishaTitle: 'Isha (night prayer)',
+        geoErrorMessage: 'Enable geolocation permission in your device settings.',
+        geoRestartMessage: 'After allowing geolocation permission, restart the application.',
+        geoNotAllowed: 'Geolocation not allowed',
+        geoDetecting: 'Detecting...'
     }
 };
