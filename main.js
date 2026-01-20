@@ -330,6 +330,11 @@ function updateRemainingTime(value) {
 window.addEventListener('load', () => {
     document.getElementById('location-info').textContent = userLocationName;
     loadSettings();
+    const header2 = document.getElementById('header2');
+    const viewMode = localStorage.getItem('namazSettings') ? JSON.parse(localStorage.getItem('namazSettings')).viewMode : 'normal';
+    if (header2) {
+        header2.style.marginTop = (viewMode === 'fullscreen') ? '30%' : '2%';
+    }
     document.getElementById('preloader').style.display = 'none';
     document.getElementById('main-container').style.display = 'flex';
     initPermissions();
@@ -346,11 +351,35 @@ document.addEventListener('click', (e) => {
         document.activeElement?.blur();
     }
 });
-if (localStorage.getItem('admin') === 'true') {
-    document.getElementById('showcode').style.display = 'inline-block';
-}
 document.getElementById('update-location').addEventListener('click', async () => {
-    document.getElementById('preloader').style.display = 'flex';
-    document.getElementById('location-modal').style.display = 'none';
-    await initGeolocation(true); // true to force update
+    // Показываем модальное окно с запросом разрешения на геолокацию
+    const geoModal = document.getElementById('geo-modal');
+    const yesBtn = document.getElementById('geo-yes');
+    const locationModal = document.getElementById('location-modal');
+    const preloader = document.getElementById('preloader');
+    
+    // Скрываем текущее модальное окно локации
+    locationModal.style.display = 'none';
+    
+    // Показываем окно разрешения геолокации
+    geoModal.style.display = 'flex';
+    
+    // Удаляем предыдущие обработчики
+    yesBtn.onclick = null;
+    
+    // Добавляем обработчик для кнопки "Разрешить"
+    yesBtn.onclick = async () => {
+        geoModal.style.display = 'none';
+        preloader.style.display = 'flex';
+        
+        // Запускаем запрос геолокации с force=true для обновления
+        try {
+            await requestGeolocation(true);
+            // После успеха показываем модальное окно локации снова
+            locationModal.style.display = 'flex';
+        } catch (error) {
+            console.error('Ошибка при определении локации:', error);
+            locationModal.style.display = 'flex';
+        }
+    };
 });

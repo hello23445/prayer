@@ -74,8 +74,8 @@ if (transcriptionLangSelectEl) {
 if (errorSoundSelect) {
     errorSoundSelect.addEventListener('change', (e) => {
         if (e.target.value !== 'none' && document.getElementById('error-volume').value == 0) {
-            document.getElementById('error-volume').value = 20;
-            document.getElementById('error-volume-shower').value = 20;
+            document.getElementById('error-volume').value = 5;
+            document.getElementById('error-volume-shower').value = 5;
         }
         saveSettings();
     });
@@ -128,7 +128,7 @@ function saveSettings() {
         transcriptionLang: (document.getElementById('transcription-lang-select') ? document.getElementById('transcription-lang-select').value : 'latin'),
         errorSound: (document.getElementById('error-sound-select') ? document.getElementById('error-sound-select').value : 'beep'),
         micVolume: (document.getElementById('mic-volume') ? document.getElementById('mic-volume').value : 100),
-        errorVolume: (document.getElementById('error-volume') ? document.getElementById('error-volume').value : 100),
+        errorVolume: (document.getElementById('error-volume') ? document.getElementById('error-volume').value : 50),
         transcriptionEnabled,
         translationEnabled,
         asrMethod: (document.getElementById('asr-method-select') ? document.getElementById('asr-method-select').value : 'standard'),
@@ -160,9 +160,9 @@ function loadSettings() {
         asrMethod = settings.asrMethod || 'standard';
         if (micVol) micVol.value = settings.micVolume || 100;
         document.getElementById('mic-volume-shower').value = micVol.value;
-        if (errorVol) errorVol.value = settings.errorVolume || 100;
+        if (errorVol) errorVol.value = settings.errorVolume || 50;
         document.getElementById('error-volume-shower').value = errorVol.value;
-        window.errorVolumeValue = settings.errorVolume || 100;
+        window.errorVolumeValue = settings.errorVolume || 50;
         if (viewModeSel) {
             const currentMode = window.tg?.isFullscreen ? 'fullscreen' : 'normal';
             viewModeSel.value = settings.viewMode || currentMode;
@@ -191,7 +191,7 @@ function loadSettings() {
         transcriptionEnabled = true;
         translationEnabled = true;
         updateToggleIcons();
-        updateErrorSoundOptions(100);
+        updateErrorSoundOptions(50);
         applyViewMode('normal');
     }
 }

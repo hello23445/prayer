@@ -22,7 +22,7 @@ async function requestGeolocation(force = false) {
         return Promise.resolve();
     }
     const perm = await navigator.permissions.query({ name: 'geolocation' });
-    if (perm.state === 'granted') {
+    if (perm.state === 'granted' && !force) {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(async pos => {
                 const lat = pos.coords.latitude;
@@ -72,11 +72,38 @@ async function requestGeolocation(force = false) {
                 resolve();
             }, err => {
                 console.error(err);
-                alert('Ошибка геолокации: ' + err.message);
                 locationInfo.textContent = 'Геолокация не разрешена';
                 document.getElementById('preloader').style.display = 'none';
-                // Рекурсивно пробуем снова
-                requestGeolocation().then(resolve, reject);
+                
+                // Создаем модальное окно об ошибке
+                const errorModal = document.createElement('div');
+                errorModal.id = 'geolocation-error-modal';
+                errorModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+                
+                const errorContent = document.createElement('div');
+                errorContent.style.cssText = 'background: white; padding: 30px; border-radius: 12px; text-align: center; max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+                
+                const errorText = document.createElement('p');
+                errorText.textContent = 'Включите разрешение на использование геолокации в настройках вашего устройства.';
+                errorText.style.cssText = 'font-size: 16px; margin: 0; line-height: 1.5; color: #333;';
+                
+                errorContent.appendChild(errorText);
+                errorModal.appendChild(errorContent);
+                document.body.appendChild(errorModal);
+                
+                // Закрытие модального окна при клике на задний фон
+                errorModal.addEventListener('click', (e) => {
+                    if (e.target === errorModal) {
+                        errorModal.remove();
+                    }
+                });
+                
+                // Закрытие через 5 секунд
+                setTimeout(() => {
+                    if (document.contains(errorModal)) {
+                        errorModal.remove();
+                    }
+                }, 5000);
             });
         };
     });
@@ -118,6 +145,9 @@ async function initPermissions() {
                 document.getElementById('update-location').textContent = t.updateLocationBtn;
                 document.getElementById('close-location-modal').textContent = t.backBtn;
                 locationModal.style.display = 'flex';
+            }
+            if (window.tg) {
+                window.tg.BackButton.show();
             }
         });
     }

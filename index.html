@@ -7,7 +7,7 @@
     <title>Намаз</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/transliteration@2.3.5/dist/browser/bundle.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/transliteration@2.3.5/dist/browser/bundle.umd.min.js" defer></script>
 </head>
 <body class="system">
     <div id="preloader" class="preloader">
@@ -63,16 +63,16 @@
             </select>
             <h2 id="volume-section" style="text-align: center;">Громкость</h2>
             <label id="error-volume-label">Громкость звука ошибки:</label>
-            <input type="range" id="error-volume" min="0" max="500" value="100" step="20" style="width: 40%;">
-            <input class="error-volume-shower" type="number" id="error-volume-shower" min="0" max="500">
+            <input type="range" id="error-volume" min="0" max="100" value="50" step="5" style="width: 40%;">
+            <input class="error-volume-shower" type="number" id="error-volume-shower" min="0" max="100">
             <script>
             const lang = (localStorage.getItem('lang1') || 'en').trim().toLowerCase();
             const range = document.getElementById('error-volume');
             const number = document.getElementById('error-volume-shower');
             const errorSoundSelect2 = document.getElementById('error-sound-select');
             number.addEventListener('input', () => {
-                if (number.value > 500) {
-                    number.value = 500;
+                if (number.value > 100) {
+                    number.value = 100;
                 } else if (number.value < 0) {
                     number.value = 0;
                 }
@@ -82,35 +82,13 @@
                     document.getElementById('error-sound-preview').style.display = 'none';
                 } else {
                     if (+range.value === 0) {
-                        range.value = 20;
-                        number.value = 20;
+                        range.value = 5;
+                        number.value = 5;
                     }
                     document.getElementById('error-sound-preview').style.display = 'block';
                 }
             });
             // range → number
-            range.addEventListener('change', () => {
-                if (+range.value === 0) {
-                    document.getElementById('play-error-sound').disabled = true
-                    document.getElementById('error-volume-shower').disabled = true;
-                    document.getElementById('error-sound-select').value = 'none';
-                    range.disabled = true
-                    if (lang === 'ru') {
-                        range.title = 'Громкость звука ошибки отключена';
-                    } else if (lang === 'az') {
-                        range.title = 'Səhv səs səviyyəsi deaktiv edilib';
-                    } else {
-                        range.title = 'Error sound volume is disabled';
-                    }
-                } else {
-                    range.title = '';
-                    range.disabled = false;
-                    document.getElementById('error-volume-shower').disabled = false;
-                    document.getElementById('play-error-sound').disabled = false;
-                }
-            });
-
-
             range.addEventListener('input', () => {
                 number.value = range.value;
             });
@@ -123,8 +101,8 @@
             // number → range (потеря фокуса / change)
             number.addEventListener('change', () => {
                 if (number.value === '') {
-                    range.value = 250;
-                    number.value = 250;
+                    range.value = 50;
+                    number.value = 50;
                 }
             });
 
@@ -207,7 +185,6 @@
             <p id="current-location"></p>
             <button id="update-location">Обновить</button>
             <button id="close-location-modal">Назад</button>
-            <button onclick="showSourceCode()" style="display: none;" id="showcode">Показать код</button>
         </div>
     </div>
     <!-- sent-section removed: file-sending feature disabled -->
@@ -257,6 +234,7 @@
             const settingsDiv = document.getElementById('settings');
             const mainContainer = document.getElementById('main-container');
             const prayerModal = document.getElementById('prayer-modal');
+            const locationModal = document.getElementById('location-modal');
             
             // Если открыто меню молитвы
             if (prayerWindow.style.display === 'block') {
@@ -298,6 +276,13 @@
                 // Показываем кнопку Settings
                 tg.SettingsButton.show();
             }
+            // Если открыто модальное окно локации
+            else if (locationModal.style.display === 'flex') {
+                locationModal.style.display = 'none';
+                tg.BackButton.hide();
+                // Показываем кнопку Settings
+                tg.SettingsButton.show();
+            }
         });
 
         // Обработчик события fullscreen_changed
@@ -323,101 +308,16 @@
         });
         
         // Установка блокировки ориентации в портретный режим
-        tg.setScreenOrientationLock('portrait');
+        if (window.Telegram?.WebApp) {
+            Telegram.WebApp.request('web_app_toggle_orientation_lock', {
+                locked: true
+            });
+        }
     }
-(function () {
-    let modal = null;
-
-    function createModal() {
-        modal = document.createElement('div');
-        modal.id = 'source-modal';
-        modal.innerHTML = `
-            <div class="source-backdrop"></div>
-            <div class="source-window">
-                <button class="source-close">×</button>
-                <pre class="source-code"></pre>
-            </div>
-        `;
-
-        const style = document.createElement('style');
-        style.textContent = `
-            #source-modal {
-                position: fixed;
-                inset: 0;
-                z-index: 9999;
-                display: none;
-            }
-            .source-backdrop {
-                position: absolute;
-                inset: 0;
-                background: rgba(0,0,0,.6);
-            }
-            .source-window {
-                position: relative;
-                max-width: 90vw;
-                max-height: 90vh;
-                margin: 5vh auto;
-                background: #0f172a;
-                color: #e5e7eb;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 20px 60px rgba(0,0,0,.5);
-            }
-            .source-code {
-                margin: 0;
-                padding: 16px;
-                font-size: 13px;
-                overflow: auto;
-                max-height: 90vh;
-                white-space: pre;
-            }
-            .source-close {
-                position: absolute;
-                top: 8px;
-                right: 12px;
-                background: none;
-                border: none;
-                font-size: 24px;
-                color: #fff;
-                cursor: pointer;
-            }
-        `;
-
-        document.head.appendChild(style);
-        document.body.appendChild(modal);
-
-        modal.querySelector('.source-backdrop').onclick = close;
-        modal.querySelector('.source-close').onclick = close;
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') close();
-        });
-    }
-
-    function open() {
-        if (!modal) createModal();
-
-        modal.querySelector('.source-code').textContent =
-            document.documentElement.outerHTML;
-
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function close() {
-        if (!modal) return;
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-    }
-
-    // глобальный вызов
-    window.showSourceCode = open;
-})();
-
-</script>
-    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js"></script>
-    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js"></script>
-    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js"></script>
+    </script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js" defer></script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js" defer></script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js" defer></script>
     <script>
         const micVolumeInput = document.getElementById('mic-volume-shower');
 
@@ -461,15 +361,15 @@
                 .enableTextHighlighting();
         });
     </script>
-    <script src="translations.js"></script>
-    <script src="words.js"></script>
-    <script src="language.js"></script>
-    <script src="theme.js"></script>
-    <script src="error_sound.js"></script>
-    <script src="transcription.js"></script>
-    <script src="settings.js"></script>
-    <script src="main.js"></script>
-    <script src="permissions.js"></script>
+    <script src="translations.js" defer></script>
+    <script src="words.js" defer></script>
+    <script src="language.js" defer></script>
+    <script src="theme.js" defer></script>
+    <script src="error_sound.js" defer></script>
+    <script src="transcription.js" defer></script>
+    <script src="settings.js" defer></script>
+    <script src="main.js" defer></script>
+    <script src="permissions.js" defer></script>
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bab08e818fad835',t:'MTc2Nzg2ODM4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
