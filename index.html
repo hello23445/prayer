@@ -151,7 +151,6 @@
                 <select id="on-press-select">
                     <option value="open_main">Открыть главное меню</option>
                     <option value="open_settings">Открыть настройки</option>
-                    <option value="go_back">Переход назад</option>
                     <option value="next_prayer">Переход к следующему намазу</option>
                 </select>
             </div>
@@ -305,11 +304,29 @@
             else if (prayerModal.style.display === 'flex') {
                 clearInterval(prayerModalInterval);
                 prayerModal.style.display = 'none';
-                currentView = 'main'; // Обновляем currentView
+                // Возвращаемся в предыдущее меню
+                currentView = previousViewBeforeModal;
+                // Если возвращаемся в main - показываем основное меню
+                if (previousViewBeforeModal === 'main') {
+                    document.getElementById('prayer-menu').style.display = 'flex';
+                    document.getElementById('open-settings').style.display = 'block';
+                    document.getElementById('location-info').style.display = 'block';
+                    document.getElementById('date-info').style.display = 'block';
+                }
+                // Если возвращаемся в settings - показываем настройки
+                else if (previousViewBeforeModal === 'settings') {
+                    document.getElementById('settings').style.display = 'block';
+                    document.getElementById('main-container').style.display = 'none';
+                }
                 manageMainButton(); // Управляем главной кнопкой
-                tg.BackButton.hide();
-                // Показываем кнопку Settings
-                tg.SettingsButton.show();
+                // Управляем кнопками Telegram WebApp в зависимости от того, куда вернулись
+                if (previousViewBeforeModal === 'main') {
+                    tg.BackButton.hide();
+                    tg.SettingsButton.show();
+                } else if (previousViewBeforeModal === 'settings') {
+                    tg.BackButton.show();
+                    tg.SettingsButton.hide();
+                }
             }
             // Если открыто модальное окно локации
             else if (locationModal.style.display === 'flex') {

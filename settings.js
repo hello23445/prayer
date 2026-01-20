@@ -209,7 +209,11 @@ function loadSettings() {
             viewModeSel.value = settings.viewMode || currentMode;
         }
         if (whereShowSel) whereShowSel.value = settings.whereShow || 'main';
-        if (onPressSel) onPressSel.value = settings.onPress || 'open_main';
+        if (onPressSel) {
+            // Если сохраненное значение 'go_back' - сбрасываем на 'open_main'
+            const savedOnPress = settings.onPress || 'open_main';
+            onPressSel.value = (savedOnPress === 'go_back') ? 'open_main' : savedOnPress;
+        }
         transcriptionEnabled = settings.transcriptionEnabled !== undefined ? settings.transcriptionEnabled : true;
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
         mainButtonEnabled = settings.mainButtonEnabled !== undefined ? settings.mainButtonEnabled : false;

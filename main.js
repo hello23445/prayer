@@ -13,6 +13,7 @@ let currentLang = 'ru';
 let userLocationName = 'Определение местоположения...';
 let asrMethod = 'standard'; // default
 let currentView = 'main'; // Global current view state
+let previousViewBeforeModal = 'main'; // Отслеживаем, откуда открыли modal
 const cyrillicMap = {
     'ﺍ': 'а', 'ﺀ': 'ъ', 'ﺏ': 'б', 'ﺕ': 'т', 'ﺙ': 'с', 'ﺝ': 'дж', 'ﺡ': 'х', 'ﺥ': 'х', 'ﺩ': 'д', 'ﺫ': 'з',
     'ﺭ': 'р', 'ﺯ': 'з', 'ﺱ': 'с', 'ﺵ': 'ш', 'ﺹ': 'с', 'ﺽ': 'д', 'ﻁ': 'т', 'ﻅ': 'з', 'ﻉ': '', 'ﻍ': 'г',
@@ -257,6 +258,8 @@ function showPrayerModal(value) {
     document.getElementById('prayer-time').textContent = ` (${hhmm})`;
     updateRemainingTime(value);
     prayerModalInterval = setInterval(() => updateRemainingTime(value), 1000);
+    // Сохраняем текущий вид перед открытием modal
+    previousViewBeforeModal = currentView;
     if (value === 'asr') {
         document.getElementById('asr-method-container').style.display = 'block';
         document.getElementById('asr-method-select-modal').value = asrMethod;
@@ -288,12 +291,30 @@ function showPrayerModal(value) {
     document.getElementById('modal-back').onclick = () => {
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
-        currentView = 'main';
+        // Возвращаемся в предыдущее меню
+        currentView = previousViewBeforeModal;
+        // Если возвращаемся в main - показываем основное меню
+        if (previousViewBeforeModal === 'main') {
+            document.getElementById('prayer-menu').style.display = 'flex';
+            document.getElementById('open-settings').style.display = 'block';
+            document.getElementById('location-info').style.display = 'block';
+            document.getElementById('date-info').style.display = 'block';
+        }
+        // Если возвращаемся в settings - показываем настройки
+        else if (previousViewBeforeModal === 'settings') {
+            document.getElementById('settings').style.display = 'block';
+            document.getElementById('main-container').style.display = 'none';
+        }
         manageMainButton();
-        // Скрываем кнопку Back и показываем Settings
+        // Управляем кнопками Telegram WebApp в зависимости от того, куда вернулись
         if (window.tg) {
-            window.tg.BackButton.hide();
-            window.tg.SettingsButton.show();
+            if (previousViewBeforeModal === 'main') {
+                window.tg.BackButton.hide();
+                window.tg.SettingsButton.show();
+            } else if (previousViewBeforeModal === 'settings') {
+                window.tg.BackButton.show();
+                window.tg.SettingsButton.hide();
+            }
         }
     };
     document.getElementById('continue-btn').onclick = () => {
@@ -405,9 +426,6 @@ function manageMainButton() {
         case 'open_settings':
             text = translations[currentLang].openSettings;
             break;
-        case 'go_back':
-            text = translations[currentLang].backBtn;
-            break;
         case 'next_prayer':
             const nextInfo = getNextPrayerInfo();
             text = nextInfo.text;
@@ -494,15 +512,20 @@ if (window.tg) {
         const onPress = settings.onPress || 'open_main';
         switch (onPress) {
             case 'open_main':
-                if (currentView !== 'main') handleBack();
+                // Переходим в главное меню, скрывая настройки если они открыты
+                if (currentView === 'settings') {
+                    const mainContainer = document.getElementById('main-container');
+                    const settingsDiv = document.getElementById('settings');
+                    mainContainer.style.display = 'flex';
+                    settingsDiv.style.display = 'none';
+                    currentView = 'main';
+                }
                 break;
             case 'open_settings':
                 document.getElementById('open-settings').click();
                 break;
-            case 'go_back':
-                handleBack();
-                break;
             case 'next_prayer':
+                // Показываем modal со следующим намазом БЕЗ скрытия главной кнопки
                 const nextKey = getNextPrayerInfo().key;
                 if (nextKey) showPrayerModal(nextKey);
                 break;

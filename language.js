@@ -69,8 +69,7 @@ function applyLang(lang) {
     if (onPressSelect) {
         onPressSelect.options[0].textContent = t.openMainMenu;
         onPressSelect.options[1].textContent = t.openSettings;
-        onPressSelect.options[2].textContent = t.goBack;
-        onPressSelect.options[3].textContent = t.goNextPrayer;
+        onPressSelect.options[2].textContent = t.goNextPrayer;
     }
     const saveSettingsEl = document.getElementById('save-settings');
     if (saveSettingsEl) saveSettingsEl.textContent = t.saveSettings;
