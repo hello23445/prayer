@@ -149,12 +149,15 @@ const translations = {
         whereShowMainButton: 'Əsas düymə harada göstərilsin:',
         inMainMenu: 'Əsas menyuda',
         inSettings: 'Parametrlərdə',
+        inBoth: 'Hər ikisi',
         onMainButtonPress: 'Əsas düyməyə basıldıqda:',
         openMainMenu: 'Əsas menyunu aç',
         openSettings: 'Parametrləri aç',
         goBack: 'Geri qayıt',
         goNextPrayer: 'Növbəti namaza keçid',
         returnToMainMenu: 'Əsas menyuya qayıt',
+        buttonColorLabel: 'Düymənin rəngi:',
+        buttonTextColorLabel: 'Düymə mətni rəngləri:',
 
         // Titles
         openSettingsTitle: 'Parametrləri aç',
@@ -237,12 +240,15 @@ const translations = {
         whereShowMainButton: 'Where to show Main Button:',
         inMainMenu: 'In main menu',
         inSettings: 'In settings',
+        inBoth: 'Both',
         onMainButtonPress: 'When Main Button is pressed:',
         openMainMenu: 'Open main menu',
         openSettings: 'Open settings',
         goBack: 'Go back',
         goNextPrayer: 'Go to next prayer',
         returnToMainMenu: 'Return to main menu',
+        buttonColorLabel: 'Button color:',
+        buttonTextColorLabel: 'Button text colors:',
 
         // Titles
         openSettingsTitle: 'Open settings',
