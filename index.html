@@ -169,10 +169,7 @@
                 <option value="dark">Темный</option>
             </select>
             <label id="view-mode-label">Вид:</label>
-            <select id="view-mode-select" disabled onchange="document.querySelectorAll('.header22').forEach(el => {
-    el.style.marginTop =
-        (viewMode === 'fullscreen') ? '30%' : '2%';
-});">
+            <select id="view-mode-select" disabled onchange="location.reload()">
                 <option value="normal">Не полноэкранный</option>
                 <option value="fullscreen">Полноэкранный</option>
             </select>

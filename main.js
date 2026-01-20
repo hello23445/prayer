@@ -457,6 +457,11 @@ function manageMainButton() {
     
     tg.MainButton.setText(text);
     tg.MainButton.show();
+    
+    // Применяем цвета к кнопке если функция доступна
+    if (typeof applyButtonColors === 'function') {
+        applyButtonColors();
+    }
 }
 window.addEventListener('load', () => {
     document.getElementById('location-info').textContent = userLocationName;
