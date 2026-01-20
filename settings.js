@@ -106,7 +106,14 @@ async function applyViewMode(mode) {
     if (window.tg) {
         if (mode === 'fullscreen') {
             try {
+                // Запрашиваем полноэкранный режим
                 await window.tg.requestFullscreen();
+                // Автоматическая подстройка UI элементов для полноэкранного режима
+                const settingsContent = document.getElementById('settings-content');
+                if (settingsContent) {
+                    settingsContent.style.width = '100%';
+                    settingsContent.style.maxHeight = '100vh';
+                }
             } catch (err) {
                 console.error('Fullscreen request failed', err);
                 const viewModeSelect = document.getElementById('view-mode-select');
@@ -116,8 +123,17 @@ async function applyViewMode(mode) {
                 saveSettings();
             }
         } else {
-            window.tg.expand();
-            window.tg.exitFullscreen();
+            // Нормальный режим
+            try {
+                window.tg.expand();
+            } catch (e) {
+                console.log('Expand not available');
+            }
+            try {
+                window.tg.exitFullscreen();
+            } catch (e) {
+                console.log('Exit fullscreen not available');
+            }
         }
     }
 }
@@ -277,8 +293,27 @@ document.getElementById('mic-volume-shower').addEventListener('change', () => {
 errorVolume.addEventListener('input', () => {
     window.errorVolumeValue = errorVolume.value;
     document.getElementById('error-volume-shower').value = errorVolume.value;
+});
+
+errorVolume.addEventListener('change', () => {
+    window.errorVolumeValue = errorVolume.value;
     saveSettings();
 });
+
+document.getElementById('error-volume-shower').addEventListener('input', () => {
+    window.errorVolumeValue = document.getElementById('error-volume-shower').value;
+    errorVolume.value = document.getElementById('error-volume-shower').value;
+});
+
+document.getElementById('error-volume-shower').addEventListener('change', () => {
+    if (document.getElementById('error-volume-shower').value === '') {
+        errorVolume.value = 100;
+        document.getElementById('error-volume-shower').value = 100;
+        window.errorVolumeValue = 100;
+    }
+    saveSettings();
+});
+
 const btn = document.getElementById('play-error-sound');
 
 const observer = new MutationObserver(mutations => {
