@@ -2,8 +2,8 @@
 const translations = {
     ru: {
         updateLocationBtn: 'Обновить',
-        updateLocationTitle: 'Обновить местоположение',
-        closeLocationModalTitle: 'Закрыть модальное окно',
+        updateLocationTitle: 'Обновить мое местоположение',
+        closeLocationModalTitle: 'Закрыть это модальное окно',
         backBtn: 'Назад',
         title: 'Намаз',
         fajr: 'Фаджр',
@@ -65,13 +65,13 @@ const translations = {
         goBack: 'Переход назад',
         goNextPrayer: 'Переход к следующему намазу',
         returnToMainMenu: 'Вернуться в главное меню',
-        buttonColorLabel: 'Цвет кнопки:',
-        buttonTextColorLabel: 'Цвета текста кнопки:',
+        buttonColorLabel: 'Цвет главной кнопки:',
+        buttonTextColorLabel: 'Цвета текста главной кнопки:',
 
         // Titles для кнопок и подсказки
         openSettingsTitle: 'Открыть настройки',
         backBtnTitle: 'Назад',
-        audioBtnTitle: 'Запись аудио',
+        audioBtnTitle: 'Начать запись аудио',
         stopBtnTitle: 'Остановить запись',
         closeSettingsTitle: 'Закрыть настройки',
         playErrorSoundTitle: 'Проиграть звук ошибки',
@@ -87,8 +87,8 @@ const translations = {
         ishaTitle: 'Иша (ночной намаз)',
         geoErrorMessage: 'Включите разрешение на использование геолокации в настройках вашего устройства.',
         geoRestartMessage: 'После предоставления разрешения на использование геолокации перезапустите приложение.',
-        geoNotAllowed: 'Геолокация не разрешена',
-        geoDetecting: 'Определение...'
+        geoNotAllowed: 'Геолокация не разрешена!',
+        geoDetecting: 'Определение местоположения...'
     },
 
     az: {
@@ -108,7 +108,7 @@ const translations = {
         systemTheme: 'Cihaz kimi',
         lightTheme: 'Açıq',
         darkTheme: 'Qaranlıq',
-        langLabel: 'Dil interfeysi:',
+        langLabel: 'İnterfeys dili:',
         transcriptionLangLabel: 'Transkripsiya dili:',
         latinScript: 'Latın',
         cyrillicRuScript: 'Kiril (Rus)',
