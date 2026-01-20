@@ -271,10 +271,6 @@ function showPrayerModal(value) {
     document.getElementById('modal-back').onclick = () => {
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
-        // Скрываем кнопку Back в Telegram WebApp при возврате в меню
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.BackButton.hide();
-        }
     };
     document.getElementById('continue-btn').onclick = () => {
         clearInterval(prayerModalInterval);
@@ -296,18 +292,6 @@ function showPrayerModal(value) {
             window.Telegram.WebApp.SettingsButton.hide();
         }
     };
-    // Обработчик BackButton для закрытия молитвенного модального окна
-    if (window.Telegram && window.Telegram.WebApp && !window.prayerModalBackHandler) {
-        window.prayerModalBackHandler = () => {
-            const prayerModal = document.getElementById('prayer-modal');
-            if (prayerModal.style.display === 'flex') {
-                clearInterval(prayerModalInterval);
-                prayerModal.style.display = 'none';
-                window.Telegram.WebApp.BackButton.hide();
-            }
-        };
-        window.Telegram.WebApp.onEvent('backButtonClicked', window.prayerModalBackHandler);
-    }
 }
 function updateRemainingTime(value) {
     const t = translations[currentLang];
