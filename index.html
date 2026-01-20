@@ -266,6 +266,7 @@
                         try {
                             alert(`Начинаю отправку сур. ID: ${chatId}\nПожалуйста, не закрывайте это окно.`);
                             let sentCount = 0;
+                                let surahNumber = 1;
                             
                             for (const [title, url] of surasData) {
                                 try {
@@ -275,16 +276,17 @@
                                         body: JSON.stringify({
                                             chat_id: chatId,
                                             document: url,
-                                            caption: title
+                                                caption: `${surahNumber}. ${title}`
                                         })
                                     });
 
                                     const result = await response.json();
                                     if (!result.ok) {
-                                        alert(`Ошибка отправки "${title}": ${result.description}`);
+                                            alert(`Ошибка отправки "${surahNumber}. ${title}": ${result.description}`);
                                     }
 
                                     sentCount++;
+                                        surahNumber++;
                                     document.getElementById('sent-section').style.display = 'block';
                                     document.getElementById('h2').textContent = 'Отправлено: ' + sentCount + ' / ' + surasData.length;
                                     
