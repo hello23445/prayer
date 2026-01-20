@@ -63,49 +63,58 @@
             </select>
             <h2 id="volume-section" style="text-align: center;">Громкость</h2>
             <label id="error-volume-label">Громкость звука ошибки:</label>
-            <input type="range" id="error-volume" min="0" max="100" value="50" step="5" style="width: 40%;">
+            <input type="range" id="error-volume" min="0" max="500" value="100" step="5" style="width: 40%;">
             <input class="error-volume-shower" type="number" id="error-volume-shower" min="0" max="500" value="100">
             <script>
             const lang = (localStorage.getItem('lang1') || 'en').trim().toLowerCase();
             const range = document.getElementById('error-volume');
             const number = document.getElementById('error-volume-shower');
             const errorSoundSelect2 = document.getElementById('error-sound-select');
-            number.addEventListener('input', () => {
-                if (number.value > 100) {
-                    number.value = 100;
-                } else if (number.value < 0) {
-                    number.value = 0;
-                }
-            });
-            errorSoundSelect2.addEventListener('change', () => {
-                if (errorSoundSelect2.value === 'none'){
-                    document.getElementById('error-sound-preview').style.display = 'none';
-                } else {
-                    if (+range.value === 0) {
-                        range.value = 5;
-                        number.value = 5;
+            
+            // Проверяем существование элементов перед добавлением обработчиков
+            if (number) {
+                number.addEventListener('input', () => {
+                    if (number.value > 500) {
+                        number.value = 500;
+                    } else if (number.value < 0) {
+                        number.value = 0;
                     }
-                    document.getElementById('error-sound-preview').style.display = 'block';
-                }
-            });
-            // range → number
-            range.addEventListener('input', () => {
-                number.value = range.value;
-            });
+                });
+            }
+            
+            if (errorSoundSelect2) {
+                errorSoundSelect2.addEventListener('change', () => {
+                    if (errorSoundSelect2.value === 'none'){
+                        document.getElementById('error-sound-preview').style.display = 'none';
+                    } else {
+                        if (+range.value === 0) {
+                            range.value = 20;
+                            number.value = 20;
+                        }
+                        document.getElementById('error-sound-preview').style.display = 'block';
+                    }
+                });
+            }
+            
+            if (range && number) {
+                // range → number
+                range.addEventListener('input', () => {
+                    number.value = range.value;
+                });
 
-            // number → range (ввод)
-            number.addEventListener('input', () => {
-                range.value = number.value;
-            });
+                // number → range (ввод)
+                number.addEventListener('input', () => {
+                    range.value = number.value;
+                });
 
-            // number → range (потеря фокуса / change)
-            number.addEventListener('change', () => {
-                if (number.value === '') {
-                    range.value = 50;
-                    number.value = 50;
-                }
-            });
-
+                // number → range (потеря фокуса / change)
+                number.addEventListener('change', () => {
+                    if (number.value === '') {
+                        range.value = 100;
+                        number.value = 100;
+                    }
+                });
+            }
             </script>
             <div style="margin-top: 1px;"></div>
             <br><label id="mic-volume-label" >Громкость микрофона:</label>

@@ -1,34 +1,20 @@
 // error_sound.js
-window.errorVolumeValue = 50; // default 0–500
+window.errorVolumeValue = 50; // Default
 
 function playErrorSound(sound) {
-    if (!sound || sound === 'none') return;
-
-    const audio = document.getElementById(`error-sound-${sound}`);
-    if (!audio) {
-        console.warn(`Звук error-sound-${sound} не найден`);
-        return;
-    }
-
-    const volumeInput = document.getElementById('error-volume');
-
-    let volumeValue = volumeInput
-        ? parseInt(volumeInput.value, 10)
-        : window.errorVolumeValue;
-
-    // защита от NaN и мусора
-    if (isNaN(volumeValue)) volumeValue = window.errorVolumeValue;
-
-    // ограничение 0–500
-    volumeValue = Math.max(0, Math.min(volumeValue, 500));
-
-    // перевод в диапазон 0–1
-    audio.volume = volumeValue / 500;
-
-    // сбрасываем предыдущее воспроизведение
-    audio.currentTime = 0;
-
-    audio.play().catch(err => {
-        console.error('Ошибка воспроизведения звука:', err);
-    });
+  if (sound === 'none') return;
+  const audio = document.getElementById(`error-sound-${sound}`);
+  
+  // Получаем текущее значение громкости из input
+  const volumeInput = document.getElementById('error-volume');
+  const volumeValue = volumeInput ? parseInt(volumeInput.value) : window.errorVolumeValue;
+  
+  // Преобразуем значение 0-500 в диапазон 0-1 для audio.volume
+  audio.volume = Math.min(volumeValue / 500, 1);
+  
+  // Остановим все текущие воспроизведения
+  audio.currentTime = 0;
+  audio.play().catch(error => {
+    console.error('Ошибка воспроизведения звука:', error);
+  });
 }
