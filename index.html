@@ -207,22 +207,10 @@
             <p id="current-location"></p>
             <button id="update-location">Обновить</button>
             <button id="close-location-modal">Назад</button>
-            <button id="f2">Написать в личку</button>
             <button onclick="showSourceCode()" style="display: none;" id="showcode">Показать код</button>
         </div>
     </div>
-    <div id="sent-section" style="display: none;">
-        <h2 id="h2">Отправлено:</h2>
-    </div>
-    <script>
-        if (localStorage.getItem('lang1') && localStorage.getItem('lang1') === 'ru' && document.getElementById('sent-section').style.display === 'block') {
-            document.getElementById('h2').textContent = 'Отправлено:';
-        } else if (localStorage.getItem('lang1') && localStorage.getItem('lang1') === 'az') {
-            document.getElementById('h2').textContent = 'Göndərildi:';
-        } else {
-            document.getElementById('h2').textContent = 'Sent:';
-        }
-    </script>
+    <!-- sent-section removed: file-sending feature disabled -->
     <audio id="error-sound-beep" preload="auto">
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
@@ -248,65 +236,6 @@
         
         // Настройка кнопки Settings
         tg.SettingsButton.show();
-        document.getElementById('f2').addEventListener('click', async function() {
-            tg.requestWriteAccess((granted) => {
-                if (granted) {
-                    const BOT_TOKEN = '8447574793:AAEY_QlEAQsBbI5Hsaygdb5Oe-KrisG9vg8';
-                    const TG_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
-                    const chatId = tg.initDataUnsafe.user.id;
-                    
-                    // Импортируем suras динамически
-                    import('./allSuras.js').then(module => {
-                        sendAllSuras(module.suras);
-                    }).catch(err => {
-                        alert('Ошибка загрузки данных сур: ' + err.message);
-                    });
-
-                    async function sendAllSuras(surasData) {
-                        try {
-                            alert(`Начинаю отправку сур. ID: ${chatId}\nПожалуйста, не закрывайте это окно.`);
-                            let sentCount = 0;
-                                let surahNumber = 1;
-                            
-                            for (const [title, url] of surasData) {
-                                try {
-                                    const response = await fetch(`${TG_API}/sendDocument`, {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({
-                                            chat_id: chatId,
-                                            document: url,
-                                                caption: `${surahNumber}. ${title}`
-                                        })
-                                    });
-
-                                    const result = await response.json();
-                                    if (!result.ok) {
-                                            alert(`Ошибка отправки "${surahNumber}. ${title}": ${result.description}`);
-                                    }
-
-                                    sentCount++;
-                                        surahNumber++;
-                                    document.getElementById('sent-section').style.display = 'block';
-                                    document.getElementById('h2').textContent = 'Отправлено: ' + sentCount + ' / ' + surasData.length;
-                                    
-                                    // антифлуд Telegram
-                                    await new Promise(r => setTimeout(r, 1200));
-                                } catch (error) {
-                                    console.error('Ошибка при отправке суры:', title, error);
-                                    alert(`Ошибка при отправке: ${error.message}`);
-                                }
-                            }
-                            alert('Отправка завершена!');
-                        } catch (error) {
-                            alert('Критическая ошибка: ' + error.message);
-                        }
-                    }
-                } else {
-                    alert('Чтобы получить все суры, надо разрешить боту отправлять вам сообщения.');
-                }
-            });
-        });
         // Слушаем событие нажатия кнопки Settings
         tg.onEvent('settingsButtonClicked', () => {
             const mainContainer = document.getElementById('main-container');
