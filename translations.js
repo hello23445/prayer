@@ -72,7 +72,21 @@ const translations = {
         geoErrorMessage: 'Включите разрешение на использование геолокации в настройках вашего устройства.',
         geoRestartMessage: 'После предоставления разрешения на использование геолокации перезапустите приложение.',
         geoNotAllowed: 'Геолокация не разрешена',
-        geoDetecting: 'Определение...'
+        geoDetecting: 'Определение...',
+        // Main Button translations
+        mainButtonEnabled: 'Добавить главную кнопку',
+        mainButtonLocationLabel: 'Где показывать главную кнопку:',
+        mainButtonLocationMain: 'В главном меню',
+        mainButtonLocationSettings: 'В настройках',
+        mainButtonActionLabel: 'При нажатии главной кнопки:',
+        mainButtonActionMainMenu: 'Открыть главное меню',
+        mainButtonActionSettings: 'Открыть настройки',
+        mainButtonActionBack: 'Переход назад',
+        mainButtonActionNextPrayer: 'Переход к следующему намазу',
+        mainButtonTextMainMenu: 'Вернуться в главное меню',
+        mainButtonTextSettings: 'Настройки',
+        mainButtonTextBack: 'Назад',
+        mainButtonTextNextPrayer: '{prayer}:{time} ({timeLeft})'
     },
     az: {
         updateLocationBtn: 'Yenilə',
@@ -146,7 +160,21 @@ const translations = {
         geoErrorMessage: 'Cihazınızın ayarlarında geolokasiyanın istifadəsinə icazəni aktivləşdirin.',
         geoRestartMessage: 'Geolokasiyanın istifadəsinə icazə verdikdən sonra tətbiqəni yenidən başlatın.',
         geoNotAllowed: 'Geolokasiyanın icazəsi verilməyib',
-        geoDetecting: 'Təyin edilir...'
+        geoDetecting: 'Təyin edilir...',
+        // Main Button translations
+        mainButtonEnabled: 'Əsas düymə əlavə et',
+        mainButtonLocationLabel: 'Əsas düymə harada göstəriləcək:',
+        mainButtonLocationMain: 'Əsas menyuda',
+        mainButtonLocationSettings: 'Parametrlərdə',
+        mainButtonActionLabel: 'Əsas düymə basılarkən:',
+        mainButtonActionMainMenu: 'Əsas menyunu aç',
+        mainButtonActionSettings: 'Parametrləri aç',
+        mainButtonActionBack: 'Geriyə get',
+        mainButtonActionNextPrayer: 'Növbəti namaza get',
+        mainButtonTextMainMenu: 'Əsas menyuya qayıt',
+        mainButtonTextSettings: 'Parametrlər',
+        mainButtonTextBack: 'Geri',
+        mainButtonTextNextPrayer: '{prayer}:{time} ({timeLeft})'
     },
     en: {
         updateLocationBtn: 'Update',
@@ -220,6 +248,20 @@ const translations = {
         geoErrorMessage: 'Enable geolocation permission in your device settings.',
         geoRestartMessage: 'After allowing geolocation permission, restart the application.',
         geoNotAllowed: 'Geolocation not allowed',
-        geoDetecting: 'Detecting...'
+        geoDetecting: 'Detecting...',
+        // Main Button translations
+        mainButtonEnabled: 'Add main button',
+        mainButtonLocationLabel: 'Where to show main button:',
+        mainButtonLocationMain: 'In main menu',
+        mainButtonLocationSettings: 'In settings',
+        mainButtonActionLabel: 'When main button is pressed:',
+        mainButtonActionMainMenu: 'Open main menu',
+        mainButtonActionSettings: 'Open settings',
+        mainButtonActionBack: 'Go back',
+        mainButtonActionNextPrayer: 'Go to next prayer',
+        mainButtonTextMainMenu: 'Return to main menu',
+        mainButtonTextSettings: 'Settings',
+        mainButtonTextBack: 'Back',
+        mainButtonTextNextPrayer: '{prayer}:{time} ({timeLeft})'
     }
 };

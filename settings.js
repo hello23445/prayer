@@ -102,6 +102,52 @@ if (translToggle) {
         saveSettings();
     });
 }
+
+// Main Button settings handlers
+const mainButtonToggle = document.getElementById('main-button-toggle');
+const mainButtonSettings = document.getElementById('main-button-settings');
+const mainButtonLocationSelect = document.getElementById('main-button-location-select');
+const mainButtonActionSelect = document.getElementById('main-button-action-select');
+
+if (mainButtonToggle) {
+    mainButtonToggle.addEventListener('click', () => {
+        mainButtonEnabled = !mainButtonEnabled;
+        updateMainButtonToggleIcon();
+        if (mainButtonSettings) {
+            mainButtonSettings.style.display = mainButtonEnabled ? 'block' : 'none';
+        }
+        updateMainButton();
+        saveSettings();
+    });
+}
+
+if (mainButtonLocationSelect) {
+    mainButtonLocationSelect.addEventListener('change', (e) => {
+        mainButtonLocation = e.target.value;
+        updateMainButton();
+        saveSettings();
+    });
+}
+
+if (mainButtonActionSelect) {
+    mainButtonActionSelect.addEventListener('change', (e) => {
+        mainButtonAction = e.target.value;
+        updateMainButton();
+        saveSettings();
+    });
+}
+
+function updateMainButtonToggleIcon() {
+    const icon = mainButtonToggle.querySelector('i');
+    if (mainButtonEnabled) {
+        icon.classList.remove('fa-toggle-off');
+        icon.classList.add('fa-toggle-on');
+    } else {
+        icon.classList.remove('fa-toggle-on');
+        icon.classList.add('fa-toggle-off');
+    }
+}
+
 async function applyViewMode(mode) {
     if (window.tg) {
         if (mode === 'fullscreen') {
@@ -132,7 +178,10 @@ function saveSettings() {
         transcriptionEnabled,
         translationEnabled,
         asrMethod: (document.getElementById('asr-method-select') ? document.getElementById('asr-method-select').value : 'standard'),
-        viewMode: (document.getElementById('view-mode-select') ? document.getElementById('view-mode-select').value : 'normal')
+        viewMode: (document.getElementById('view-mode-select') ? document.getElementById('view-mode-select').value : 'normal'),
+        mainButtonEnabled,
+        mainButtonLocation,
+        mainButtonAction
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
     updateErrorSoundOptions(settings.errorVolume);
@@ -169,7 +218,19 @@ function loadSettings() {
         }
         transcriptionEnabled = settings.transcriptionEnabled !== undefined ? settings.transcriptionEnabled : true;
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
+        // Load main button settings
+        mainButtonEnabled = settings.mainButtonEnabled !== undefined ? settings.mainButtonEnabled : false;
+        mainButtonLocation = settings.mainButtonLocation || 'main';
+        mainButtonAction = settings.mainButtonAction || 'main-menu';
+        const mainButtonLocationSel = document.getElementById('main-button-location-select');
+        const mainButtonActionSel = document.getElementById('main-button-action-select');
+        if (mainButtonLocationSel) mainButtonLocationSel.value = mainButtonLocation;
+        if (mainButtonActionSel) mainButtonActionSel.value = mainButtonAction;
+        if (mainButtonSettings) {
+            mainButtonSettings.style.display = mainButtonEnabled ? 'block' : 'none';
+        }
         updateToggleIcons();
+        updateMainButtonToggleIcon();
         updateErrorSoundOptions(settings.errorVolume);
         localStorage.setItem('lang1', document.getElementById('lang-select').value);
         if (errorSoundSelect.value === 'none'){
@@ -190,7 +251,14 @@ function loadSettings() {
         applyLang('ru');
         transcriptionEnabled = true;
         translationEnabled = true;
+        mainButtonEnabled = false;
+        mainButtonLocation = 'main';
+        mainButtonAction = 'main-menu';
+        if (mainButtonSettings) {
+            mainButtonSettings.style.display = 'none';
+        }
         updateToggleIcons();
+        updateMainButtonToggleIcon();
         updateErrorSoundOptions(50);
         applyViewMode('normal');
     }

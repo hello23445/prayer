@@ -113,6 +113,25 @@ function applyLang(lang) {
     if (otherParamsSectionEl) otherParamsSectionEl.textContent = t.otherParamsSection;
     const appViewSectionEl = document.getElementById('app-view-section');
     if (appViewSectionEl) appViewSectionEl.textContent = t.appViewSection;
+    // Update main button settings
+    const mainButtonToggleLabelEl = document.getElementById('main-button-toggle-label');
+    if (mainButtonToggleLabelEl) mainButtonToggleLabelEl.textContent = t.mainButtonEnabled;
+    const mainButtonLocationLabelEl = document.getElementById('main-button-location-label');
+    if (mainButtonLocationLabelEl) mainButtonLocationLabelEl.textContent = t.mainButtonLocationLabel;
+    const mainButtonLocationSelect = document.getElementById('main-button-location-select');
+    if (mainButtonLocationSelect) {
+        mainButtonLocationSelect.options[0].textContent = t.mainButtonLocationMain;
+        mainButtonLocationSelect.options[1].textContent = t.mainButtonLocationSettings;
+    }
+    const mainButtonActionLabelEl = document.getElementById('main-button-action-label');
+    if (mainButtonActionLabelEl) mainButtonActionLabelEl.textContent = t.mainButtonActionLabel;
+    const mainButtonActionSelect = document.getElementById('main-button-action-select');
+    if (mainButtonActionSelect) {
+        mainButtonActionSelect.options[0].textContent = t.mainButtonActionMainMenu;
+        mainButtonActionSelect.options[1].textContent = t.mainButtonActionSettings;
+        mainButtonActionSelect.options[2].textContent = t.mainButtonActionBack;
+        mainButtonActionSelect.options[3].textContent = t.mainButtonActionNextPrayer;
+    }
     if (!window.Telegram?.WebApp) {
         document.getElementById('view-mode-label').textContent = t.viewDisabled;
         document.getElementById('view-mode-select').disabled = true;
