@@ -325,7 +325,7 @@ function showPrayerModal(value) {
         }
     };
     document.getElementById('continue-btn').onclick = () => {
-        removeSettings()
+        removeSettingsModal123();
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
         document.getElementById('prayer-name').textContent = name;
@@ -356,6 +356,12 @@ function showPrayerModal(value) {
             window.tg.SettingsButton.hide();
         }
     };
+}
+function removeSettingsModal123(){
+    saveSettings();
+    stopMicTest();
+    document.getElementById('test-mic').textContent = translations[currentLang].testMic;
+    settingsDiv.style.display = 'none';
 }
 function updateRemainingTime(value) {
     const t = translations[currentLang];
