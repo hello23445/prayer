@@ -86,7 +86,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     };
     recognition.onerror = (event) => {
         if (event.error !== 'audio-capture') {
-            document.getElementById('feedback').textContent = 'Ошибка распознавания: ' + event.error;
             document.getElementById('feedback').style.display = 'block';
         }
     };
@@ -248,12 +247,30 @@ async function calculatePrayerTimes(lat, lng) {
             document.getElementById('location-info').innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
             updatePrayerButtons();
         } else {
-            alert('Ошибка получения времени намаза');
-            document.getElementById('location-info').textContent = 'Ошибка времени намаза';
+            const lang = localStorage.getItem('lang1');
+            if (lang === 'ru') {
+                document.getElementById('location-info').textContent =
+                    'Ошибка определения времени намаза';
+            } else if (lang === 'az') {
+                document.getElementById('location-info').textContent =
+                    'Namaz vaxtının təyin edilməsində xəta';
+            } else {
+                document.getElementById('location-info').textContent =
+                    'Error determining prayer time';
+            }
+
         }
     } catch (e) {
-        alert('Ошибка сети при получении времени намаза');
-        document.getElementById('location-info').textContent = 'Нет сети';
+        const lang = localStorage.getItem('lang1');
+        const noNetText =
+            lang === 'ru'
+                ? 'Нет сети'
+                : lang === 'az'
+                    ? 'Şəbəkə yoxdur'
+                    : 'No network';
+
+        // текст в интерфейсе
+        document.getElementById('location-info').textContent = noNetText;
     }
 }
 function showPrayerModal(value) {
