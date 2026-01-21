@@ -396,3 +396,17 @@ observer.observe(btn, {
     attributes: true,
     attributeFilter: ['disabled']
 });
+function removeSettings(){
+    settingsDiv.style.display = 'none';
+    saveSettings();
+    stopMicTest();
+    document.getElementById('test-mic').textContent = translations[currentLang].testMic;
+    currentView = 'main';
+    manageMainButton();
+
+    // В Telegram — важные действия
+    if (window.tg) {
+        window.tg.BackButton.hide();
+        window.tg.SettingsButton.show();
+    }
+}
