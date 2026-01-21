@@ -358,6 +358,7 @@ function showPrayerModal(value) {
     };
 }
 function removeSettingsModal123(){
+    alert('Настройки сохранены.');
     saveSettings();
     stopMicTest();
     document.getElementById('test-mic').textContent = translations[currentLang].testMic;
