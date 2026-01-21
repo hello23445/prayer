@@ -330,7 +330,7 @@ document.getElementById('continue-btn').onclick = () => {
 
     saveSettings();
     stopMicTest();
-
+    document.getElementById('test-mic').textContent = translations[currentLang].testMic;
     settingsDiv.style.display = 'none';
     clearInterval(prayerModalInterval);
     document.getElementById('prayer-modal').style.display = 'none';
