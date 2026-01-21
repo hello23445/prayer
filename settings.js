@@ -397,6 +397,7 @@ observer.observe(btn, {
     attributeFilter: ['disabled']
 });
 function removeSettings(){
+    alert('Настройки сброшены к значениям по умолчанию.');
     settingsDiv.style.display = 'none';
     saveSettings();
     stopMicTest();
