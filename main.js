@@ -325,6 +325,7 @@ function showPrayerModal(value) {
         }
     };
     document.getElementById('continue-btn').onclick = () => {
+        removeSettings()
         clearInterval(prayerModalInterval);
         document.getElementById('prayer-modal').style.display = 'none';
         document.getElementById('prayer-name').textContent = name;

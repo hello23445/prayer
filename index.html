@@ -7,6 +7,8 @@
     <title>Намаз</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <script src="https://cdn.jsdelivr.net/npm/transliteration@2.3.5/dist/browser/bundle.umd.min.js" defer></script>
 </head>
 <body class="system">
@@ -137,34 +139,6 @@
                 </select>
                 <button id="play-error-sound" class="play-btn"><i class="fa-solid fa-circle-play icon"></i></button>
             </div>
-            <div class="toggle-label" id="main-button-toggle">
-                <span id="main-button-toggle-label">Добавить главную кнопку</span>
-                <i class="fa-solid fa-toggle-off icon"></i>
-            </div>
-            <div id="main-button-options" style="display: none;">
-                <label id="where-show-label">Где показывать главную кнопку:</label>
-                <select id="where-show-select">
-                    <option value="main">В главном меню</option>
-                    <option value="settings">В настройках</option>
-                    <option value="both">Обе</option>
-                </select>
-                <label id="on-press-label">При нажатии главной кнопки:</label>
-                <select id="on-press-select">
-                    <option value="open_main">Открыть главное меню</option>
-                    <option value="open_settings">Открыть настройки</option>
-                    <option value="next_prayer">Переход к следующему намазу</option>
-                </select>
-                <div id="button-color-options" style="display: none;">
-                    <div class="toggle-label">
-                        <span id="button-color-label">Цвет кнопки:</span>
-                        <input type="color" id="button-color-input" value="#0088cc" style="width: 50px; height: 40px; border: none; cursor: pointer;">
-                    </div>
-                    <div class="toggle-label">
-                        <span id="button-text-color-label">Цвета текста кнопки:</span>
-                        <input type="color" id="button-text-color-input" value="#ffffff" style="width: 50px; height: 40px; border: none; cursor: pointer;">
-                    </div>
-                </div>
-            </div>
             <h2 id="app-view-section" style="text-align: center;">Вид приложения</h2>
             <label id="theme-label">Тема:</label>
             <select id="theme-select">
@@ -181,9 +155,39 @@
                 <span id="transcription-toggle-label">Показывать транскрипцию</span>
                 <i class="fa-solid fa-toggle-on icon"></i>
             </div>
-            <div class="toggle-label" id="translation-toggle" style="margin-bottom: 10%;">
+            <div class="toggle-label" id="translation-toggle">
                 <span id="translation-toggle-label">Показывать перевод</span>
                 <i class="fa-solid fa-toggle-on icon"></i>
+            </div>
+            <div style="margin-bottom: 10%;">
+                <div class="toggle-label" id="main-button-toggle">
+                    <span id="main-button-toggle-label">Добавить главную кнопку</span>
+                    <i class="fa-solid fa-toggle-off icon"></i>
+                </div>
+                <div id="main-button-options" style="display: none;">
+                    <label id="where-show-label">Где показывать главную кнопку:</label>
+                    <select id="where-show-select">
+                        <option value="main">В главном меню</option>
+                        <option value="settings">В настройках</option>
+                        <option value="both">Обе</option>
+                    </select>
+                    <label id="on-press-label">При нажатии главной кнопки:</label>
+                    <select id="on-press-select">
+                        <option value="open_main">Открыть главное меню</option>
+                        <option value="open_settings">Открыть настройки</option>
+                        <option value="next_prayer">Переход к следующему намазу</option>
+                    </select>
+                    <div id="button-color-options" style="display: none;">
+                        <div class="toggle-label">
+                            <span id="button-color-label">Цвет кнопки:</span>
+                            <input type="color" id="button-color-input" value="#0088cc" style="width: 50px; height: 40px; border: none; cursor: pointer;">
+                        </div>
+                        <div class="toggle-label">
+                            <span id="button-text-color-label">Цвета текста кнопки:</span>
+                            <input type="color" id="button-text-color-input" value="#ffffff" style="width: 50px; height: 40px; border: none; cursor: pointer;">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -214,7 +218,7 @@
                     <option value="standard">Шафи, Малики, Ханбали</option>
                 </select>
             </div>
-            <button id="continue-btn" onclick="removeSettings()">Продолжить <i class="fa-solid fa-right-long icon"></i></button>
+            <button id="continue-btn">Продолжить <i class="fa-solid fa-right-long icon"></i></button>
         </div>
     </div>
     <div id="location-modal" class="modal" style="display: none;">
@@ -225,16 +229,12 @@
         </div>
     </div>
     <!-- sent-section removed: file-sending feature disabled -->
-    <audio id="error-sound-beep" preload="auto">
+    <audio id="error-sound-beep" preload="none">
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script type="module">
-        import { suras } from './allSuras.js';
-    </script>
     <script>
     const tg = window.Telegram?.WebApp || null;
-    // alert(tg?.initDataUnsafe?.user?.id);
     if (!tg || tg !== null){
         document.getElementById('view-mode-label').textContent = 'Вид: (только в Telegram)';
     }
@@ -395,9 +395,9 @@
         }
     }
     </script>
-    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js" defer></script>
+    <!-- <script src="https://hosted-talkify-assets.azureedge.net/js/talkify.min.js" defer></script>
     <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-playlist.js" defer></script>
-    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js" defer></script>
+    <script src="https://hosted-talkify-assets.azureedge.net/js/talkify-text-highlighter.js" defer></script> -->
     <script>
         const micVolumeInput = document.getElementById('mic-volume-shower');
 
@@ -411,34 +411,15 @@
             }
         });
         window.addEventListener('load', function() {
-            if (typeof talkify === 'undefined') {
-                console.error('Talkify не загрузился. Используем fallback на speechSynthesis.');
-                window.talkifyPlayer = {
-                    playText: function(text) {
-                        const u = new SpeechSynthesisUtterance(text);
-                        u.lang = 'ar-SA';
-                        speechSynthesis.speak(u);
-                    },
-                    forceVoice: function() { return this; },
-                    enableTextHighlighting: function() { return this; }
-                };
-                return;
-            }
-            talkify.config = {
-                remoteService: {
-                    host: 'https://talkify.net',
-                    apiKey: '16f5f310-26f3-4c81-8644-a945be68a3a0',
-                    active: true
+            window.talkifyPlayer = {
+                playText: function(text) {
+                    const u = new SpeechSynthesisUtterance(text);
+                    u.lang = 'ar-SA';
+                    speechSynthesis.speak(u);
                 },
-                ui: {
-                    audioControls: {
-                        enabled: false
-                    }
-                }
+                forceVoice: function() { return this; },
+                enableTextHighlighting: function() { return this; } // Пустая функция, если подсветка не нужна
             };
-            window.talkifyPlayer = new talkify.TtsPlayer()
-                .forceVoice({ name: "Amir" }) // Арабский голос Amir (из доступных арабских голосов Talkify)
-                .enableTextHighlighting();
         });
     </script>
     <script src="translations.js" defer></script>
