@@ -324,45 +324,46 @@ function showPrayerModal(value) {
             }
         }
     };
-    document.getElementById('continue-btn').onclick = () => {
-        removeSettingsModal123();
-        clearInterval(prayerModalInterval);
-        document.getElementById('prayer-modal').style.display = 'none';
-        document.getElementById('prayer-name').textContent = name;
-        document.getElementById('prayer-window').style.display = 'block';
-        document.getElementById('main-container').classList.add('full-screen');
-        document.getElementById('user-text').value = '';
-        document.getElementById('feedback').style.display = 'none';
-        // Hide all unnecessary elements
-        document.getElementById('location-info').style.display = 'none';
-        document.getElementById('open-settings').style.display = 'none';
-        document.getElementById('prayer-menu').style.display = 'none';
-        document.getElementById('date-info').style.display = 'none';
-        // Применяем margin-top к header в зависимости от fullscreen режима
-        const prayerWindow = document.getElementById('prayer-window');
-        if (prayerWindow) {
-            const fixedHeader = prayerWindow.querySelector('.fixed-header');
-            if (fixedHeader) {
-                const viewMode = localStorage.getItem('namazSettings') ? JSON.parse(localStorage.getItem('namazSettings')).viewMode : 'normal';
-                fixedHeader.style.marginTop = (viewMode === 'fullscreen') ? '30%' : '2%';
-            }
-        }
-        currentView = 'prayer';
-        manageMainButton();
-        // Показываем кнопку Back в Telegram WebApp
-        if (window.tg) {
-            window.tg.BackButton.show();
-            // Скрываем кнопку Settings
-            window.tg.SettingsButton.hide();
-        }
-    };
-}
-function removeSettingsModal123(){
-    alert('Настройки сохранены.');
+document.getElementById('continue-btn').onclick = () => {
+    // ⬅️ ВАЖНО
+    document.getElementById('main-container').style.display = 'flex';
+
     saveSettings();
     stopMicTest();
-    document.getElementById('test-mic').textContent = translations[currentLang].testMic;
+
     settingsDiv.style.display = 'none';
+    clearInterval(prayerModalInterval);
+    document.getElementById('prayer-modal').style.display = 'none';
+
+    document.getElementById('prayer-name').textContent = name;
+    document.getElementById('prayer-window').style.display = 'block';
+    document.getElementById('main-container').classList.add('full-screen');
+
+    document.getElementById('user-text').value = '';
+    document.getElementById('feedback').style.display = 'none';
+
+    document.getElementById('location-info').style.display = 'none';
+    document.getElementById('open-settings').style.display = 'none';
+    document.getElementById('prayer-menu').style.display = 'none';
+    document.getElementById('date-info').style.display = 'none';
+
+    const prayerWindow = document.getElementById('prayer-window');
+    if (prayerWindow) {
+        const fixedHeader = prayerWindow.querySelector('.fixed-header');
+        if (fixedHeader) {
+            const viewMode = JSON.parse(localStorage.getItem('namazSettings') || '{}').viewMode || 'normal';
+            fixedHeader.style.marginTop = viewMode === 'fullscreen' ? '30%' : '2%';
+        }
+    }
+
+    currentView = 'prayer';
+    manageMainButton();
+
+    if (window.tg) {
+        window.tg.BackButton.show();
+        window.tg.SettingsButton.hide();
+    }
+};
 }
 function updateRemainingTime(value) {
     const t = translations[currentLang];
