@@ -1,6 +1,5 @@
 // main_button.js
 // Main Button Management for Telegram WebApp
-alert("set")
 let mainButtonEnabled = false;
 let mainButtonLocation = 'main';
 let mainButtonAction = 'main-menu';
@@ -8,7 +7,7 @@ let nextPrayerUpdateInterval = null;
 
 // Prayer times object
 const prayerNames = {
-    fajr: { en: 'Fajr', ru: 'Намаз: Фаджр', az: 'Sübh' },
+    fajr: { en: 'Fajr', ru: 'Фаджр', az: 'Sübh' },
     dhuhr: { en: 'Dhuhr', ru: 'Зухр', az: 'Zöhr' },
     asr: { en: 'Asr', ru: 'Аср', az: 'Əsr' },
     maghrib: { en: 'Maghrib', ru: 'Магриб', az: 'Məğrib' },
@@ -164,8 +163,6 @@ function updateMainButton() {
     if (buttonText) {
         tg.MainButton.setText(buttonText);
         tg.MainButton.show();
-        tg.MainButton.enableShine()
-        alert("done")
     }
 }
 
@@ -263,6 +260,7 @@ function setupMainButton() {
 document.addEventListener('DOMContentLoaded', () => {
     setupMainButton();
 });
+
 
 
 
