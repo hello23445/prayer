@@ -1,6 +1,6 @@
 // main_button.js
 // Main Button Management for Telegram WebApp
-
+alert("set")
 let mainButtonEnabled = false;
 let mainButtonLocation = 'main';
 let mainButtonAction = 'main-menu';
@@ -165,6 +165,7 @@ function updateMainButton() {
         tg.MainButton.setText(buttonText);
         tg.MainButton.show();
         tg.MainButton.enableShine()
+        alert("done")
     }
 }
 
@@ -262,5 +263,6 @@ function setupMainButton() {
 document.addEventListener('DOMContentLoaded', () => {
     setupMainButton();
 });
+
 
 
