@@ -8,7 +8,7 @@ let nextPrayerUpdateInterval = null;
 
 // Prayer times object
 const prayerNames = {
-    fajr: { en: 'Fajr', ru: 'Фаджр', az: 'Sübh' },
+    fajr: { en: 'Fajr', ru: 'Намаз: Фаджр', az: 'Sübh' },
     dhuhr: { en: 'Dhuhr', ru: 'Зухр', az: 'Zöhr' },
     asr: { en: 'Asr', ru: 'Аср', az: 'Əsr' },
     maghrib: { en: 'Maghrib', ru: 'Магриб', az: 'Məğrib' },
@@ -263,6 +263,7 @@ function setupMainButton() {
 document.addEventListener('DOMContentLoaded', () => {
     setupMainButton();
 });
+
 
 
 
