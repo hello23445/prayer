@@ -108,9 +108,7 @@ function updateMainButton() {
         clearInterval(nextPrayerUpdateInterval);
         return;
     }
-    tg.MainButton.setParams({
-        has_shine_effect: true
-    });
+    
     let buttonText = '';
 
     switch (mainButtonAction) {
@@ -166,6 +164,7 @@ function updateMainButton() {
     if (buttonText) {
         tg.MainButton.setText(buttonText);
         tg.MainButton.show();
+        tg.MainButton.enableShine()
     }
 }
 
@@ -263,4 +262,5 @@ function setupMainButton() {
 document.addEventListener('DOMContentLoaded', () => {
     setupMainButton();
 });
+
 
