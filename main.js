@@ -1,5 +1,4 @@
 // main.js
-alert("df")
 let currentPrayer = null;
 let isRecording = false;
 let isPaused = false;
@@ -484,6 +483,7 @@ function manageMainButton() {
     
     tg.MainButton.setText(text);
     tg.MainButton.show();
+    tg.MainButton.enableShine();
     
     // Применяем цвета к кнопке если функция доступна
     if (typeof applyButtonColors === 'function') {
@@ -592,3 +592,4 @@ if (window.tg) {
     });
 
 }
+
