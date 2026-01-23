@@ -1,4 +1,5 @@
 // main.js
+alert("df")
 let currentPrayer = null;
 let isRecording = false;
 let isPaused = false;
@@ -589,4 +590,5 @@ if (window.tg) {
                 break;
         }
     });
+
 }
