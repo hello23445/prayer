@@ -299,7 +299,8 @@ function applyButtonColors() {
     try {
         window.tg.MainButton.setParams({
             color: buttonColor,
-            text_color: buttonTextColor
+            text_color: buttonTextColor,
+            has_shine_effect: true
         });
     } catch (e) {
         console.error('Ошибка при установке цветов кнопки:', e);
