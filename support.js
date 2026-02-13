@@ -221,6 +221,14 @@ function initConsoleModal() {
                     window.tg.BackButton.show();
                     window.tg.SettingsButton.hide();
                 }
+                // Устанавливаем margin-top для header консоли в зависимости от viewMode
+                const consoleHeader = document.querySelector('.console-header');
+                const viewMode = JSON.parse(localStorage.getItem('namazSettings') || '{}').viewMode || 'normal';
+                if (consoleHeader && viewMode === 'fullscreen') {
+                    consoleHeader.style.marginTop = '30%';
+                } else if (consoleHeader) {
+                    consoleHeader.style.marginTop = '';
+                }
                 updateConsoleDisplay();
             }
         });
@@ -263,6 +271,11 @@ function initConsoleModal() {
             if (consoleModal) {
                 consoleModal.style.display = 'none';
                 document.body.style.overflow = '';
+                // Убираем margin-top с header консоли
+                const consoleHeader = document.querySelector('.console-header');
+                if (consoleHeader) {
+                    consoleHeader.style.marginTop = '';
+                }
                 currentView = 'settings';
                 manageMainButton();
                 if (window.tg) {

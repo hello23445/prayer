@@ -458,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('where-show-select')?.focus();
                 } else if (text.includes('при нажатии')) {
                     document.getElementById('on-press-select')?.focus();
-                } else if (text.includes('цвет кнопки')) {
+                } else if (text.includes('цвет кнопки:') && !text.includes('текста')) {
                     document.getElementById('button-color-input')?.focus();
                 } else if (text.includes('цвета текста')) {
                     document.getElementById('button-text-color-input')?.focus();
