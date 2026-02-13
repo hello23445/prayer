@@ -157,7 +157,7 @@ function updateMainButtonToggle() {
         icon.className = mainButtonEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
     }
 }
-async function applyViewMode(mode) {
+async function applyViewMode(mode, shouldReload = true) {
     // Показываем прелоадер при смене вида
     const preloader = document.getElementById('preloader');
     if (preloader) {
@@ -168,10 +168,14 @@ async function applyViewMode(mode) {
         if (mode === 'fullscreen') {
             try {
                 await window.tg.requestFullscreen();
-                // Перезагружаем после успешного перехода в полноэкранный режим
-                setTimeout(() => {
-                    location.reload();
-                }, 500);
+                // Перезагружаем после успешного перехода в полноэкранный режим только если shouldReload = true
+                if (shouldReload) {
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500);
+                } else {
+                    if (preloader) preloader.style.display = 'none';
+                }
             } catch (err) {
                 console.error('Fullscreen request failed', err);
                 const viewModeSelect = document.getElementById('view-mode-select');
@@ -187,10 +191,14 @@ async function applyViewMode(mode) {
         } else {
             window.tg.expand();
             window.tg.exitFullscreen();
-            // Перезагружаем после выхода из полноэкранного режима
-            setTimeout(() => {
-                location.reload();
-            }, 500);
+            // Перезагружаем после выхода из полноэкранного режима только если shouldReload = true
+            if (shouldReload) {
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            } else {
+                if (preloader) preloader.style.display = 'none';
+            }
         }
     }
 }
@@ -285,7 +293,7 @@ function loadSettings() {
             this.value = 'beep';
             range.disabled = false;
         }
-        applyViewMode(settings.viewMode || 'normal');
+        applyViewMode(settings.viewMode || 'normal', false);
     } else {
         applyTheme('system');
         applyLang('ru');
@@ -296,7 +304,7 @@ function loadSettings() {
         updateMainButtonToggle();
         mainButtonOptions.style.display = 'none';
         updateErrorSoundOptions(50);
-        applyViewMode('normal');
+        applyViewMode('normal', false);
     }
     manageMainButton();
 }
