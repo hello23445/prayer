@@ -4,7 +4,7 @@ function openTelegramLink(url) {
     if (window.tg) {
         window.tg.openTelegramLink(url);
     } else {
-        window.open(url, '_blank');
+        window.open(url);
     }
 }
 
