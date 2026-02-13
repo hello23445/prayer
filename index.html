@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Намаз</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="styles.css">
@@ -147,7 +147,7 @@
                 <option value="dark">Темный</option>
             </select>
             <label id="view-mode-label">Вид:</label>
-            <select id="view-mode-select" disabled onchange="location.reload()">
+            <select id="view-mode-select" disabled onchange="applyViewMode(this.value)">
                 <option value="normal">Не полноэкранный</option>
                 <option value="fullscreen">Полноэкранный</option>
             </select>
@@ -180,17 +180,69 @@
                     <div id="button-color-options" style="display: none;">
                         <div class="toggle-label">
                             <span id="button-color-label">Цвет кнопки:</span>
+                            <button id="reset-button-color" style="padding: 4px 6px; font-size: 11px; margin-left: auto; margin-right: 5px; cursor: pointer; width: auto;">Сбросить</button>
                             <input type="color" id="button-color-input" value="#0088cc" style="width: 50px; height: 40px; border: none; cursor: pointer;">
                         </div>
                         <div class="toggle-label">
                             <span id="button-text-color-label">Цвета текста кнопки:</span>
+                            <button id="reset-button-text-color" style="padding: 4px 6px; font-size: 11px; margin-left: auto; margin-right: 5px; cursor: pointer; width: auto;">Сбросить</button>
                             <input type="color" id="button-text-color-input" value="#ffffff" style="width: 50px; height: 40px; border: none; cursor: pointer;">
                         </div>
                     </div>
                 </div>
+                
+                <!-- Поддержка -->
+                <h2 id="support-section" style="text-align: center;">Поддержка</h2>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 3%;">
+                    <button id="support-service-btn" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; cursor: pointer;">📞 Служба поддержки</button>
+                    <button id="suggest-idea-btn" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; cursor: pointer;">💡 Предложить идею</button>
+                    <button id="ask-question-btn" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; cursor: pointer;">❓ Задать вопрос</button>
+                </div>
+                
+                <!-- Консоль -->
+                <div style="margin-bottom: 5%;"></div>
+                <button id="open-console-btn" class="console-button">🖥️ Открыть консоль приложения</button>
             </div>
         </div>
     </div>
+    
+    <!-- Консоль приложения -->
+    <div id="console-modal" class="console-modal">
+        <div class="console-header">
+            <h2 id="console-title" class="console-title">📋 Console</h2>
+            <div style="display: flex; gap: 10px;">
+                <button id="clear-console-btn" class="console-btn console-btn-danger">Очистить</button>
+                <button id="console-back-btn" class="console-btn console-btn-back">Назад</button>
+            </div>
+        </div>
+        <div id="console-status" class="console-status"></div>
+        <div id="console-output" class="console-output"></div>
+    </div>
+    
+    <!-- Модальное окно подтверждения сброса -->
+    <div id="reset-confirm-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2 id="reset-confirm-title" style="text-align: center;">Сбросить цвет?</h2>
+            <p id="reset-confirm-text" style="text-align: center; margin: 15px 0;">Вы уверены?</p>
+            <div style="display: flex; gap: 10px;">
+                <button id="reset-confirm-yes" style="flex: 1; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer;">OK</button>
+                <button id="reset-confirm-no" style="flex: 1; padding: 10px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer;">Отменить</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно подтверждения очистки консоли -->
+    <div id="clear-console-confirm-modal" class="modal" style="display: none; z-index: 10001;">
+        <div class="modal-content">
+            <h2 id="clear-console-confirm-title" style="text-align: center;">Очистить консоль?</h2>
+            <p id="clear-console-confirm-text" style="text-align: center; margin: 15px 0;">Вы уверены?</p>
+            <div style="display: flex; gap: 10px;">
+                <button id="clear-console-confirm-yes" style="flex: 1; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer;">OK</button>
+                <button id="clear-console-confirm-no" style="flex: 1; padding: 10px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer;">Отменить</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Modals -->
     <div id="geo-modal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -229,7 +281,7 @@
         </div>
     </div>
     <!-- sent-section removed: file-sending feature disabled -->
-    <audio id="error-sound-beep" preload="none">
+    <audio id="error-sound-beep" preload="auto" crossorigin="anonymous">
         <source src="https://www.soundjay.com/buttons/sounds/beep-05.mp3" type="audio/mp3">
     </audio>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -274,6 +326,21 @@
             const mainContainer = document.getElementById('main-container');
             const prayerModal = document.getElementById('prayer-modal');
             const locationModal = document.getElementById('location-modal');
+            const consoleModal = document.getElementById('console-modal');
+            
+            // Если открыта консоль
+            if (consoleModal && consoleModal.style.display === 'flex') {
+                consoleModal.style.display = 'none';
+                const settingsDiv = document.getElementById('settings');
+                if (settingsDiv) settingsDiv.style.display = 'block';
+                currentView = 'settings';
+                if (typeof manageMainButton === 'function') manageMainButton();
+                if (window.tg) {
+                    window.tg.BackButton.show();
+                    window.tg.SettingsButton.hide();
+                }
+                return;
+            }
             
             // Если открыто меню молитвы
             if (prayerWindow.style.display === 'block') {
@@ -429,6 +496,7 @@
     <script src="error_sound.js" defer></script>
     <script src="transcription.js" defer></script>
     <script src="settings.js" defer></script>
+    <script src="support.js" defer></script>
     <script src="main.js" defer></script>
     <script src="permissions.js" defer></script>
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bab08e818fad835',t:'MTc2Nzg2ODM4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>

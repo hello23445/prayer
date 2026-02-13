@@ -15,8 +15,20 @@ function getLangCode(lang) {
     return codes[lang];
 }
 function applyLang(lang) {
+    // Проверяем доступность объекта translations
+    if (typeof translations === 'undefined') {
+        console.warn('Translations not yet loaded, retrying in 100ms...');
+        setTimeout(() => applyLang(lang), 100);
+        return;
+    }
+    
     currentLang = lang;
     const t = translations[lang];
+    if (!t) {
+        console.warn(`Language ${lang} not found in translations`);
+        return;
+    }
+    
     document.title = t.title || 'Намаз';
     const titleEl = document.getElementById('title');
     if (titleEl) titleEl.textContent = t.title;
@@ -141,6 +153,20 @@ function applyLang(lang) {
     if (buttonColorLabel) buttonColorLabel.textContent = t.buttonColorLabel;
     const buttonTextColorLabel = document.getElementById('button-text-color-label');
     if (buttonTextColorLabel) buttonTextColorLabel.textContent = t.buttonTextColorLabel;
+    
+    // Инициализируем userLocationName если не установлена
+    if (!userLocationName || userLocationName === null) {
+        userLocationName = t.geoDetecting || 'Определение местоположения...';
+        const locationInfoEl = document.getElementById('location-info');
+        if (locationInfoEl) {
+            locationInfoEl.innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i><p>${userLocationName}</p>`;
+        }
+    }
+    
+    // Обновляем переводы для поддержки
+    if (typeof updateSupportLabels === 'function') {
+        updateSupportLabels();
+    }
     
     manageMainButton(); // Update Main Button text on lang change
 }

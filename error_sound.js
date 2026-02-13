@@ -1,17 +1,23 @@
 // error_sound.js
 window.errorVolumeValue = 50; // Default
+window.errorSoundLoaded = false;
+
+// Загружаем звук при инициализации
+function preloadErrorSound() {
+  const audio = document.getElementById('error-sound-beep');
+  if (audio && !window.errorSoundLoaded) {
+    audio.addEventListener('canplaythrough', () => {
+      window.errorSoundLoaded = true;
+    }, { once: true });
+    audio.load();
+  }
+}
 
 function playErrorSound(sound) {
   if (sound === 'none') return;
-  const lang = localStorage.getItem('lang1');
-  showToast(
-      lang === 'ru' ? 'Загрузка аудио...' :
-      lang === 'az' ? 'Audio yüklənir...' :
-      'Loading the audio...'
-  );
-
 
   const audio = document.getElementById(`error-sound-${sound}`);
+  if (!audio) return;
   
   // Получаем текущее значение громкости из input
   const volumeInput = document.getElementById('error-volume');
@@ -22,9 +28,19 @@ function playErrorSound(sound) {
   
   // Остановим все текущие воспроизведения
   audio.currentTime = 0;
-  audio.play().catch(error => {
-    console.error('Ошибка воспроизведения звука:', error);
-  });
+  
+  // Пытаемся воспроизвести звук
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise
+      .then(() => {
+        // Автозапуск разрешен
+      })
+      .catch(error => {
+        console.error('Ошибка воспроизведения звука:', error);
+        // На iOS может потребоваться пользовательское действие
+      });
+  }
 }
 function showToast(text, ms = 10500) {
     const div = document.createElement('div');

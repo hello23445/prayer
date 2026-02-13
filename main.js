@@ -10,7 +10,7 @@ let transcriptionEnabled = true;
 let translationEnabled = true;
 let transcriptionLang = 'latin';
 let currentLang = 'ru';
-let userLocationName = 'Определение местоположения...';
+let userLocationName = null; // Will be set after translations load
 let asrMethod = 'standard'; // default
 let currentView = 'main'; // Global current view state
 let previousViewBeforeModal = 'main'; // Отслеживаем, откуда открыли modal
@@ -221,7 +221,7 @@ function compareTexts(original, user) {
         const wordKey = Object.keys(prayerWords[origIndex])[0]; // Assuming word11 is the arabic key
         const status = prayerWords[origIndex][`${wordKey}_status`];
         if (status === 'important') {
-            feedback += `${translations[currentLang].feedbackError}: Пропущено важное слово ${originalWords[origIndex]}<br>`;
+            feedback += `${translations[currentLang].feedbackError}: ${translations[currentLang].feedbackSkippedWord} ${originalWords[origIndex]}<br>`;
             perfect = false;
             playErrorSound(document.getElementById('error-sound-select').value);
         }
@@ -247,27 +247,10 @@ async function calculatePrayerTimes(lat, lng) {
             document.getElementById('location-info').innerHTML = `<i class="fa-solid fa-location-arrow fa-2xs icon"></i> ${userLocationName}`;
             updatePrayerButtons();
         } else {
-            const lang = localStorage.getItem('lang1');
-            if (lang === 'ru') {
-                document.getElementById('location-info').textContent =
-                    'Ошибка определения времени намаза';
-            } else if (lang === 'az') {
-                document.getElementById('location-info').textContent =
-                    'Namaz vaxtının təyin edilməsində xəta';
-            } else {
-                document.getElementById('location-info').textContent =
-                    'Error determining prayer time';
-            }
-
+            document.getElementById('location-info').textContent = translations[currentLang].prayerTimeError;
         }
     } catch (e) {
-        const lang = localStorage.getItem('lang1');
-        const noNetText =
-            lang === 'ru'
-                ? 'Нет сети'
-                : lang === 'az'
-                    ? 'Şəbəkə yoxdur'
-                    : 'No network';
+        const noNetText = translations[currentLang].noNetwork;
 
         // текст в интерфейсе
         document.getElementById('location-info').textContent = noNetText;
@@ -386,11 +369,11 @@ function updateRemainingTime(value) {
     const t = translations[currentLang];
     let time = prayerTimes[value];
     let remainingMs = time - new Date();
-    let text = `До Намаза ${t[value]} осталось `;
+    let text = `${t.untilPrayer} ${t[value]} ${t.remaining} `;
     if (remainingMs <= 0) {
         time = new Date(time.getTime() + 24 * 60 * 60 * 1000);
         remainingMs = time - new Date();
-        text = `${t.nextSamePrayer} ${t[value]}: `;
+        text = `${t.nextPrayer} ${t[value]}: `;
     }
     const hours = Math.floor(remainingMs / 3600000);
     remainingMs %= 3600000;
@@ -402,7 +385,7 @@ function updateRemainingTime(value) {
     } else if (mins > 0) {
         timeText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     } else {
-        timeText = `${secs} секунд`;
+        timeText = `${secs} ${t.seconds}`;
     }
     document.getElementById('remaining-time').textContent = text + timeText;
 }
@@ -436,6 +419,13 @@ function getNextPrayerInfo() {
 function manageMainButton() {
     if (!window.tg) return;
     const tg = window.tg;
+    
+    // Скрываем главную кнопку в консоли
+    if (currentView === 'console') {
+        tg.MainButton.hide();
+        return;
+    }
+    
     const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
     const mainButtonEnabled = settings.mainButtonEnabled || false;
     const whereShow = settings.whereShow || 'main';
@@ -490,6 +480,9 @@ function manageMainButton() {
     }
 }
 window.addEventListener('load', () => {
+    // Загружаем звук ошибки при входе на сайт
+    preloadErrorSound();
+    
     document.getElementById('location-info').textContent = userLocationName;
     loadSettings();
     const header2 = document.getElementById('header2');
@@ -589,8 +582,4 @@ if (window.tg) {
                 break;
         }
     });
-
 }
-
-
-

@@ -158,21 +158,39 @@ function updateMainButtonToggle() {
     }
 }
 async function applyViewMode(mode) {
+    // Показываем прелоадер при смене вида
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.display = 'flex';
+    }
+    
     if (window.tg) {
         if (mode === 'fullscreen') {
             try {
                 await window.tg.requestFullscreen();
+                // Перезагружаем после успешного перехода в полноэкранный режим
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
             } catch (err) {
                 console.error('Fullscreen request failed', err);
                 const viewModeSelect = document.getElementById('view-mode-select');
                 if (viewModeSelect) {
                     viewModeSelect.value = 'normal';
                 }
+                // Скрываем прелоадер при ошибке
+                if (preloader) {
+                    preloader.style.display = 'none';
+                }
                 saveSettings();
             }
         } else {
             window.tg.expand();
             window.tg.exitFullscreen();
+            // Перезагружаем после выхода из полноэкранного режима
+            setTimeout(() => {
+                location.reload();
+            }, 500);
         }
     }
 }
@@ -250,6 +268,11 @@ function loadSettings() {
         updateErrorSoundOptions(settings.errorVolume);
         applyButtonColors(); // Применяем цвета при загрузке
         localStorage.setItem('lang1', document.getElementById('lang-select').value);
+        // Инициализируем функции поддержки
+        if (typeof updateSupportLabels === 'function') updateSupportLabels();
+        if (typeof initSupportButtons === 'function') initSupportButtons();
+        if (typeof initResetColorButtons === 'function') initResetColorButtons();
+        if (typeof initConsoleModal === 'function') initConsoleModal();
         if (errorSoundSelect.value === 'none'){
             document.getElementById('play-error-sound').disabled = true
             document.getElementById('error-volume-shower').disabled = true;
@@ -396,4 +419,43 @@ const observer = new MutationObserver(mutations => {
 observer.observe(btn, {
     attributes: true,
     attributeFilter: ['disabled']
+});
+
+// Добавляем функцию для фокусирования при клике на label
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsContent = document.getElementById('settings-content');
+    if (settingsContent) {
+        const labels = settingsContent.querySelectorAll('label');
+        labels.forEach(label => {
+            label.addEventListener('click', (e) => {
+                const text = label.textContent.toLowerCase();
+                
+                if (text.includes('язык интерфейса')) {
+                    document.getElementById('lang-select')?.focus();
+                } else if (text.includes('язык транскрипции')) {
+                    document.getElementById('transcription-lang-select')?.focus();
+                } else if (text.includes('громкость звука ошибки')) {
+                    document.getElementById('error-volume')?.focus();
+                } else if (text.includes('громкость микрофона')) {
+                    document.getElementById('mic-volume')?.focus();
+                } else if (text.includes('метод расчета')) {
+                    document.getElementById('asr-method-select')?.focus();
+                } else if (text.includes('звук ошибки')) {
+                    document.getElementById('error-sound-select')?.focus();
+                } else if (text.includes('тема')) {
+                    document.getElementById('theme-select')?.focus();
+                } else if (text.includes('вид')) {
+                    document.getElementById('view-mode-select')?.focus();
+                } else if (text.includes('где показывать')) {
+                    document.getElementById('where-show-select')?.focus();
+                } else if (text.includes('при нажатии')) {
+                    document.getElementById('on-press-select')?.focus();
+                } else if (text.includes('цвет кнопки')) {
+                    document.getElementById('button-color-input')?.focus();
+                } else if (text.includes('цвета текста')) {
+                    document.getElementById('button-text-color-input')?.focus();
+                }
+            });
+        });
+    }
 });

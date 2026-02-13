@@ -2,14 +2,14 @@
 async function getLocationName(lat, lng) {
     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=${getLangCode(currentLang)}`);
     const data = await response.json();
-    if (!data.address) return 'Неизвестно';
+    if (!data.address) return translations[currentLang].unknown || 'Неизвестно';
     const fields = ['city', 'town', 'village', 'municipality', 'county', 'state'];
     for (const field of fields) {
         if (data.address[field]) {
             return data.address[field];
         }
     }
-    return 'Неизвестно';
+    return translations[currentLang].unknown || 'Неизвестно';
 }
 async function requestGeolocation(force = false) {
     const savedCoords = localStorage.getItem('userCoordinates');
@@ -50,8 +50,8 @@ async function requestGeolocation(force = false) {
             modal.style.display = 'none';
             locationInfo.textContent = translations[currentLang].geoDetecting || 'Определение...';
             if (!navigator.geolocation) {
-                alert('Геолокация не поддерживается вашим браузером.');
-                locationInfo.textContent = 'Геолокация не поддерживается';
+                alert(translations[currentLang].geoNotSupported || 'Геолокация не поддерживается вашим браузером.');
+                locationInfo.textContent = translations[currentLang].geoNotSupported || 'Геолокация не поддерживается';
                 document.getElementById('preloader').style.display = 'none';
                 reject(new Error('Geolocation not supported'));
                 return;
@@ -118,8 +118,8 @@ async function requestMicrophonePermission() {
                     resolve();
                 })
                 .catch(err => {
-                    console.error('Микрофон не доступен:', err);
-                    alert('Микрофон обязателен для записи намаза.');
+                    console.error(translations[currentLang].micNotSupported + ':', err);
+                    alert(translations[currentLang].micRequired || 'Микрофон обязателен для записи намаза.');
                     requestMicrophonePermission().then(resolve, reject);
                 });
         };
@@ -145,6 +145,7 @@ async function initPermissions() {
             manageMainButton();
             if (window.tg) {
                 window.tg.BackButton.show();
+                window.tg.SettingsButton.hide();
             }
         });
     }
@@ -158,6 +159,11 @@ async function initPermissions() {
             }
             currentView = 'main';
             manageMainButton();
+            // Скрываем BackButton при закрытии location-modal
+            if (window.tg) {
+                window.tg.BackButton.hide();
+                window.tg.SettingsButton.show();
+            }
         });
     }
     const closeLocationModalBtn = document.getElementById('close-location-modal');
@@ -169,6 +175,11 @@ async function initPermissions() {
             }
             currentView = 'main';
             manageMainButton();
+            // Скрываем BackButton при закрытии location-modal
+            if (window.tg) {
+                window.tg.BackButton.hide();
+                window.tg.SettingsButton.show();
+            }
         });
     }
 }
