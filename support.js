@@ -7,9 +7,15 @@ function openTelegramLink(url) {
         window.open(url, '_blank');
     }
 }
-
+let supportButtonsInited = false;
 // Инициализация кнопок поддержки
 function initSupportButtons() {
+    if (supportButtonsInited) return;
+    supportButtonsInited = true;
+    setTimeout(() => {
+        supportButtonsInited = false;
+    }, 2000);
+
     const supportServiceBtn = document.getElementById('support-service-btn');
     const suggestIdeaBtn = document.getElementById('suggest-idea-btn');
     const askQuestionBtn = document.getElementById('ask-question-btn');
@@ -358,4 +364,5 @@ window.addEventListener('load', () => {
     initConsoleModal();
     updateSupportLabels();
 });
+
 
