@@ -1,10 +1,10 @@
 // support.js
 // Функция для открытия ссылки в Telegram
 function openTelegramLink(url) {
-    if (window.tg) {
-        window.tg.openTelegramLink(url);
+    if (window.Telegram?.WebApp) {
+        Telegram.WebApp.openTelegramLink(url);
     } else {
-        window.open(url);
+        window.open(url, '_blank');
     }
 }
 
@@ -16,24 +16,24 @@ function initSupportButtons() {
 
     if (supportServiceBtn) {
         supportServiceBtn.addEventListener('click', () => {
-            const url = `https://t.me/QuranAppSupport_bot?start=support_${currentLang}`;
-            openTelegramLink(url);
-        });
+    const start = encodeURIComponent(`support_${currentLang}`);
+    openTelegramLink(`https://t.me/QuranAppSupport_bot?start=${start}`);
+});
+
     }
 
     if (suggestIdeaBtn) {
         suggestIdeaBtn.addEventListener('click', () => {
-            const url = `https://t.me/QuranAppSupport_bot?start=idea__${currentLang}`;
-            openTelegramLink(url);
-        });
+    const start = encodeURIComponent(`idea_${currentLang}`);
+    openTelegramLink(`https://t.me/QuranAppSupport_bot?start=${start}`);
+});
+
     }
 
-    if (askQuestionBtn) {
-        askQuestionBtn.addEventListener('click', () => {
-            const url = `https://t.me/QuranAppSupport_bot?start=ask__${currentLang}`;
-            openTelegramLink(url);
-        });
-    }
+    askQuestionBtn.addEventListener('click', () => {
+    const start = encodeURIComponent(`ask_${currentLang}`);
+    openTelegramLink(`https://t.me/QuranAppSupport_bot?start=${start}`);
+});
 }
 
 // Сброс цветов кнопок
@@ -358,3 +358,4 @@ window.addEventListener('load', () => {
     initConsoleModal();
     updateSupportLabels();
 });
+
