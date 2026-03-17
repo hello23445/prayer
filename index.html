@@ -348,30 +348,6 @@
             const prayerModal = document.getElementById('prayer-modal');
             const locationModal = document.getElementById('location-modal');
             const consoleModal = document.getElementById('console-modal');
-            const remindersModal = document.getElementById('reminders-modal');
-            
-            // Если открыт экран напоминаний
-            if (remindersModal && remindersModal.style.display === 'flex') {
-                remindersModal.style.display = 'none';
-                mainContainer.style.display = 'flex';
-                currentView = 'main';
-                if (typeof manageMainButton === 'function') manageMainButton();
-                    // Восстанавливаем прокрутку в настройках
-                    const settingsContent = document.getElementById('settings-content');
-                    if (settingsContent && window.lastSettingsScrollPosition !== undefined) {
-                        setTimeout(() => {
-                            settingsContent.scrollTop = window.lastSettingsScrollPosition;
-                        }, 0);
-                    }
-                }
-                currentView = 'settings';
-                if (typeof manageMainButton === 'function') manageMainButton();
-                if (window.tg) {
-                    window.tg.BackButton.show();
-                    window.tg.SettingsButton.hide();
-                }
-                return;
-            }
             
             // Если открыто меню молитвы
             if (prayerWindow.style.display === 'block') {
