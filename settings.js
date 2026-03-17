@@ -20,8 +20,11 @@ const buttonColorOptions = document.getElementById('button-color-options');
 const buttonColorInput = document.getElementById('button-color-input');
 const buttonTextColorInput = document.getElementById('button-text-color-input');
 const enableNotificationsToggle = document.getElementById('enable-notifications-toggle');
+const enableReminderNotificationToggle = document.getElementById('enable-reminder-notification-toggle');
+const reminderNotificationsOptions = document.getElementById('reminder-notifications-options');
 let mainButtonEnabled = false;
 let notificationsEnabled = false;
+let reminderNotificationEnabled = false;
 if (openSettingsBtn && mainContainer && settingsDiv) {
     openSettingsBtn.addEventListener('click', () => {
         mainContainer.style.display = 'none';
@@ -172,10 +175,30 @@ if (enableNotificationsToggle) {
         saveSettings();
     });
 }
+if (enableReminderNotificationToggle) {
+    enableReminderNotificationToggle.addEventListener('click', () => {
+        reminderNotificationEnabled = !reminderNotificationEnabled;
+        updateNotificationToggles();
+        saveSettings();
+    });
+}
 function updateNotificationToggles() {
     const enableIcon = enableNotificationsToggle.querySelector('i');
     if (enableIcon) {
         enableIcon.className = notificationsEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
+    }
+    
+    if (reminderNotificationsOptions) {
+        reminderNotificationsOptions.style.display = notificationsEnabled ? 'block' : 'none';
+        // Отключаем или включаем элементы в зависимости от состояния основного тугла
+        if (!notificationsEnabled) {
+            reminderNotificationEnabled = false;
+        }
+    }
+    
+    const reminderNotificationIcon = enableReminderNotificationToggle.querySelector('i');
+    if (reminderNotificationIcon) {
+        reminderNotificationIcon.className = reminderNotificationEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
     }
 }
 function updateMainButtonToggle() {
@@ -246,7 +269,8 @@ function saveSettings() {
         onPress: (document.getElementById('on-press-select') ? document.getElementById('on-press-select').value : 'open_main'),
         buttonColor: (document.getElementById('button-color-input') ? document.getElementById('button-color-input').value : '#0088cc'),
         buttonTextColor: (document.getElementById('button-text-color-input') ? document.getElementById('button-text-color-input').value : '#ffffff'),
-        notificationsEnabled
+        notificationsEnabled,
+        reminderNotificationEnabled
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
     updateErrorSoundOptions(settings.errorVolume);
@@ -293,6 +317,7 @@ function loadSettings() {
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
         mainButtonEnabled = settings.mainButtonEnabled !== undefined ? settings.mainButtonEnabled : false;
         notificationsEnabled = settings.notificationsEnabled !== undefined ? settings.notificationsEnabled : false;
+        reminderNotificationEnabled = settings.reminderNotificationEnabled !== undefined ? settings.reminderNotificationEnabled : false;
         updateToggleIcons();
         updateMainButtonToggle();
         updateNotificationToggles();
