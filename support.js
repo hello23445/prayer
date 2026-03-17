@@ -1,45 +1,39 @@
 // support.js
 // Функция для открытия ссылки в Telegram
 function openTelegramLink(url) {
-    if (window.Telegram?.WebApp) {
-        Telegram.WebApp.openTelegramLink(url);
+    if (window.tg) {
+        window.tg.openTelegramLink(url);
     } else {
-        window.open(url, '_blank');
+        window.open(url);
     }
 }
-let supportButtonsInited = false;
+
 // Инициализация кнопок поддержки
 function initSupportButtons() {
-    if (supportButtonsInited) return;
-    supportButtonsInited = true;
-    setTimeout(() => {
-        supportButtonsInited = false;
-    }, 2000);
-
     const supportServiceBtn = document.getElementById('support-service-btn');
     const suggestIdeaBtn = document.getElementById('suggest-idea-btn');
     const askQuestionBtn = document.getElementById('ask-question-btn');
 
     if (supportServiceBtn) {
         supportServiceBtn.addEventListener('click', () => {
-    const start = encodeURIComponent(`support_${currentLang}`);
-    openTelegramLink(`https://t.me/QuranAppSupport_bot?start=${start}`);
-});
-
+            const url = `https://t.me/QuranAppSupport_bot?start=support_${currentLang}`;
+            openTelegramLink(url);
+        });
     }
 
     if (suggestIdeaBtn) {
         suggestIdeaBtn.addEventListener('click', () => {
-    const start = encodeURIComponent(`idea_${currentLang}`);
-    openTelegramLink(`https://t.me/QuranAppSupport_bot?start=${start}`);
-});
-
+            const url = `https://t.me/QuranAppSupport_bot?start=idea__${currentLang}`;
+            openTelegramLink(url);
+        });
     }
 
-    askQuestionBtn.addEventListener('click', () => {
-    const start = encodeURIComponent(`ask_${currentLang}`);
-    openTelegramLink(`https://t.me/QuranAppSupport_bot?start=${start}`);
-});
+    if (askQuestionBtn) {
+        askQuestionBtn.addEventListener('click', () => {
+            const url = `https://t.me/QuranAppSupport_bot?start=ask__${currentLang}`;
+            openTelegramLink(url);
+        });
+    }
 }
 
 // Сброс цветов кнопок
@@ -219,6 +213,11 @@ function initConsoleModal() {
     if (openConsoleBtn) {
         openConsoleBtn.addEventListener('click', () => {
             if (consoleModal) {
+                // Сохраняем позицию прокрутки перед открытием консоли
+                const settingsContent = document.getElementById('settings-content');
+                if (settingsContent) {
+                    window.lastSettingsScrollPosition = settingsContent.scrollTop;
+                }
                 consoleModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
                 currentView = 'console';
@@ -281,6 +280,13 @@ function initConsoleModal() {
                 const consoleHeader = document.querySelector('.console-header');
                 if (consoleHeader) {
                     consoleHeader.style.marginTop = '';
+                }
+                // Восстанавливаем прокрутку в настройках
+                const settingsContent = document.getElementById('settings-content');
+                if (settingsContent && window.lastSettingsScrollPosition !== undefined) {
+                    setTimeout(() => {
+                        settingsContent.scrollTop = window.lastSettingsScrollPosition;
+                    }, 0);
                 }
                 currentView = 'settings';
                 manageMainButton();
@@ -364,5 +370,3 @@ window.addEventListener('load', () => {
     initConsoleModal();
     updateSupportLabels();
 });
-
-

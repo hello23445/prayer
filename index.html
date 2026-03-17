@@ -63,6 +63,21 @@
                 <option value="cyrillic-ru">Кириллица (Русский)</option>
                 <option value="cyrillic-kz">Кириллица (Казахский)</option>
             </select>
+            <h2 id="notifications-section" style="text-align: center;">Уведомления</h2>
+            <div class="toggle-label" id="enable-notifications-toggle">
+                <span id="enable-notifications-label">Включить уведомления</span>
+                <i class="fa-solid fa-toggle-off icon"></i>
+            </div>
+            <div id="reminder-notifications-options" style="display: none; opacity: 1; transition: opacity 0.3s;">
+                <div class="toggle-label" id="enable-reminder-notifications-toggle">
+                    <span id="enable-reminder-notifications-label">Уведомления для напоминаний</span>
+                    <i class="fa-solid fa-toggle-off icon"></i>
+                </div>
+                <div class="toggle-label" id="enable-reminder-notification-toggle">
+                    <span id="enable-reminder-notification-label">Уведомление при включении напоминаний</span>
+                    <i class="fa-solid fa-toggle-off icon"></i>
+                </div>
+            </div>
             <h2 id="volume-section" style="text-align: center;">Громкость</h2>
             <label id="error-volume-label">Громкость звука ошибки:</label>
             <input type="range" id="error-volume" min="0" max="500" value="100" step="5" style="width: 40%;">
@@ -270,6 +285,12 @@
                     <option value="standard">Шафи, Малики, Ханбали</option>
                 </select>
             </div>
+            <div id="reminder-container">
+                <label id="reminder-label">Напоминание:</label>
+                <select id="reminder-select">
+                    <option value="none">Отключить напоминание</option>
+                </select>
+            </div>
             <button id="continue-btn">Продолжить <i class="fa-solid fa-right-long icon"></i></button>
         </div>
     </div>
@@ -327,12 +348,22 @@
             const prayerModal = document.getElementById('prayer-modal');
             const locationModal = document.getElementById('location-modal');
             const consoleModal = document.getElementById('console-modal');
+            const remindersModal = document.getElementById('reminders-modal');
             
-            // Если открыта консоль
-            if (consoleModal && consoleModal.style.display === 'flex') {
-                consoleModal.style.display = 'none';
-                const settingsDiv = document.getElementById('settings');
-                if (settingsDiv) settingsDiv.style.display = 'block';
+            // Если открыт экран напоминаний
+            if (remindersModal && remindersModal.style.display === 'flex') {
+                remindersModal.style.display = 'none';
+                mainContainer.style.display = 'flex';
+                currentView = 'main';
+                if (typeof manageMainButton === 'function') manageMainButton();
+                    // Восстанавливаем прокрутку в настройках
+                    const settingsContent = document.getElementById('settings-content');
+                    if (settingsContent && window.lastSettingsScrollPosition !== undefined) {
+                        setTimeout(() => {
+                            settingsContent.scrollTop = window.lastSettingsScrollPosition;
+                        }, 0);
+                    }
+                }
                 currentView = 'settings';
                 if (typeof manageMainButton === 'function') manageMainButton();
                 if (window.tg) {
@@ -495,6 +526,7 @@
     <script src="theme.js" defer></script>
     <script src="error_sound.js" defer></script>
     <script src="transcription.js" defer></script>
+    <script src="reminders.js" defer></script>
     <script src="settings.js" defer></script>
     <script src="support.js" defer></script>
     <script src="main.js" defer></script>

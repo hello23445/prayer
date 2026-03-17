@@ -287,6 +287,8 @@ function showPrayerModal(value) {
     } else {
         document.getElementById('asr-method-container').style.display = 'none';
     }
+    // Инициализируем селект напоминаний
+    initReminderSelect(value);
     document.getElementById('prayer-modal').style.display = 'flex';
     currentView = 'prayer_modal';
     manageMainButton();

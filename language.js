@@ -139,6 +139,16 @@ function applyLang(lang) {
     if (languageSectionEl) languageSectionEl.textContent = t.languageSection;
     const volumeSectionEl = document.getElementById('volume-section');
     if (volumeSectionEl) volumeSectionEl.textContent = t.volumeSection;
+    const notificationsSectionEl = document.getElementById('notifications-section');
+    if (notificationsSectionEl) notificationsSectionEl.textContent = t.notificationsSection;
+    const enableNotificationsLabelEl = document.getElementById('enable-notifications-label');
+    if (enableNotificationsLabelEl) enableNotificationsLabelEl.textContent = t.enableNotifications;
+    const enableReminderNotificationsLabelEl = document.getElementById('enable-reminder-notifications-label');
+    if (enableReminderNotificationsLabelEl) enableReminderNotificationsLabelEl.textContent = t.enableReminderNotifications;
+    const enableReminderNotificationLabelEl = document.getElementById('enable-reminder-notification-label');
+    if (enableReminderNotificationLabelEl) enableReminderNotificationLabelEl.textContent = t.enableReminderNotification;
+    const reminderLabelEl = document.getElementById('reminder-label');
+    if (reminderLabelEl) reminderLabelEl.textContent = t.reminderLabel;
     const otherParamsSectionEl = document.getElementById('other-params-section');
     if (otherParamsSectionEl) otherParamsSectionEl.textContent = t.otherParamsSection;
     const appViewSectionEl = document.getElementById('app-view-section');

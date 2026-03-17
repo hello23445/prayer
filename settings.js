@@ -19,7 +19,14 @@ const onPressSelect = document.getElementById('on-press-select');
 const buttonColorOptions = document.getElementById('button-color-options');
 const buttonColorInput = document.getElementById('button-color-input');
 const buttonTextColorInput = document.getElementById('button-text-color-input');
+const enableNotificationsToggle = document.getElementById('enable-notifications-toggle');
+const enableReminderNotificationsToggle = document.getElementById('enable-reminder-notifications-toggle');
+const enableReminderNotificationToggle = document.getElementById('enable-reminder-notification-toggle');
+const reminderNotificationsOptions = document.getElementById('reminder-notifications-options');
 let mainButtonEnabled = false;
+let notificationsEnabled = false;
+let reminderNotificationsEnabled = false;
+let reminderNotificationEnabled = false;
 if (openSettingsBtn && mainContainer && settingsDiv) {
     openSettingsBtn.addEventListener('click', () => {
         mainContainer.style.display = 'none';
@@ -151,6 +158,56 @@ if (translToggle) {
         saveSettings();
     });
 }
+if (enableNotificationsToggle) {
+    enableNotificationsToggle.addEventListener('click', async () => {
+        notificationsEnabled = !notificationsEnabled;
+        if (!notificationsEnabled) {
+            // Удаляем все напоминания при отключении уведомлений
+            await removeAllReminders();
+        }
+        updateNotificationToggles();
+        saveSettings();
+    });
+}
+if (enableReminderNotificationsToggle) {
+    enableReminderNotificationsToggle.addEventListener('click', () => {
+        reminderNotificationsEnabled = !reminderNotificationsEnabled;
+        updateNotificationToggles();
+        saveSettings();
+    });
+}
+if (enableReminderNotificationToggle) {
+    enableReminderNotificationToggle.addEventListener('click', () => {
+        reminderNotificationEnabled = !reminderNotificationEnabled;
+        updateNotificationToggles();
+        saveSettings();
+    });
+}
+function updateNotificationToggles() {
+    const enableIcon = enableNotificationsToggle.querySelector('i');
+    if (enableIcon) {
+        enableIcon.className = notificationsEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
+    }
+    
+    if (reminderNotificationsOptions) {
+        reminderNotificationsOptions.style.display = notificationsEnabled ? 'block' : 'none';
+        // Отключаем или включаем элементы в зависимости от состояния основного тугла
+        if (!notificationsEnabled) {
+            reminderNotificationsEnabled = false;
+            reminderNotificationEnabled = false;
+        }
+    }
+    
+    const reminderIcon = enableReminderNotificationsToggle.querySelector('i');
+    if (reminderIcon) {
+        reminderIcon.className = reminderNotificationsEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
+    }
+    
+    const reminderNotificationIcon = enableReminderNotificationToggle.querySelector('i');
+    if (reminderNotificationIcon) {
+        reminderNotificationIcon.className = reminderNotificationEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
+    }
+}
 function updateMainButtonToggle() {
     const icon = mainButtonToggle.querySelector('i');
     if (icon) {
@@ -218,7 +275,10 @@ function saveSettings() {
         whereShow: (document.getElementById('where-show-select') ? document.getElementById('where-show-select').value : 'main'),
         onPress: (document.getElementById('on-press-select') ? document.getElementById('on-press-select').value : 'open_main'),
         buttonColor: (document.getElementById('button-color-input') ? document.getElementById('button-color-input').value : '#0088cc'),
-        buttonTextColor: (document.getElementById('button-text-color-input') ? document.getElementById('button-text-color-input').value : '#ffffff')
+        buttonTextColor: (document.getElementById('button-text-color-input') ? document.getElementById('button-text-color-input').value : '#ffffff'),
+        notificationsEnabled,
+        reminderNotificationsEnabled,
+        reminderNotificationEnabled
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
     updateErrorSoundOptions(settings.errorVolume);
@@ -264,8 +324,12 @@ function loadSettings() {
         transcriptionEnabled = settings.transcriptionEnabled !== undefined ? settings.transcriptionEnabled : true;
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
         mainButtonEnabled = settings.mainButtonEnabled !== undefined ? settings.mainButtonEnabled : false;
+        notificationsEnabled = settings.notificationsEnabled !== undefined ? settings.notificationsEnabled : false;
+        reminderNotificationsEnabled = settings.reminderNotificationsEnabled !== undefined ? settings.reminderNotificationsEnabled : false;
+        reminderNotificationEnabled = settings.reminderNotificationEnabled !== undefined ? settings.reminderNotificationEnabled : false;
         updateToggleIcons();
         updateMainButtonToggle();
+        updateNotificationToggles();
         mainButtonOptions.style.display = mainButtonEnabled ? 'block' : 'none';
         // Загружаем цвета кнопки
         if (buttonColorInput) buttonColorInput.value = settings.buttonColor || '#0088cc';
