@@ -125,7 +125,12 @@ document.querySelectorAll('.prayer-btn').forEach(btn => {
         if (prayerTimes) {
             showPrayerModal(value);
         } else {
-            alert('Время намаза не определено. Пожалуйста, разрешите геолокацию.');
+            // Показываем модальное сообщение вместо alert
+            if (typeof showModalMessage === 'function') {
+                showModalMessage('Время намаза не определено. Пожалуйста, разрешите геолокацию.');
+            } else {
+                console.warn('Время намаза не определено. Пожалуйста, разрешите геолокацию.');
+            }
         }
     });
 });
@@ -447,6 +452,8 @@ function manageMainButton() {
     if (whereShow === 'settings' && currentView === 'settings') show = true;
     // Если выбрано "Обе" - показываем в главном меню и в настройках
     if (whereShow === 'both' && (currentView === 'main' || currentView === 'settings')) show = true;
+    // Если выбрано "Везде" - показываем всегда
+    if (whereShow === 'everywhere') show = true;
     
     if (!show) {
         tg.MainButton.hide();

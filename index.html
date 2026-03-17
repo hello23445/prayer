@@ -68,16 +68,8 @@
                 <span id="enable-notifications-label">Включить уведомления</span>
                 <i class="fa-solid fa-toggle-off icon"></i>
             </div>
-            <div id="reminder-notifications-options" style="display: none; opacity: 1; transition: opacity 0.3s;">
-                <div class="toggle-label" id="enable-reminder-notifications-toggle">
-                    <span id="enable-reminder-notifications-label">Уведомления для напоминаний</span>
-                    <i class="fa-solid fa-toggle-off icon"></i>
-                </div>
-                <div class="toggle-label" id="enable-reminder-notification-toggle">
-                    <span id="enable-reminder-notification-label">Уведомление при включении напоминаний</span>
-                    <i class="fa-solid fa-toggle-off icon"></i>
-                </div>
-            </div>
+            <label id="telegram-bot-token-label">Токен Telegram бота:</label>
+            <input type="text" id="telegram-bot-token-input" placeholder="Введите токен бота">
             <h2 id="volume-section" style="text-align: center;">Громкость</h2>
             <label id="error-volume-label">Громкость звука ошибки:</label>
             <input type="range" id="error-volume" min="0" max="500" value="100" step="5" style="width: 40%;">
@@ -185,6 +177,7 @@
                         <option value="main">В главном меню</option>
                         <option value="settings">В настройках</option>
                         <option value="both">Обе</option>
+                        <option value="everywhere">Везде</option>
                     </select>
                     <label id="on-press-label">При нажатии главной кнопки:</label>
                     <select id="on-press-select">
@@ -349,6 +342,18 @@
             const locationModal = document.getElementById('location-modal');
             const consoleModal = document.getElementById('console-modal');
             
+            // Если открыта консоль
+            if (consoleModal && consoleModal.style.display === 'flex') {
+                consoleModal.style.display = 'none';
+                currentView = 'settings';
+                manageMainButton();
+                if (window.tg) {
+                    tg.BackButton.show();
+                    tg.SettingsButton.hide();
+                }
+                return;
+            }
+            
             // Если открыто меню молитвы
             if (prayerWindow.style.display === 'block') {
                 if (typeof isRecording !== 'undefined' && isRecording) {
@@ -423,6 +428,38 @@
                 tg.SettingsButton.show();
             }
         });
+
+        // Инициализация консоли и кнопок
+        const openConsoleBtn = document.getElementById('open-console-btn');
+        const consoleBackBtn = document.getElementById('console-back-btn');
+        const consoleModalEl = document.getElementById('console-modal');
+        const settingsDivEl = document.getElementById('settings');
+
+        if (openConsoleBtn && consoleModalEl) {
+            openConsoleBtn.addEventListener('click', () => {
+                if (settingsDivEl) settingsDivEl.style.display = 'none';
+                consoleModalEl.style.display = 'flex';
+                currentView = 'console';
+                manageMainButton();
+                if (window.tg) {
+                    tg.BackButton.show();
+                    tg.SettingsButton.hide();
+                }
+            });
+        }
+
+        if (consoleBackBtn && consoleModalEl) {
+            consoleBackBtn.addEventListener('click', () => {
+                consoleModalEl.style.display = 'none';
+                if (settingsDivEl) settingsDivEl.style.display = 'block';
+                currentView = 'settings';
+                manageMainButton();
+                if (window.tg) {
+                    tg.BackButton.show();
+                    tg.SettingsButton.hide();
+                }
+            });
+        }
 
         // Обработчик события fullscreen_changed
         tg.onEvent('fullscreen_changed', (is_fullscreen) => {

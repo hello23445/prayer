@@ -75,6 +75,9 @@ function applyLang(lang) {
         whereShowSelect.options[0].textContent = t.inMainMenu;
         whereShowSelect.options[1].textContent = t.inSettings;
         whereShowSelect.options[2].textContent = t.inBoth;
+        if (whereShowSelect.options[3]) {
+            whereShowSelect.options[3].textContent = t.everywhere;
+        }
     }
     const onPressLabelEl = document.getElementById('on-press-label');
     if (onPressLabelEl) onPressLabelEl.textContent = t.onMainButtonPress;
@@ -143,10 +146,8 @@ function applyLang(lang) {
     if (notificationsSectionEl) notificationsSectionEl.textContent = t.notificationsSection;
     const enableNotificationsLabelEl = document.getElementById('enable-notifications-label');
     if (enableNotificationsLabelEl) enableNotificationsLabelEl.textContent = t.enableNotifications;
-    const enableReminderNotificationsLabelEl = document.getElementById('enable-reminder-notifications-label');
-    if (enableReminderNotificationsLabelEl) enableReminderNotificationsLabelEl.textContent = t.enableReminderNotifications;
-    const enableReminderNotificationLabelEl = document.getElementById('enable-reminder-notification-label');
-    if (enableReminderNotificationLabelEl) enableReminderNotificationLabelEl.textContent = t.enableReminderNotification;
+    const telegramBotTokenLabelEl = document.getElementById('telegram-bot-token-label');
+    if (telegramBotTokenLabelEl) telegramBotTokenLabelEl.textContent = t.telegramBotTokenLabel;
     const reminderLabelEl = document.getElementById('reminder-label');
     if (reminderLabelEl) reminderLabelEl.textContent = t.reminderLabel;
     const otherParamsSectionEl = document.getElementById('other-params-section');

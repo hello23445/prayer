@@ -20,13 +20,9 @@ const buttonColorOptions = document.getElementById('button-color-options');
 const buttonColorInput = document.getElementById('button-color-input');
 const buttonTextColorInput = document.getElementById('button-text-color-input');
 const enableNotificationsToggle = document.getElementById('enable-notifications-toggle');
-const enableReminderNotificationsToggle = document.getElementById('enable-reminder-notifications-toggle');
-const enableReminderNotificationToggle = document.getElementById('enable-reminder-notification-toggle');
-const reminderNotificationsOptions = document.getElementById('reminder-notifications-options');
+const telegramBotTokenInput = document.getElementById('telegram-bot-token-input');
 let mainButtonEnabled = false;
 let notificationsEnabled = false;
-let reminderNotificationsEnabled = false;
-let reminderNotificationEnabled = false;
 if (openSettingsBtn && mainContainer && settingsDiv) {
     openSettingsBtn.addEventListener('click', () => {
         mainContainer.style.display = 'none';
@@ -162,24 +158,23 @@ if (enableNotificationsToggle) {
     enableNotificationsToggle.addEventListener('click', async () => {
         notificationsEnabled = !notificationsEnabled;
         if (!notificationsEnabled) {
-            // Удаляем все напоминания при отключении уведомлений
+            // Показываем прелоадер, если есть активные напоминания
+            const preloader = document.getElementById('preloader');
+            const reminders = typeof getAllReminders === 'function' ? getAllReminders() : {};
+            if (preloader && Object.keys(reminders).length > 0) {
+                preloader.style.display = 'flex';
+            }
             await removeAllReminders();
+            if (preloader) {
+                preloader.style.display = 'none';
+            }
         }
         updateNotificationToggles();
         saveSettings();
     });
 }
-if (enableReminderNotificationsToggle) {
-    enableReminderNotificationsToggle.addEventListener('click', () => {
-        reminderNotificationsEnabled = !reminderNotificationsEnabled;
-        updateNotificationToggles();
-        saveSettings();
-    });
-}
-if (enableReminderNotificationToggle) {
-    enableReminderNotificationToggle.addEventListener('click', () => {
-        reminderNotificationEnabled = !reminderNotificationEnabled;
-        updateNotificationToggles();
+if (telegramBotTokenInput) {
+    telegramBotTokenInput.addEventListener('input', () => {
         saveSettings();
     });
 }
@@ -187,25 +182,6 @@ function updateNotificationToggles() {
     const enableIcon = enableNotificationsToggle.querySelector('i');
     if (enableIcon) {
         enableIcon.className = notificationsEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
-    }
-    
-    if (reminderNotificationsOptions) {
-        reminderNotificationsOptions.style.display = notificationsEnabled ? 'block' : 'none';
-        // Отключаем или включаем элементы в зависимости от состояния основного тугла
-        if (!notificationsEnabled) {
-            reminderNotificationsEnabled = false;
-            reminderNotificationEnabled = false;
-        }
-    }
-    
-    const reminderIcon = enableReminderNotificationsToggle.querySelector('i');
-    if (reminderIcon) {
-        reminderIcon.className = reminderNotificationsEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
-    }
-    
-    const reminderNotificationIcon = enableReminderNotificationToggle.querySelector('i');
-    if (reminderNotificationIcon) {
-        reminderNotificationIcon.className = reminderNotificationEnabled ? 'fa-solid fa-toggle-on icon' : 'fa-solid fa-toggle-off icon';
     }
 }
 function updateMainButtonToggle() {
@@ -277,8 +253,7 @@ function saveSettings() {
         buttonColor: (document.getElementById('button-color-input') ? document.getElementById('button-color-input').value : '#0088cc'),
         buttonTextColor: (document.getElementById('button-text-color-input') ? document.getElementById('button-text-color-input').value : '#ffffff'),
         notificationsEnabled,
-        reminderNotificationsEnabled,
-        reminderNotificationEnabled
+        telegramBotToken: (document.getElementById('telegram-bot-token-input') ? document.getElementById('telegram-bot-token-input').value : '')
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
     updateErrorSoundOptions(settings.errorVolume);
@@ -325,8 +300,6 @@ function loadSettings() {
         translationEnabled = settings.translationEnabled !== undefined ? settings.translationEnabled : true;
         mainButtonEnabled = settings.mainButtonEnabled !== undefined ? settings.mainButtonEnabled : false;
         notificationsEnabled = settings.notificationsEnabled !== undefined ? settings.notificationsEnabled : false;
-        reminderNotificationsEnabled = settings.reminderNotificationsEnabled !== undefined ? settings.reminderNotificationsEnabled : false;
-        reminderNotificationEnabled = settings.reminderNotificationEnabled !== undefined ? settings.reminderNotificationEnabled : false;
         updateToggleIcons();
         updateMainButtonToggle();
         updateNotificationToggles();
@@ -334,6 +307,7 @@ function loadSettings() {
         // Загружаем цвета кнопки
         if (buttonColorInput) buttonColorInput.value = settings.buttonColor || '#0088cc';
         if (buttonTextColorInput) buttonTextColorInput.value = settings.buttonTextColor || '#ffffff';
+        if (telegramBotTokenInput) telegramBotTokenInput.value = settings.telegramBotToken || '';
         if (buttonColorOptions) {
             buttonColorOptions.style.display = mainButtonEnabled ? 'block' : 'none';
         }

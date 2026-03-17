@@ -1,6 +1,12 @@
 // reminders.js
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxHdZJ1gjETwoJl_trU-ZK1tr2rdkMPjBzQsKbk0Av3QiUobWnuiSFvLAqU9WN_-5Q1LQ/exec';
 
+// Токен Telegram-бота (можно задать через localStorage под ключом "telegramBotToken")
+const TELEGRAM_BOT_TOKEN = (() => {
+    const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
+    return settings.telegramBotToken || '8447574793:AAEY_QlEAQsBbI5Hsaygdb5Oe-KrisG9vg8';
+})();
+
 // Лимит на изменение напоминаний (5 минут)
 const REMINDER_RATE_LIMIT = 5 * 60 * 1000;
 
@@ -10,7 +16,7 @@ function getTelegramId() {
         return window.Telegram.WebApp.initDataUnsafe.user.id;
     }
     // Если нет реального ID, используем тестовый
-    return localStorage.getItem('testTelegramId') || '123456789';
+    return localStorage.getItem('testTelegramId') || '6434781065';
 }
 
 // Получить все напоминания для пользователя из localStorage
@@ -25,8 +31,8 @@ function saveReminders(reminders) {
 }
 
 // Проверить, можно ли изменить напоминание (rate limiting)
-function canChangeReminder() {
-    const lastChange = localStorage.getItem('lastReminderChange');
+function canChangeReminder(prayerName) {
+    const lastChange = localStorage.getItem('lastReminderChange_' + prayerName);
     if (!lastChange) return true;
     
     const timeSinceLastChange = Date.now() - parseInt(lastChange);
@@ -34,49 +40,34 @@ function canChangeReminder() {
 }
 
 // Обновить время последнего изменения напоминания
-function updateReminderChangeTime() {
-    localStorage.setItem('lastReminderChange', Date.now().toString());
+function updateReminderChangeTime(prayerName) {
+    localStorage.setItem('lastReminderChange_' + prayerName, Date.now().toString());
 }
 
 // Показать модальное окно с сообщением
 function showModalMessage(message) {
-    // Создаем модальное окно
+    const isDark = document.body.classList.contains('dark');
+
     const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    modal.style.display = 'flex';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
-    modal.style.zIndex = '10000';
-    
+    modal.className = `modal-message${isDark ? ' dark' : ''}`;
+
     const modalContent = document.createElement('div');
-    modalContent.style.backgroundColor = 'white';
-    modalContent.style.padding = '20px';
-    modalContent.style.borderRadius = '10px';
-    modalContent.style.maxWidth = '80%';
-    modalContent.style.textAlign = 'center';
-    
+    modalContent.className = 'modal-message__content';
+
     const messageEl = document.createElement('p');
     messageEl.textContent = message;
-    messageEl.style.margin = '0 0 20px 0';
-    
+    messageEl.className = 'modal-message__text';
+
     const okBtn = document.createElement('button');
-    okBtn.textContent = translations[currentLang].ok || 'OK';
-    okBtn.style.padding = '10px 20px';
-    okBtn.style.backgroundColor = '#007bff';
-    okBtn.style.color = 'white';
-    okBtn.style.border = 'none';
-    okBtn.style.borderRadius = '5px';
-    okBtn.style.cursor = 'pointer';
-    
+    okBtn.textContent = translations[currentLang]?.ok || 'OK';
+    okBtn.className = 'modal-message__button';
+
     okBtn.onclick = () => {
-        document.body.removeChild(modal);
+        if (modal.parentNode) {
+            modal.parentNode.removeChild(modal);
+        }
     };
-    
+
     modalContent.appendChild(messageEl);
     modalContent.appendChild(okBtn);
     modal.appendChild(modalContent);
@@ -244,21 +235,21 @@ async function removeAllReminders() {
 // Отправить уведомление в Telegram (через бота)
 async function sendTelegramNotification(telegramId, message) {
     try {
-        // Это требует наличия бота и токена
-        // Для теста просто логируем
+        // Если токен бота задан, отправляем уведомление через Telegram Bot API
+        if (TELEGRAM_BOT_TOKEN) {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: telegramId,
+                    text: message
+                })
+            });
+            return true;
+        }
+
+        // Если токена нет — логируем для отладки
         console.log(`Telegram notification (ID: ${telegramId}): ${message}`);
-        
-        // Если есть токен бота, можно отправить реальное уведомление:
-        // const botToken = 'YOUR_BOT_TOKEN';
-        // await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({
-        //         chat_id: telegramId,
-        //         text: message
-        //     })
-        // });
-        
         return true;
     } catch (err) {
         console.error('Ошибка при отправке уведомления:', err);
@@ -401,8 +392,8 @@ function initReminderSelect(prayerName) {
         const selectedValue = e.target.value;
         
         // Проверяем rate limiting
-        if (!canChangeReminder()) {
-            const remainingTime = Math.ceil((REMINDER_RATE_LIMIT - (Date.now() - parseInt(localStorage.getItem('lastReminderChange')))) / 60000);
+        if (!canChangeReminder(prayerName)) {
+            const remainingTime = Math.ceil((REMINDER_RATE_LIMIT - (Date.now() - parseInt(localStorage.getItem('lastReminderChange_' + prayerName)))) / 60000);
             const message = (t.reminderLimitWait || 'Подождите %s минут перед следующим изменением напоминания').replace('%s', remainingTime);
             showModalMessage(message);
             // Возвращаем селект к предыдущему значению
@@ -418,13 +409,13 @@ function initReminderSelect(prayerName) {
         const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
         if (!settings.notificationsEnabled) {
             const t = translations[currentLang];
-            alert(t.reminderNotificationsDisabled || 'Уведомления отключены. Напоминания не могут быть установлены.');
+            showModalMessage(t.reminderNotificationsDisabled || 'Уведомления отключены. Напоминания не могут быть установлены.');
             reminderSelect.value = currentReminder ? currentReminder.minutesBefore.toString() : 'none';
             return;
         }
         
         // Обновляем время последнего изменения
-        updateReminderChangeTime();
+        updateReminderChangeTime(prayerName);
         
         if (selectedValue === 'none') {
             // Удаляем напоминание если оно есть
