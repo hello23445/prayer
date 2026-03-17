@@ -20,7 +20,6 @@ const buttonColorOptions = document.getElementById('button-color-options');
 const buttonColorInput = document.getElementById('button-color-input');
 const buttonTextColorInput = document.getElementById('button-text-color-input');
 const enableNotificationsToggle = document.getElementById('enable-notifications-toggle');
-const telegramBotTokenInput = document.getElementById('telegram-bot-token-input');
 let mainButtonEnabled = false;
 let notificationsEnabled = false;
 if (openSettingsBtn && mainContainer && settingsDiv) {
@@ -173,11 +172,6 @@ if (enableNotificationsToggle) {
         saveSettings();
     });
 }
-if (telegramBotTokenInput) {
-    telegramBotTokenInput.addEventListener('input', () => {
-        saveSettings();
-    });
-}
 function updateNotificationToggles() {
     const enableIcon = enableNotificationsToggle.querySelector('i');
     if (enableIcon) {
@@ -252,8 +246,7 @@ function saveSettings() {
         onPress: (document.getElementById('on-press-select') ? document.getElementById('on-press-select').value : 'open_main'),
         buttonColor: (document.getElementById('button-color-input') ? document.getElementById('button-color-input').value : '#0088cc'),
         buttonTextColor: (document.getElementById('button-text-color-input') ? document.getElementById('button-text-color-input').value : '#ffffff'),
-        notificationsEnabled,
-        telegramBotToken: (document.getElementById('telegram-bot-token-input') ? document.getElementById('telegram-bot-token-input').value : '')
+        notificationsEnabled
     };
     localStorage.setItem('namazSettings', JSON.stringify(settings));
     updateErrorSoundOptions(settings.errorVolume);
@@ -307,7 +300,6 @@ function loadSettings() {
         // Загружаем цвета кнопки
         if (buttonColorInput) buttonColorInput.value = settings.buttonColor || '#0088cc';
         if (buttonTextColorInput) buttonTextColorInput.value = settings.buttonTextColor || '#ffffff';
-        if (telegramBotTokenInput) telegramBotTokenInput.value = settings.telegramBotToken || '';
         if (buttonColorOptions) {
             buttonColorOptions.style.display = mainButtonEnabled ? 'block' : 'none';
         }

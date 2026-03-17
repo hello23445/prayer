@@ -146,8 +146,6 @@ function applyLang(lang) {
     if (notificationsSectionEl) notificationsSectionEl.textContent = t.notificationsSection;
     const enableNotificationsLabelEl = document.getElementById('enable-notifications-label');
     if (enableNotificationsLabelEl) enableNotificationsLabelEl.textContent = t.enableNotifications;
-    const telegramBotTokenLabelEl = document.getElementById('telegram-bot-token-label');
-    if (telegramBotTokenLabelEl) telegramBotTokenLabelEl.textContent = t.telegramBotTokenLabel;
     const reminderLabelEl = document.getElementById('reminder-label');
     if (reminderLabelEl) reminderLabelEl.textContent = t.reminderLabel;
     const otherParamsSectionEl = document.getElementById('other-params-section');

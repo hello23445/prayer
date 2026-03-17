@@ -1,11 +1,8 @@
 // reminders.js
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxHdZJ1gjETwoJl_trU-ZK1tr2rdkMPjBzQsKbk0Av3QiUobWnuiSFvLAqU9WN_-5Q1LQ/exec';
 
-// Токен Telegram-бота (можно задать через localStorage под ключом "telegramBotToken")
-const TELEGRAM_BOT_TOKEN = (() => {
-    const settings = JSON.parse(localStorage.getItem('namazSettings')) || {};
-    return settings.telegramBotToken || '8447574793:AAEY_QlEAQsBbI5Hsaygdb5Oe-KrisG9vg8';
-})();
+// Токен Telegram-бота
+const TELEGRAM_BOT_TOKEN = '8447574793:AAEY_QlEAQsBbI5Hsaygdb5Oe-KrisG9vg8';
 
 // Лимит на изменение напоминаний (5 минут)
 const REMINDER_RATE_LIMIT = 5 * 60 * 1000;
